@@ -16,13 +16,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	///////////////////////
+	// Variable declaration
 
 	int gGameRunning = 1;
 
-	// Initialization of your own variables go here
+	// Variable declaration end
+	///////////////////////////
+
+
+	/////////////////
+	// Initialization
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
+
 
 	// Changing the window title
 	AESysSetWindowTitle("My New Demo!");
@@ -30,6 +38,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 
+	// Initialization end
+	/////////////////////
+
+
+
+	////////////////////////////////
+	// Creating the objects (Shapes)
+
+	// Creating the objects (Shapes) end
+	////////////////////////////////////
+
+
+
+	////////////////////////////
+	// Loading textures (images)
+
+	// Loading textures (images) end
+	//////////////////////////////////
+
+	//////////////////////////////////
+	// Creating Fonts	
+
+	// Creating Fonts end
+	//////////////////////////////////
 
 
 	// Game Loop
@@ -41,10 +73,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		// Handling Input
 		AEInputUpdate();
 
-		// Your own update logic goes here
+		///////////////////
+		// Game loop update
+
+		// Game loop update end
+		///////////////////////
 
 
-		// Your own rendering logic goes here
+		//////////////////
+		// Game loop draw
+
+		// Game loop draw end
+		/////////////////////
 
 
 		// Informing the system about the loop's end
