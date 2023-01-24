@@ -21,10 +21,16 @@
     <ClCompile Include="Src\gsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Input.cpp">
+    <ClCompile Include="Src\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\racing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\boss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\general.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,13 +38,19 @@
     <ClInclude Include="Inc\gsm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\Input.h">
+    <ClInclude Include="Inc\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inc\racing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inc\gamestatelist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\boss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\general.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

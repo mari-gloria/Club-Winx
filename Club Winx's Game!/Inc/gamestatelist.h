@@ -2,8 +2,8 @@
 
 enum GS_STATES
 {
-	racing = 0,
-
-	restart,
-	quit
+	RACING = 0,
+	BOSS,
+	RESTART,
+	QUIT
 };

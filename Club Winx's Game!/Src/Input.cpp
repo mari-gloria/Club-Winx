@@ -1,4 +1,13 @@
-#include "Input.h"
+// ---------------------------------------------------------------------------
+// includes
+
+#include "AEEngine.h"
+#include "AEGameStateMgr.h"
+
+#include "input.h"
+
+#include <iostream>
+// ---------------------------------------------------------------------------
 
 
 #include <iostream>
@@ -8,5 +17,4 @@
 void input_handle()
 {
 	std::cout << "Input:Handle\n";
-
 }

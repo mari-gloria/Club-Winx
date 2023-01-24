@@ -1,48 +1,73 @@
+// ---------------------------------------------------------------------------
+// includes
+
+#include "AEEngine.h"
+#include "AEGameStateMgr.h"
+
 #include "gsm.h"
+#include "gamestatelist.h"
 #include "racing.h"
+#include "boss.h"
 
 #include <iostream>
+// ---------------------------------------------------------------------------
+
+/*------------------------------------------------------------
+DECLARE GLOBAL VARIABLES
+------------------------------------------------------------*/
+int curr_state = 0, prev_state = 0, next_state = 0;
+FP fpLoad = nullptr, fpInit = nullptr, fpUpdate = nullptr, fpDraw = nullptr, fpFree = nullptr, fpUnload = nullptr;
 
 
+/*------------------------------------------------------------
+FUNCTIONS
+------------------------------------------------------------*/
 
+/*------------------------------------------------------------
+Function: GSM_update
 
-int current = 0, previous = 0, next = 0;
-
-FP fpLoad = nullptr, fpInitialize = nullptr, fpUpdate = nullptr, fpDraw = nullptr, fpFree = nullptr, fpUnload = nullptr;
-
-void GSM_Initialize(int startingState)
+initializes curr_state, prev_state and next_state to the
+initial game state
+------------------------------------------------------------*/
+void GSM_init(int startingState)
 {
-	current = previous = next = startingState;  //initialize all state to be the same 
-
-
+	curr_state = prev_state = next_state = startingState;  //initialize all state to be the same 
 	std::cout << "GSM:Initialize\n";
 }
 
-void GSM_Update()
+
+/*------------------------------------------------------------
+Function: GSM_update
+
+updates function pointer according to the current game state
+------------------------------------------------------------*/
+void GSM_update()
 {
 	std::cout << "GSM:Update\n";
 
-
-	/*switch (current)
+	switch (curr_state)
 	{
-	case racing:
-		fpLoad = racing_load;
-		fpInitialize = racing_init;
-		fpUpdate = racing_update;
-		fpDraw = racing_draw;
-		fpFree = racing_free;
-		fpUnload = racing_unload;
+	case RACING:
+		fpLoad =	racing_load;
+		fpInit =	racing_init;
+		fpUpdate =	racing_update;
+		fpDraw =	racing_draw;
+		fpFree =	racing_free;
+		fpUnload =	racing_unload;
 		break;
-	case :
-		
+	case BOSS:
+		fpLoad =	boss_load;
+		fpInit =	boss_init;
+		fpUpdate =	boss_update;
+		fpDraw =	boss_draw;
+		fpFree =	boss_free;
+		fpUnload =	boss_unload;
 		break;
-	case restart:
-
+	case RESTART:
 		break;
-	case quit:
+	case QUIT:
 		break;
 	default:
-		break;
-	}*/
-
+		AE_FATAL_ERROR("Invalid state!");
+	}
 }

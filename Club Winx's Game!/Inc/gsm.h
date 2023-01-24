@@ -2,9 +2,15 @@
 
 typedef void(*FP)(void);
 
-extern int current, previous, next;
+/*------------------------------------------------------------
+EXTERNS
+------------------------------------------------------------*/
+extern int curr_state, prev_state, next_state;
+extern FP fpLoad, fpInit, fpUpdate, fpDraw, fpFree, fpUnload;
 
-extern FP fpLoad, fpInitialize, fpUpdate, fpDraw, fpFree, fpUnload;
 
-void GSM_Initialize(int startingState);
-void GSM_Update();
+/*------------------------------------------------------------
+DECLARE FUNCTIONS
+------------------------------------------------------------*/
+void GSM_init(int startingState);
+void GSM_update();
