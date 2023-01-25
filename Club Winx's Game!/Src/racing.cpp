@@ -34,35 +34,13 @@ void racing_load()
 	------------------------------------------------------------*/
 
 	// Informing the library that we're about to start adding triangles
-
+	
 	// player 1 mesh 
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-25.5f, -25.5f, 0xFFFF0000, 0.0f, 0.0f, // bottom left 
-		25.5f, -25.5f, 0xFFFF0000, 1.0f, 0.0f, // bottom right
-		-25.5f, 25.5f, 0xFFFF0000, 0.0f, 1.0f); //top left
-	AEGfxTriAdd(
-		25.5f, -25.5f, 0xFFFF0000, 1.0f, 0.0f, // bottom right
-		25.5f, 25.5f, 0xFFFF0000, 1.0f, 1.0f, // top right 
-		-25.5f, 25.5f, 0xFFFF0000, 0.0f, 1.0f); // top left 
-
-	player1.pMesh = AEGfxMeshEnd();
-	AE_ASSERT_MESG(player1.pMesh, "Failed to create player 1 mesh !!");
+	SquareMesh(&player1.pMesh, 50.0f, 50.0f, 0xFFB62891);
 
 	// player 2 mesh
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-25.5f, -25.5f, 0xFFFFFF00, 0.0f, 0.0f, // bottom left 
-		25.5f, -25.5f, 0xFFFF0000, 1.0f, 0.0f, // bottom right
-		-25.5f, 25.5f, 0xFFFF00FF, 0.0f, 1.0f); //top left
-	AEGfxTriAdd(
-		25.5f, -25.5f, 0xFF00FF00, 1.0f, 0.0f, // bottom right
-		25.5f, 25.5f, 0xFFFF00FF, 1.0f, 1.0f, // top right 
-		-25.5f, 25.5f, 0xFFFF0000, 0.0f, 1.0f); // top left 
-
-	player2.pMesh = AEGfxMeshEnd();
-	AE_ASSERT_MESG(player2.pMesh, "Failed to create player 2 mesh !!");
-
+	SquareMesh(&player2.pMesh, 50.0f, 50.0f, 0xFFFF00FF);
+	
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
