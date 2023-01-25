@@ -7,15 +7,18 @@
 
 
 
-struct Player {
-	AEVec2 pCoord; // player x y 
-	AEGfxVertexList* pMesh; // mesh 
-	AEGfxTexture* pTex; // texture
-	//f32 size; //player size 
+struct Player { // initialise in each game mode before use 
+	AEVec2 pCoord { 0.0f, 0.0f }; // player x y 
+	AEGfxVertexList* pMesh { nullptr}; // mesh 
+	AEGfxTexture* pTex {nullptr}; // texture
+	f32 size = 50.0f; //player size 
 };
-
-
 extern Player player1, player2;
+
+
+// HANDLES PLAYER INPUT FOR CURRENT GAME STATE ( DURING UPDATE ) //
+void input_handle();
+
 
 /******* CREATE SQUARE MESH  (DURING LOAD) ************\
 

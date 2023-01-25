@@ -45,11 +45,10 @@ void boss_load()
 	CREATING OBJECTS AND SHAPES
 	------------------------------------------------------------*/
 	// player 1 mesh 
-	SquareMesh(&player1.pMesh, 50.0f, 50.0f, 0xFFB62891);
+	SquareMesh(&player1.pMesh, player1.size, player1.size, 0xFFB62891);
 
 	// player 2 mesh
-	SquareMesh(&player2.pMesh, 50.0f, 50.0f, 0xFFFF00FF);
-
+	SquareMesh(&player2.pMesh, player2.size, player2.size, 0xFFFF00FF);
 
 	//bullet mesh
 	SquareMesh(&pBullet, 10.0f, 5.0f, 0xFFFFFFFF);
@@ -104,33 +103,8 @@ void boss_update()
 	/*------------------------------------------------------------
 	PLAYER MOVEMENT
 	------------------------------------------------------------*/
-	// player one input
-	if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - 25)//25 is half the height of square
-		player1.pCoord.y += 3.0f;
-
-	else if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY() + 25)
-		player1.pCoord.y -= 3.0f;
-
-	if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX() + 25)
-		player1.pCoord.x -= 3.0f;
-
-	else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= AEGfxGetWinMaxX() - 25)
-		player1.pCoord.x += 3.0f;
-
-	//player two input
-	if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - 25)
-		player2.pCoord.y += 3.0f;
-
-	else if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY() + 25)
-		player2.pCoord.y -= 3.0f;
-
-	if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= AEGfxGetWinMinX() + 25)
-		player2.pCoord.x -= 3.0f;
-
-	else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - 25)
-		player2.pCoord.x += 3.0f;
-
-
+	input_handle(); 
+	
 	/*------------------------------------------------------------
 	BULLET
 	------------------------------------------------------------*/
