@@ -1,11 +1,22 @@
 #pragma once
+// ---------------------------------------------------------------------------
+//includes
 #include "AEVec2.h"
 #include "AEGraphics.h"
+// ---------------------------------------------------------------------------
+
+
 
 struct Player {
-	AEVec2 pcoords; // player x y 
+	AEVec2 pCoord; // player x y 
 	AEGfxVertexList* pMesh; // mesh 
 	AEGfxTexture* pTex; // texture
-
 };
-Player playerone, playertwo; 
+
+
+extern Player player1, player2;
+
+
+
+
+

@@ -8,6 +8,7 @@
 #include "gamestatelist.h"
 #include "racing.h"
 #include "general.h"
+
 #include <iostream>
 // ---------------------------------------------------------------------------
 
@@ -15,7 +16,7 @@
 /*------------------------------------------------------------
 GLOBALS
 ------------------------------------------------------------*/
-//AEGfxVertexList* pMesh1 = 0;
+
 
 
 
@@ -45,8 +46,8 @@ void racing_load()
 		25.5f, 25.5f, 0xFFFF0000, 1.0f, 1.0f, // top right 
 		-25.5f, 25.5f, 0xFFFF0000, 0.0f, 1.0f); // top left 
 
-	playerone.pMesh = AEGfxMeshEnd();
-	AE_ASSERT_MESG(playerone.pMesh, "Failed to create player 1 mesh !!");
+	player1.pMesh = AEGfxMeshEnd();
+	AE_ASSERT_MESG(player1.pMesh, "Failed to create player 1 mesh !!");
 
 	// player 2 mesh
 	AEGfxMeshStart();
@@ -59,8 +60,9 @@ void racing_load()
 		25.5f, 25.5f, 0xFFFF00FF, 1.0f, 1.0f, // top right 
 		-25.5f, 25.5f, 0xFFFF0000, 0.0f, 1.0f); // top left 
 
-	playertwo.pMesh = AEGfxMeshEnd();
-	AE_ASSERT_MESG(playertwo.pMesh, "Failed to create player 2 mesh !!");
+	player2.pMesh = AEGfxMeshEnd();
+	AE_ASSERT_MESG(player2.pMesh, "Failed to create player 2 mesh !!");
+
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -78,39 +80,55 @@ void racing_init()
 {
 	std::cout << "racing:Initialize\n";
 	// INIT PLAYER ONE 
-	playerone.pcoords = { 100,100 };
-	playertwo.pcoords = { 0 , 0 };
+	player1.pCoord = {0,0};
+	player2.pCoord = {100,100};
+
 }
 
 void racing_update()
 {
 	std::cout << "racing:Update\n";
 
-	if (AEInputCheckTriggered(AEVK_1)) {
+	/*------------------------------------------------------------
+	CHANGE STATE CONDITIONS
+	------------------------------------------------------------*/
+	if (AEInputCheckCurr(AEVK_2)) {
 		next_state = BOSS;
 	}
 
-	// player one input 
-	if (AEInputCheckCurr(AEVK_W))
-		playerone.pcoords.y += 3.0f;
-	else if (AEInputCheckCurr(AEVK_S))
-		playerone.pcoords.y -= 3.0f;
+	if (AEInputCheckCurr(AEVK_Q)) {
+		next_state = QUIT;
+	}
 
-	if (AEInputCheckCurr(AEVK_A))
-		playerone.pcoords.x -= 3.0f;
-	else if (AEInputCheckCurr(AEVK_D))
-		playerone.pcoords.x += 3.0f;
+
+	/*------------------------------------------------------------
+	PLAYER MOVEMENT
+	------------------------------------------------------------*/
+	// player one input
+	if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - 25)//25 is half the height of square
+		player1.pCoord.y += 3.0f;
+
+	else if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY() + 25)
+		player1.pCoord.y -= 3.0f;
+
+	if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX() + 25)
+		player1.pCoord.x -= 3.0f;
+
+	else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= AEGfxGetWinMaxX() - 25)
+		player1.pCoord.x += 3.0f;
 
 	//player two input
-	if (AEInputCheckCurr(AEVK_UP))
-		playertwo.pcoords.y += 3.0f;
-	else if (AEInputCheckCurr(AEVK_DOWN))
-		playertwo.pcoords.y -= 3.0f;
+	if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - 25)
+		player2.pCoord.y += 3.0f;
 
-	if (AEInputCheckCurr(AEVK_LEFT))
-		playertwo.pcoords.x -= 3.0f;
-	else if (AEInputCheckCurr(AEVK_RIGHT))
-		playertwo.pcoords.x += 3.0f;
+	else if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY() + 25)
+		player2.pCoord.y -= 3.0f;
+
+	if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= AEGfxGetWinMinX() + 25)
+		player2.pCoord.x -= 3.0f;
+
+	else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - 25)
+		player2.pCoord.x += 3.0f;
 	
 }
 
@@ -118,21 +136,24 @@ void racing_draw()
 {
 	std::cout << "racing:Draw\n";
 
+	/*------------------------------------------------------------
+	DRAWING PLAYERS
+	------------------------------------------------------------*/
 	// Drawing object 1
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	// Set position for object 1
-	AEGfxSetPosition(playerone.pcoords.x, playerone.pcoords.y);
+	AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
-	AEGfxMeshDraw(playerone.pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
-	AEGfxSetPosition(playertwo.pcoords.x, playertwo.pcoords.y);
+	AEGfxSetPosition(player2.pCoord.x, player2.pCoord.y);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
-	AEGfxMeshDraw(playertwo.pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void racing_free()
@@ -144,7 +165,6 @@ void racing_free()
 void racing_unload()
 {
 	std::cout << "racing:Unload\n";
-	AEGfxMeshFree(playerone.pMesh);
-	AEGfxMeshFree(playertwo.pMesh);
-
+	AEGfxMeshFree(player1.pMesh);
+	AEGfxMeshFree(player2.pMesh);
 }

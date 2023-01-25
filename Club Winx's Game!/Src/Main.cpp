@@ -73,13 +73,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		while (next_state == curr_state) {
 			AESysFrameStart();
-
 			AEInputUpdate();
-
 			(*fpUpdate)();
-
 			(*fpDraw)();
-
 			AESysFrameEnd();
 
 			// check if forcing the application to quit
