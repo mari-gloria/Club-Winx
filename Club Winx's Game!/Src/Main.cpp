@@ -13,6 +13,8 @@
 DECLARE GLOBAL VARIABLES
 ------------------------------------------------------------*/
 
+//setting screen width and height
+int const winWIDTH{1080}, winHEIGHT{800};
 
 
 
@@ -37,7 +39,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	------------------------------------------------------------*/
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 800, 600, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, winWIDTH, winHEIGHT, 1, 60, true, NULL);
 
 	// Changing the window title
 	AESysSetWindowTitle("Winx Demo!");

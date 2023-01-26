@@ -57,9 +57,16 @@ void racing_load()
 void racing_init()
 {
 	std::cout << "racing:Initialize\n";
+
 	// INIT PLAYERS
-	player1.pCoord = {0.0f,0.0f};
-	player2.pCoord = {100.0f,100.0f};
+	//curretly set ground level = AEGfxGetWinMinY() + 50.0f
+	//need to update ground to patform levels after jumping! (implement once platforms can be rendered properly)
+	player1.pGround = AEGfxGetWinMinY() + 50.0f;
+	player2.pGround = AEGfxGetWinMinY() + 50.0f;
+
+
+	player1.pCoord = {AEGfxGetWinMinX() / 2, player1.pGround}; //spawn at left half of screen
+	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
 	
 }
 
