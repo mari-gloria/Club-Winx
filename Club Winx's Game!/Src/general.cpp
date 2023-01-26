@@ -16,9 +16,9 @@
 GLOBALS
 ------------------------------------------------------------*/
 
-//declaring players
+//declaring players & platforms
 Player player1, player2;
-
+Platform_init platform1, platform2;
 
 //variables for RACING
 const float GRAVITY{ 5.0f };
