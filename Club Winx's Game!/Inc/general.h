@@ -6,7 +6,6 @@
 // ---------------------------------------------------------------------------
 
 
-
 struct Player { // initialise in each game mode before use 
 	AEVec2 pCoord { 0.0f, 0.0f }; // player x y 
 	AEGfxVertexList* pMesh { nullptr}; // mesh 
@@ -15,6 +14,17 @@ struct Player { // initialise in each game mode before use
 	f32 pGround{ 0.0f }; //y-coord of the ground
 };
 extern Player player1, player2;
+
+struct Platform_init {
+	AEVec2 PCoord{ 0.0f, 0.0f }; // initialise platforms x & y coords, which will then be used for randomisation
+	AEGfxVertexList* PMesh{ nullptr }; // mesh 
+	AEGfxTexture* PTex{ nullptr }; // texture
+	f32 length = 100.0f; // length of platform - cons
+	f32 height = 25.0f; // height of platform - cons
+	f32 Pspawn{ 0.75f }; //y-coord of spawn
+	u32 colour = 0xFFFFFF00; // colour of platform
+}; 
+extern Platform_init platform1, platform2;
 
 
 // HANDLES PLAYER INPUT FOR CURRENT GAME STATE ( DURING UPDATE ) //
