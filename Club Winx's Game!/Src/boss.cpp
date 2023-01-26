@@ -18,15 +18,17 @@
 /*------------------------------------------------------------
 GLOBALS
 ------------------------------------------------------------*/
-int const MAX_BULLETS{ 10 };
-
-AEGfxVertexList* pBullet = 0;
+int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
 
 struct Bullet {
-	AEVec2 bCoord;
+	AEVec2 bCoord{ 0.0f,0.0f };
+	bool shot{ FALSE };
+	AEGfxVertexList* pBullet{ nullptr };
 };
 
-Bullet bullets[MAX_BULLETS];
+Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
+
+f64 bossTimeElapsed = 0.0;
 
 
 
@@ -51,20 +53,13 @@ void boss_load()
 	SquareMesh(&player2.pMesh, player2.size, player2.size, 0xFFFF00FF);
 
 	//bullet mesh
-	SquareMesh(&pBullet, 10.0f, 5.0f, 0xFFFFFFFF);
-	/*AEGfxMeshStart();
-
-	AEGfxTriAdd(
-		-5.0f, -5.0f, 0xFFFFFFFF, 0.0f, 0.0f, // bottom left 
-		5.0f, -5.0f, 0xFFFFFFFF, 1.0f, 0.0f, // bottom right
-		-5.0f, 2.5f, 0xFFFFFFFF, 0.0f, 1.0f); //top left
-	AEGfxTriAdd(
-		5.0f, -5.0f, 0xFFFFFFFF, 1.0f, 0.0f, // bottom right
-		5.0f, 2.5f, 0xFFFFFFFF, 1.0f, 1.0f, // top right 
-		-5.0f, 2.5f, 0xFFFFFFFF, 0.0f, 1.0f); // top left
-
-	pBullet = AEGfxMeshEnd();
-	AE_ASSERT_MESG(pBullet, "failed to create bullet!!");*/
+	for (int i = 0; i < MAX_BULLETS; i++)
+	{
+		SquareMesh(&bullets1[i].pBullet, 10.0f, 5.0f, 0xFFFFFFFF);
+		std::cout << "bullet1 no. " << i << "meshed\n";
+		SquareMesh(&bullets2[i].pBullet, 10.0f, 5.0f, 0xFFFFFFFF);
+		std::cout << "bullet2 no. " << i << "meshed\n";
+	}
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -84,11 +79,16 @@ void boss_init()
 
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50};
 	player2.pCoord = { AEGfxGetWinMinX() + 95, AEGfxGetWinMinY() + 50 };
+
+	bossTimeElapsed = 0.0;
 }
 
 void boss_update()
 {
 	std::cout << "boss:Update\n";
+
+	// TIME COUNTER 
+	bossTimeElapsed += AEFrameRateControllerGetFrameTime();
 
 	/*------------------------------------------------------------
 	CHANGE STATE CONDITION
@@ -106,12 +106,48 @@ void boss_update()
 	input_handle(); 
 	
 	/*------------------------------------------------------------
-	BULLET
+	BULLET MOVEMENT
 	------------------------------------------------------------*/
-	if (AEInputCheckCurr(AEVK_SPACE)) {
-		for (int i = 0; i < MAX_BULLETS; i++) {
-			bullets[i].bCoord.x += 10.0f;
+	for (int i = 0; i < MAX_BULLETS; i++)
+	{
+		if (bossTimeElapsed >= 1.0 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
+		{
+			bullets1[i].shot = TRUE;
+			std::cout << " bullet1 no. " << i << "launched\n";
+			bullets2[i].shot = TRUE;
+			std::cout << " bullet2 no. " << i << "launched\n";
+			bossTimeElapsed = 0.0;
 		}
+
+	}
+	for (int i = 0; i < MAX_BULLETS; i++)
+	{
+		if (bullets1[i].shot)
+		{
+			bullets1[i].bCoord.x += 10.0f; // bullet speed 
+		}
+		else {
+			bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y + (player1.size / 2.0f) };
+		}
+
+		if (bullets1[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
+		{
+			bullets1[i].shot = FALSE;
+		}
+
+		if (bullets2[i].shot)
+		{
+			bullets2[i].bCoord.x += 10.0f; // bullet speed 
+		}
+		else {
+			bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y + (player2.size / 2.0f) };
+		}
+
+		if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
+		{
+			bullets2[i].shot = FALSE;
+		}
+
 	}
 }
 
@@ -144,12 +180,20 @@ void boss_draw()
 	/*------------------------------------------------------------
 	DRAWING BULLETS
 	------------------------------------------------------------*/
-	if (AEInputCheckTriggered(AEVK_SPACE)) {
-		for (int i = 0; i < MAX_BULLETS; i++) {
-			AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
+	for (int i = 0; i < MAX_BULLETS; i++) {
+		if (bullets1[i].shot)
+		{
+			AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
 			AEGfxTextureSet(NULL, 0, 0);
-			AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(bullets1[i].pBullet, AE_GFX_MDM_TRIANGLES);
 		}
+		if (bullets2[i].shot)
+		{
+			AEGfxSetPosition(bullets2[i].bCoord.x, bullets2[i].bCoord.y);
+			AEGfxTextureSet(NULL, 0, 0);
+			AEGfxMeshDraw(bullets2[i].pBullet, AE_GFX_MDM_TRIANGLES);
+		}
+
 	}
 	
 }
@@ -166,5 +210,9 @@ void boss_unload()
 
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
+	for (int i = 0; i < MAX_BULLETS; i++) {
+		AEGfxMeshFree(bullets1[i].pBullet);
+		AEGfxMeshFree(bullets2[i].pBullet);
+	}
 
 }

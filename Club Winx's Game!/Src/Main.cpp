@@ -14,7 +14,7 @@ DECLARE GLOBAL VARIABLES
 ------------------------------------------------------------*/
 
 //setting screen width and height
-int const winWIDTH{1080}, winHEIGHT{800};
+int const winWIDTH{1080}, winHEIGHT{600};
 
 
 

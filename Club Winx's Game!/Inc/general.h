@@ -12,7 +12,7 @@ struct Player { // initialise in each game mode before use
 	AEGfxVertexList* pMesh { nullptr}; // mesh 
 	AEGfxTexture* pTex {nullptr}; // texture
 	f32 size = 50.0f; //player size 
-	float pGround; //y-coord of the ground
+	f32 pGround{ 0.0f }; //y-coord of the ground
 };
 extern Player player1, player2;
 
