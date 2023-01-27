@@ -18,7 +18,8 @@ GLOBALS
 
 //declaring players & platforms
 Player player1, player2;
-Platform_init platform1, platform2;
+Platform_init main_platform;
+Platform_details platformA[platform_max], platformB[platform_max];
 
 //variables for RACING
 const float GRAVITY{ 5.0f };

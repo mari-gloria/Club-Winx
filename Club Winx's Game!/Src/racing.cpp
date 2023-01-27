@@ -76,13 +76,15 @@ void racing_init()
 	player1.start = AEGfxGetWinMinX();
 	player1.end = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
 
-	player2.start = player1.end;
+	player2.start = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
 	player2.end = AEGfxGetWinMaxX();
 
-	/*racing_map_init(player1.start, player1.end);
-	racing_map_init(player2.start, player2.end);*/
+	// calling racing map initialisation fucntion, using values from previous lines
+	racing_map_init(player1.start, player1.end, 1);
 
-	racing_map_init();
+	racing_map_init(player2.start, player2.end, 2);
+
+	//racing_map_init();
 
 }
 
@@ -135,9 +137,6 @@ void racing_draw()
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
 	------------------------------------------------------------*/
-	/*racing_map_draw(player1.start, player1.end);
-	racing_map_draw(player2.start, player2.end);*/
-
 	racing_map_draw();
 
 }
@@ -157,6 +156,6 @@ void racing_unload()
 	/*------------------------------------------------------------
 	// Unload Platform Meshes
 	------------------------------------------------------------*/
-	void racing_map_unload();
+	racing_map_unload();
 
 }
