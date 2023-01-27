@@ -42,6 +42,9 @@ void racing_load()
 	// loading in platform meshes in map
 	racing_map_load();
 
+	// loading in line
+	splitscreen_load();
+
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
@@ -51,7 +54,7 @@ void racing_load()
 	CREATING FONTS
 	------------------------------------------------------------*/
 
-
+	return;
 }
 
 void racing_init()
@@ -83,8 +86,12 @@ void racing_init()
 	racing_map_init(player1.start, player1.end, 1);
 	racing_map_init(player2.start, player2.end, 2);
 
-	//racing_map_init();
+	/*------------------------------------------------------------
+	// INIT SPLITSCREEN
+	------------------------------------------------------------*/
+	splitscreen_init();
 
+	return;
 }
 
 void racing_update()
@@ -138,6 +145,11 @@ void racing_draw()
 	------------------------------------------------------------*/
 	racing_map_draw();
 
+	/*------------------------------------------------------------
+	// DRAWING SPLITSCREEN
+	------------------------------------------------------------*/
+	splitscreen_draw();
+
 }
 
 void racing_free()
@@ -149,6 +161,10 @@ void racing_free()
 void racing_unload()
 {
 	std::cout << "racing:Unload\n";
+
+	/*------------------------------------------------------------
+	// Unload Player Meshes
+	------------------------------------------------------------*/
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
 
@@ -157,4 +173,8 @@ void racing_unload()
 	------------------------------------------------------------*/
 	racing_map_unload();
 
+	/*------------------------------------------------------------
+	// Unload Split Screen Meshes
+	------------------------------------------------------------*/
+	splitscreen_unload();
 }
