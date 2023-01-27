@@ -30,6 +30,11 @@ Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
 
 f64 bossTimeElapsed = 0.0;
 
+//Monster Damage
+int monster = 4;
+int damage = 1;
+
+
 
 
 
@@ -60,6 +65,9 @@ void boss_load()
 		SquareMesh(&bullets2[i].pBullet, 10.0f, 5.0f, 0xFFFFFFFF);
 		std::cout << "bullet2 no. " << i << "meshed\n";
 	}
+	//Creating Boss Mesh
+	SquareMesh(&boss.pMesh1, boss.size, boss.size, 0xFFFFFF00);
+	SquareMesh(&boss.pMesh2, boss.size, boss.size, 0x000000FF);
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -118,6 +126,11 @@ void boss_update()
 			std::cout << " bullet2 no. " << i << "launched\n";
 			bossTimeElapsed = 0.0;
 		}
+		if (monster < 1) { //bullets will stop shooting when monster dies
+
+			bullets1[i].shot = FALSE;
+			bullets2[i].shot = FALSE;
+		}
 
 	}
 	for (int i = 0; i < MAX_BULLETS; i++)
@@ -146,6 +159,20 @@ void boss_update()
 		if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
 		{
 			bullets2[i].shot = FALSE;
+		}
+		if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x >200  && bullets1[i].bCoord.x < 210)
+		{
+
+			monster -= damage;	//decrease monster health
+			std::cout << " monster lives:  " << monster << " \n";
+
+		}
+		if (bullets2[i].bCoord.x >= 250 && bullets2[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210)
+		{
+
+			monster -= damage; 
+			std::cout << " monster lives:  " << monster << " \n";
+
 		}
 
 	}
@@ -195,6 +222,26 @@ void boss_draw()
 		}
 
 	}
+	/*------------------------------------------------------------
+	 Boss Health
+	------------------------------------------------------------*/
+	if (monster > 0) {
+		
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -250);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+
+	}
+	else {
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -250);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxMeshDraw(boss.pMesh2, AE_GFX_MDM_TRIANGLES);
+	}
 	
 }
 
@@ -210,6 +257,8 @@ void boss_unload()
 
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
+	AEGfxMeshFree(boss.pMesh1);
+	AEGfxMeshFree(boss.pMesh2);
 	for (int i = 0; i < MAX_BULLETS; i++) {
 		AEGfxMeshFree(bullets1[i].pBullet);
 		AEGfxMeshFree(bullets2[i].pBullet);

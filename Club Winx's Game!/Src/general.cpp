@@ -21,7 +21,7 @@ Player player1, player2;
 Platform_init main_platform;
 Platform_details platformA[platform_max], platformB[platform_max];
 Line splitscreen;
-
+Boss boss;
 //variables for RACING
 const float GRAVITY{ 5.0f };
 const int JUMP_HEIGHT_MAX{ 100 };

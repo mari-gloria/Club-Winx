@@ -56,6 +56,20 @@ struct Line {
 	u32 colour = 0xFF000000; // black
 }; extern Line splitscreen;
 
+// ---------------------------------------------------------------------------
+// BOSS
+// ---------------------------------------------------------------------------
+struct Boss { // initialise in each game mode before use 
+
+	AEGfxVertexList* pMesh1{ nullptr }; // mesh 
+	AEGfxVertexList* pMesh2{ nullptr }; // mesh 
+	AEGfxTexture* pTex{ nullptr }; // texture
+	f32 size = 80.0f; //player size 
+
+};
+extern Boss boss;
+
+
 
 // HANDLES PLAYER INPUT FOR CURRENT GAME STATE ( DURING UPDATE ) //
 void input_handle();
