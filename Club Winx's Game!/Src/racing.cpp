@@ -81,7 +81,6 @@ void racing_init()
 
 	// calling racing map initialisation fucntion, using values from previous lines
 	racing_map_init(player1.start, player1.end, 1);
-
 	racing_map_init(player2.start, player2.end, 2);
 
 	//racing_map_init();
