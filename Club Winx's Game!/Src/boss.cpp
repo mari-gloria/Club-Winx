@@ -30,9 +30,9 @@ Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
 
 f64 bossTimeElapsed = 0.0;
 
-//Monster Damage
-int monster = 10;
-int damage = 1;
+//Boss Damage
+int bossHP = 10;
+int damage = 1; //Player's hit
 
 
 
@@ -130,7 +130,7 @@ void boss_update()
 			std::cout << " bullet2 no. " << i << "launched\n";
 			bossTimeElapsed = 0.0;
 		}
-		if (monster < 2) { //bullets will stop shooting when monster dies
+		if (bossHP < 2) { //bullets will stop shooting when monster dies
 
 			bullets1[i].shot = FALSE;
 			bullets2[i].shot = FALSE;
@@ -167,15 +167,15 @@ void boss_update()
 		if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x >200  && bullets1[i].bCoord.x < 210)
 		{
 
-			monster -= damage;	//decrease monster health
-			std::cout << " monster lives:  " << monster << " \n";
+			bossHP -= damage;	//decrease monster health
+			std::cout << " monster lives:  " << bossHP << " \n";
 
 		}
 		if (bullets2[i].bCoord.x >= 250 && bullets2[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210)
 		{
 
-			monster -= damage; 
-			std::cout << " monster lives:  " << monster << " \n";
+			bossHP -= damage; 
+			std::cout << " monster lives:  " << bossHP << " \n";
 
 		}
 
@@ -229,7 +229,7 @@ void boss_draw()
 	/*------------------------------------------------------------
 	 Rendering of Boss HP Bar
 	------------------------------------------------------------*/
-	if (monster > 9) {
+	if (bossHP > 9) {
 		//Drawing Boss
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetPosition(250, -250);
@@ -245,7 +245,7 @@ void boss_draw()
 		AEGfxMeshDraw(health.pMesh1, AE_GFX_MDM_TRIANGLES);
 
 	}
-	else if (monster > 5) {
+	else if (bossHP > 5) {
 
 		//Drawing Boss
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -263,7 +263,7 @@ void boss_draw()
 
 
 	}
-	else if (monster > 3) {
+	else if (bossHP > 3) {
 
 		//Drawing Boss
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
