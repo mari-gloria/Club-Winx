@@ -12,15 +12,18 @@ struct Player { // initialise in each game mode before use
 	AEGfxTexture* pTex {nullptr}; // texture
 	f32 size = 50.0f; //player size 
 	f32 pGround{ 0.0f }; //y-coord of the ground
+	f32 start, end;
 };
 extern Player player1, player2;
 
+
+// Initialise Platform Stats & Variables
 struct Platform_init {
 	AEVec2 PCoord{ 0.0f, 0.0f }; // initialise platforms x & y coords, which will then be used for randomisation
 	AEGfxVertexList* PMesh{ nullptr }; // mesh 
 	AEGfxTexture* PTex{ nullptr }; // texture
-	f32 length = 100.0f; // length of platform - cons
-	f32 height = 25.0f; // height of platform - cons
+	f32 length = 150.0f; // length of platform - cons
+	f32 height = 27.0f; // height of platform - cons
 	f32 Pspawn{ 0.75f }; //y-coord of spawn
 	u32 colour = 0xFFFFFF00; // colour of platform
 }; 
