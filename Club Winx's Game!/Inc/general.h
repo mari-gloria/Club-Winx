@@ -69,6 +69,19 @@ struct Boss { // initialise in each game mode before use
 };
 extern Boss boss;
 
+struct Health { // initialise in each game mode before use 
+
+	AEGfxVertexList* pMesh1{ nullptr }; // mesh 
+	AEGfxVertexList* pMesh2{ nullptr };
+	AEGfxVertexList* pMesh3{ nullptr };
+	AEGfxTexture* pTex{ nullptr }; // texture
+	f32 length = 80.0f;
+	f32 height{ 5.0f };
+
+
+};
+extern Health health;
+
 
 
 // HANDLES PLAYER INPUT FOR CURRENT GAME STATE ( DURING UPDATE ) //

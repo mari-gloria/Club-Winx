@@ -31,7 +31,7 @@ Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
 f64 bossTimeElapsed = 0.0;
 
 //Monster Damage
-int monster = 4;
+int monster = 10;
 int damage = 1;
 
 
@@ -68,6 +68,10 @@ void boss_load()
 	//Creating Boss Mesh
 	SquareMesh(&boss.pMesh1, boss.size, boss.size, 0xFFFFFF00);
 	SquareMesh(&boss.pMesh2, boss.size, boss.size, 0x000000FF);
+	//Creating Boss HP Bar
+	SquareMesh(&health.pMesh1, health.length, health.height, 0x00FF0000);
+	SquareMesh(&health.pMesh2, health.length - 40.0f, health.height, 0x00FF0000);
+	SquareMesh(&health.pMesh3, health.length - 60.0f, health.height, 0x00FF0000);
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -126,7 +130,7 @@ void boss_update()
 			std::cout << " bullet2 no. " << i << "launched\n";
 			bossTimeElapsed = 0.0;
 		}
-		if (monster < 1) { //bullets will stop shooting when monster dies
+		if (monster < 2) { //bullets will stop shooting when monster dies
 
 			bullets1[i].shot = FALSE;
 			bullets2[i].shot = FALSE;
@@ -223,15 +227,58 @@ void boss_draw()
 
 	}
 	/*------------------------------------------------------------
-	 Boss Health
+	 Rendering of Boss HP Bar
 	------------------------------------------------------------*/
-	if (monster > 0) {
-		
+	if (monster > 9) {
+		//Drawing Boss
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetPosition(250, -250);
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+
+		//Drawing health bar
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -170);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(health.pMesh1, AE_GFX_MDM_TRIANGLES);
+
+	}
+	else if (monster > 5) {
+
+		//Drawing Boss
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -250);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+
+		//Drawing health bar
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -170);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(health.pMesh2, AE_GFX_MDM_TRIANGLES);
+
+
+	}
+	else if (monster > 3) {
+
+		//Drawing Boss
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -250);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+
+		//Drawing health bar
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetPosition(250, -170);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(health.pMesh3, AE_GFX_MDM_TRIANGLES);
+
 
 	}
 	else {
@@ -242,6 +289,7 @@ void boss_draw()
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(boss.pMesh2, AE_GFX_MDM_TRIANGLES);
 	}
+
 	
 }
 
@@ -259,6 +307,10 @@ void boss_unload()
 	AEGfxMeshFree(player2.pMesh);
 	AEGfxMeshFree(boss.pMesh1);
 	AEGfxMeshFree(boss.pMesh2);
+	AEGfxMeshFree(health.pMesh1);
+	AEGfxMeshFree(health.pMesh2);
+	AEGfxMeshFree(health.pMesh3);
+	
 	for (int i = 0; i < MAX_BULLETS; i++) {
 		AEGfxMeshFree(bullets1[i].pBullet);
 		AEGfxMeshFree(bullets2[i].pBullet);
