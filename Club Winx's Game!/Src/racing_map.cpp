@@ -13,9 +13,8 @@
 // ---------------------------------------------------------------------------
 
 
-
 /*------------------------------------------------------------
-/ FUNCTIONS
+/ FUNCTIONS - PLATFORMS
 ------------------------------------------------------------*/
 
 // Purpose: loads the platform meshes in the map in racing_load function
@@ -88,9 +87,9 @@ void racing_map_init(f32 start, f32 end, int player)
 				platformA[i].platX = { prevX + (main_platform.length / 4 * 3) };
 				backX = platformA[i].platX + main_platform.length;
 				platformA[i].platY = { prevY + 65.0f };
-				platformA[i].platVect = { platformA[i].platX , platformA[i].platY };
 				prevX = platformA[i].platX; 
 				prevY = platformA[i].platY;
+				platformA[i].platVect = { platformA[i].platX , platformA[i].platY };
 				if (backX > max_limit) { is_reverse = true; }
 	
 			}
@@ -99,9 +98,9 @@ void racing_map_init(f32 start, f32 end, int player)
 			{
 				platformA[i].platX = { prevX - (main_platform.length / 4 * 3) };
 				platformA[i].platY = { prevY + 65.0f };
-				platformA[i].platVect = { platformA[i].platX , platformA[i].platY };
 				prevX = platformA[i].platX;
 				prevY = platformA[i].platY;
+				platformA[i].platVect = { platformA[i].platX , platformA[i].platY };
 				if (platformA[i].platX < min_limit) { is_reverse = false; }
 			}
 
@@ -203,5 +202,46 @@ void racing_map_unload()
 		AEGfxMeshFree(platformB[i].platMesh);
 	}
 
+	return;
+}
+
+/*------------------------------------------------------------
+/ FUNCTIONS - SPLIT SCREEN
+------------------------------------------------------------*/
+
+// Purppose: load splitscreen
+void splitscreen_load()
+{
+	splitscreen.height = (AEGfxGetWinMaxY() - AEGfxGetWinMinY());
+	SquareMesh(&splitscreen.lMesh, splitscreen.length, splitscreen.height, splitscreen.colour);
+	return;
+}
+
+// Purpose: initialise splitscreen position trhough vector
+void splitscreen_init()
+{
+	f32 Y = AEGfxGetWinMinY();
+	f32 X = - 9.0f;
+	/*f32 Y = 10.0f;
+	f32 X = - 9.0f;*/
+	splitscreen.lVect = { X, Y };
+	return;
+}
+
+// Purpose: draw out splitscreen
+void splitscreen_draw()
+{
+	// Drawing object 1
+	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetPosition(splitscreen.lVect.x, splitscreen.lVect.y);
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxMeshDraw(splitscreen.lMesh, AE_GFX_MDM_TRIANGLES);
+	return;
+}
+
+// Purpose: unload split screen
+void splitscreen_unload()
+{
+	AEGfxMeshFree(splitscreen.lMesh);
 	return;
 }
