@@ -164,7 +164,7 @@ void boss_update()
 		{
 			bullets2[i].shot = FALSE;
 		}
-		if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x >200  && bullets1[i].bCoord.x < 210)
+		if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x >200  && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
 		{
 
 			bossHP -= damage;	//decrease monster health
