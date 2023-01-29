@@ -64,7 +64,7 @@ struct Boss { // initialise in each game mode before use
 	AEGfxVertexList* pMesh1{ nullptr }; // mesh 
 	AEGfxVertexList* pMesh2{ nullptr }; // mesh 
 	AEGfxTexture* pTex{ nullptr }; // texture
-	f32 size = 80.0f; //player size 
+	f32 size = 350.0f; //player size 
 
 };
 extern Boss boss;
@@ -74,9 +74,11 @@ struct Health { // initialise in each game mode before use
 	AEGfxVertexList* pMesh1{ nullptr }; // mesh 
 	AEGfxVertexList* pMesh2{ nullptr };
 	AEGfxVertexList* pMesh3{ nullptr };
+	AEGfxVertexList* pMesh4{ nullptr };
+	AEGfxVertexList* pMesh5{ nullptr };
 	AEGfxTexture* pTex{ nullptr }; // texture
-	f32 length = 80.0f;
-	f32 height{ 5.0f };
+	f32 length = 500.0f;
+	f32 height{ 30.0f };
 
 
 };
