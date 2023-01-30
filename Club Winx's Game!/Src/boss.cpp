@@ -31,7 +31,7 @@ Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
 f64 bossTimeElapsed = 0.0;
 
 //Boss Damage
-int bossHP = 10;
+int bossHP = 15;
 int damage = 1; //Player's hit
 
 
