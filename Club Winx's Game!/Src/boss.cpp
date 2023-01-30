@@ -3,9 +3,9 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: NIL
+* Primary Author: Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 * Secondary Authors:
-*
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> bullet rendering and movement from player 
 *
 ==================================================================================*/
 

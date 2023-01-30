@@ -3,9 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: NIL
+* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu) 
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, Jump logic
 *
 ==================================================================================*/
 
