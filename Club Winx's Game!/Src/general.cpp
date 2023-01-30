@@ -26,31 +26,31 @@ Health health;
 
 //variables for RACING
 const float GRAVITY{ 5.0f };
-const int JUMP_HEIGHT_MAX{ 100 };
+const int JUMP_HEIGHT_MAX{ 70 };
 bool p1_jumping = false;
 bool p1_on_ground = true;
 bool p2_jumping = false;
 bool p2_on_ground = true;
 
-bool CollisionIntersection_RectRect(const AEVec2& player, const AEVec2& platform)
+bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight)
 {
-	std::cout << "checkCollision" << std::endl;
+	//std::cout << "checkCollision" << std::endl;
 
 	//Player bounding box (min.x = player.x, min.y = player.y)
-	AEVec2 max;
-	max.x = player.x + 50.0f;
-	max.y = player.y + 50.0f;
+	AEVec2 Amax;
+	Amax.x = A.x + Alength;
+	Amax.y = A.y + Aheight;
 
 	//Platform bounding box (minstep.x = platform.x, minstep.y = platform.y)
-	AEVec2 maxstep;
-	maxstep.x = platform.x + 110.0f;
-	maxstep.y = platform.y + 27.0f;
+	AEVec2 Bmax;
+	Bmax.x = B.x + Blength;
+	Bmax.y = B.y + Bheight;
 
 	bool verticalCollision{ false };
-	bool horizontalCollision, toLand;
+	bool horizontalCollision{ false };
 
 	//Check if player intersect platform vertically
-	if (player.y >= platform.y && player.y <= maxstep.y && max.x >= platform.x && player.x <= maxstep.x)
+	if (A.y >= B.y && A.y <= Bmax.y && Amax.x >= B.x && A.x <= Bmax.x)
 	{
 		verticalCollision = true;
 		horizontalCollision = true;
@@ -83,12 +83,12 @@ bool CollisionIntersection_RectRect(const AEVec2& player, const AEVec2& platform
 	if (verticalCollision == true && horizontalCollision == true)
 	{
 		//return true;
-		std::cout << "collide true" << std::endl;
+		//std::cout << "collide true" << std::endl;
 		return true;
 	}
 
 	return false;
-	std::cout << "collide false" << std::endl;
+	//std::cout << "collide false" << std::endl;
 }
 
 void input_handle()
@@ -105,9 +105,11 @@ void input_handle()
 		// D -> move right
 		//-----------------------------------------------------------------------------------
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
-			if (p1_on_ground && !p1_jumping) {
+			//if (p1_on_ground && !p1_jumping) {
+			if (player1.stepping && !p1_jumping) {
 				p1_jumping = true;
-				p1_on_ground = false;
+				//p1_on_ground = false;
+				player1.stepping = false;
 			}
 		}
 
@@ -123,7 +125,8 @@ void input_handle()
 		//adding jump limits
 		if (player1.pCoord.y <= player1.pGround) {//lower limit
 			player1.pCoord.y = player1.pGround;
-			p1_on_ground = true;
+			//p1_on_ground = true;
+			player1.stepping = true;
 		}
 
 		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
@@ -146,9 +149,11 @@ void input_handle()
 		// right -> move right
 		//-----------------------------------------------------------------------------------
 		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
-			if (p2_on_ground && !p2_jumping) {
+			//if (p2_on_ground && !p2_jumping) {
+			if (player2.stepping && !p2_jumping) {
 				p2_jumping = true;
-				p2_on_ground = false;
+				//p2_on_ground = false;
+				player2.stepping = false;
 			}
 		}
 
@@ -164,10 +169,11 @@ void input_handle()
 		//adding jump limits
 		if (player2.pCoord.y <= player2.pGround) {//lower limit
 			player2.pCoord.y = player2.pGround;
-			p2_on_ground = true;
+			//p2_on_ground = true;
+			player2.stepping = true;
 		}
 
-		if (player2.pCoord.y >= player2.pGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
 			p2_jumping = false;
 		}
 

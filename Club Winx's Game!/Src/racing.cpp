@@ -114,25 +114,78 @@ void racing_update()
 	------------------------------------------------------------*/
 	input_handle();
 
-	//for (int i = 1; i < platform_max; i++)
-	//{
-	if (CollisionIntersection_RectRect(player1.pCoord, platformA[0].platVect) == true) {
-		player1.pCoord.y = platformA[0].platY + 27.0f;
-		player1.pCurrGround = platformA[0].platY + 27.0f;
-		std::cout << "test test test" << std::endl;
+	for (int i = 0; i < platform_max; i++)
+	{
+		if (CollisionIntersection_RectRect(player1.pCoord, player1.size, player1.size, platformA[i].platVect, main_platform.length, main_platform.height) == true ) {
+		
+			//std::cout << "test test test" << std::endl;
+			platformA[i].stepped = true;
+			//player1.stepping = true;
+		
+		}
+		else
+		{
+			platformA[i].stepped = false;
+			//player1.stepping = false;
+		}
+
+		if (platformA[i].stepped)
+		{
+			player1.pCoord.y = platformA[i].platY + main_platform.height;
+			player1.pCurrGround = platformA[i].platY + main_platform.height;
+			player1.stepping = true;
+		}
+		else
+		{
+			//player1.stepping = false;
+			//player1.pCurrGround = player1.pGround;
+		}
+
+		/// PLAYER 2 PLATFORM COLLSIION 
+		if (CollisionIntersection_RectRect(player2.pCoord, player2.size, player2.size, platformB[i].platVect, main_platform.length, main_platform.height) == true) {
+
+			//std::cout << "test test test" << std::endl;
+			platformB[i].stepped = true;
+			//player1.stepping = true;
+
+		}
+		else
+		{
+			platformB[i].stepped = false;
+			//player1.stepping = false;
+		}
+
+		if (platformB[i].stepped)
+		{
+			player2.pCoord.y = platformB[i].platY + main_platform.height;
+			player2.pCurrGround = platformB[i].platY + main_platform.height;
+			player2.stepping = true;
+		}
+		else
+		{
+			//player1.stepping = false;
+			//player1.pCurrGround = player1.pGround;
+		}
+		
 	}
-	//}
+
+	//input_handle();
 }
 
 void racing_draw()
 {
 	std::cout << "racing:Draw\n";
 
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	/*------------------------------------------------------------
+	// DRAWING PLATFORMS - MAP
+	------------------------------------------------------------*/
+	racing_map_draw();
 	/*------------------------------------------------------------
 	// DRAWING PLAYERS
 	------------------------------------------------------------*/
 	// Drawing object 1
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	// Set position for object 1
 	AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
 	// No texture for object 1
@@ -150,7 +203,7 @@ void racing_draw()
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
 	------------------------------------------------------------*/
-	racing_map_draw();
+	//racing_map_draw();
 
 	/*------------------------------------------------------------
 	// DRAWING SPLITSCREEN

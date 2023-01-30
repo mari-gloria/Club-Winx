@@ -19,6 +19,7 @@ struct Player { // initialise in each game mode before use
 	f32 pGround{ 0.0f }; //y-coord of the ground
 	f32 pCurrGround{ 0.0f }; //y-coord of the current ground player is on
 	f32 start = 0.0f, end = 0.0f;
+	bool stepping{ true }; // is player stepping on smth 
 };
 extern Player player1, player2;
 
@@ -40,6 +41,7 @@ struct Platform_details {
 	f32 platX{ 0.0f }; // x-coord of platform spawn
 	AEGfxVertexList* platMesh{ nullptr }; // mesh 
 	AEGfxTexture* platTex{ nullptr }; // texture
+	bool stepped{ false };
 };
 extern Platform_details platformA[platform_max], platformB[platform_max];
 
@@ -98,4 +100,4 @@ void SquareMesh(AEGfxVertexList** pMesh, f32 length, f32 height, u32 colour);
 // ---------------------------------------------------------------------------
 // COLLISION
 // ---------------------------------------------------------------------------
-bool CollisionIntersection_RectRect(const AEVec2& player, const AEVec2& platform);
+bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
