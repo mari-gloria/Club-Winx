@@ -1,4 +1,14 @@
-#pragma once
+/*==================================================================================
+* All content - 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+*
+* Course: CSD1451
+* Group Name: Club Winx
+* Primary Author: NIL
+* Secondary Authors: 
+*	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
+*
+==================================================================================*/
+
 // ---------------------------------------------------------------------------
 //includes
 #include "AEVec2.h"
