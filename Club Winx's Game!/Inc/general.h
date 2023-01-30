@@ -12,12 +12,13 @@
 // INITALISATION FOR PLAYERS
 // ---------------------------------------------------------------------------
 struct Player { // initialise in each game mode before use 
-	AEVec2 pCoord { 0.0f, 0.0f }; // player x y 
-	AEGfxVertexList* pMesh { nullptr}; // mesh 
-	AEGfxTexture* pTex {nullptr}; // texture
+	AEVec2 pCoord{ 0.0f, 0.0f }; // player x y (min)
+	AEGfxVertexList* pMesh{ nullptr }; // mesh 
+	AEGfxTexture* pTex{ nullptr }; // texture
 	f32 size = 50.0f; //player size 
 	f32 pGround{ 0.0f }; //y-coord of the ground
-	f32 start = 0.0f , end = 0.0f;
+	f32 pCurrGround{ 0.0f }; //y-coord of the current ground player is on
+	f32 start = 0.0f, end = 0.0f;
 };
 extern Player player1, player2;
 
@@ -30,7 +31,7 @@ struct Platform_init {
 	f32 length = 110.0f; // length of platform - cons
 	f32 height = 27.0f; // height of platform - cons
 	u32 colour = 0xFFFFFF00; // colour of platform
-}; 
+};
 extern Platform_init main_platform;
 
 struct Platform_details {
@@ -41,7 +42,6 @@ struct Platform_details {
 	AEGfxTexture* platTex{ nullptr }; // texture
 };
 extern Platform_details platformA[platform_max], platformB[platform_max];
-
 
 // ---------------------------------------------------------------------------
 // SPLIT SCREEN
@@ -65,7 +65,6 @@ struct Boss { // initialise in each game mode before use
 	AEGfxVertexList* pMesh2{ nullptr }; // mesh 
 	AEGfxTexture* pTex{ nullptr }; // texture
 	f32 size = 350.0f; //player size 
-
 };
 extern Boss boss;
 
@@ -79,16 +78,11 @@ struct Health { // initialise in each game mode before use
 	AEGfxTexture* pTex{ nullptr }; // texture
 	f32 length = 500.0f;
 	f32 height{ 30.0f };
-
-
 };
 extern Health health;
 
-
-
 // HANDLES PLAYER INPUT FOR CURRENT GAME STATE ( DURING UPDATE ) //
 void input_handle();
-
 
 /******* CREATE SQUARE MESH  (DURING LOAD) ************\
 
@@ -101,5 +95,7 @@ colour in HEX Alpha, Red, Green, Blue
 ///// REMEMBER TO FREE/UNLOAD POINTER TO MESH \\\\\\\*/
 void SquareMesh(AEGfxVertexList** pMesh, f32 length, f32 height, u32 colour);
 
-
-
+// ---------------------------------------------------------------------------
+// COLLISION
+// ---------------------------------------------------------------------------
+bool CollisionIntersection_RectRect(const AEVec2& player, const AEVec2& platform);

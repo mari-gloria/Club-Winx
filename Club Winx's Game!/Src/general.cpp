@@ -23,6 +23,7 @@ Platform_details platformA[platform_max], platformB[platform_max];
 Line splitscreen;
 Boss boss;
 Health health;
+
 //variables for RACING
 const float GRAVITY{ 5.0f };
 const int JUMP_HEIGHT_MAX{ 100 };
@@ -31,14 +32,71 @@ bool p1_on_ground = true;
 bool p2_jumping = false;
 bool p2_on_ground = true;
 
+bool CollisionIntersection_RectRect(const AEVec2& player, const AEVec2& platform)
+{
+	std::cout << "checkCollision" << std::endl;
 
+	//Player bounding box (min.x = player.x, min.y = player.y)
+	AEVec2 max;
+	max.x = player.x + 50.0f;
+	max.y = player.y + 50.0f;
+
+	//Platform bounding box (minstep.x = platform.x, minstep.y = platform.y)
+	AEVec2 maxstep;
+	maxstep.x = platform.x + 110.0f;
+	maxstep.y = platform.y + 27.0f;
+
+	bool verticalCollision{ false };
+	bool horizontalCollision, toLand;
+
+	//Check if player intersect platform vertically
+	if (player.y >= platform.y && player.y <= maxstep.y && max.x >= platform.x && player.x <= maxstep.x)
+	{
+		verticalCollision = true;
+		horizontalCollision = true;
+	}
+	/*if (player.y >= platform.y) {
+		verticalCollision = true;
+		std::cout << "vertical true" << std::endl;
+	}
+	else {
+		verticalCollision = false;
+		//std::cout << "vertical false" << std::endl;
+	}
+
+	if (verticalCollision == true) {
+		if (player.y > maxstep.y) {
+			toLand = true;
+		}
+	}
+
+	//Check if player intersect platform horizontally
+	if (max.x < platform.x || player.x > maxstep.x) {
+		horizontalCollision = false;
+		std::cout << "horizontal false" << std::endl;
+	}
+	else {
+		horizontalCollision = true;
+	}
+
+	//If player and platform is colliding*/
+	if (verticalCollision == true && horizontalCollision == true)
+	{
+		//return true;
+		std::cout << "collide true" << std::endl;
+		return true;
+	}
+
+	return false;
+	std::cout << "collide false" << std::endl;
+}
 
 void input_handle()
 {
 	std::cout << "Input:Handle\n";
 	switch (curr_state)
 	{
-	case (RACING): 
+	case (RACING):
 		// ----------------------------------------------------------------------------------
 		// player one movement controls
 		//
@@ -68,16 +126,17 @@ void input_handle()
 			p1_on_ground = true;
 		}
 
-		if (player1.pCoord.y >= player1.pGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
 			p1_jumping = false;
 		}
-			
+
 
 		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX()) //left limit = MinX
 			player1.pCoord.x -= 3.0f;
 
-		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= - player1.size) //right limit = 0 - size
+		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= -player1.size) //right limit = 0 - size
 			player1.pCoord.x += 3.0f;
+
 
 		// ----------------------------------------------------------------------------------
 		// player one movement controls
@@ -118,7 +177,7 @@ void input_handle()
 
 		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size) //right limit is = MaxX - size
 			player2.pCoord.x += 3.0f;
-		
+
 		/*------------------------------------------------------------
 		END OF RACING
 		------------------------------------------------------------*/
@@ -152,24 +211,18 @@ void input_handle()
 
 		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size)
 			player2.pCoord.x += 3.0f;
-		
+
 
 		/*------------------------------------------------------------
 		END OF BOSS
 		------------------------------------------------------------*/
 		break;
 
-
-
 	case RESTART:
 		break;
 
-
-
 	case QUIT:
 		break;
-
-
 
 	default:
 		AE_FATAL_ERROR("Invalid state for input handling!");
@@ -183,14 +236,13 @@ void SquareMesh(AEGfxVertexList** pMesh, f32 length, f32 height, u32 colour)
 		0.0f, height, colour, 0.0f, 0.0f, // bottom left 
 		length, height, colour, 1.0f, 0.0f, // bottom right
 		0.0f, 0.0f, colour, 0.0f, 1.0f); //top left
-		
+
 	AEGfxTriAdd(
 		length, height, colour, 1.0f, 0.0f, // bottom right
 		length, 0.0f, colour, 1.0f, 1.0f, // top right 
 		0.0f, 0.0f, colour, 0.0f, 1.0f); // top left 
-		
+
 
 	*pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pMesh, "Failed to create square mesh !!");
 }
-

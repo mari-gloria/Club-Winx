@@ -16,7 +16,7 @@
 /*------------------------------------------------------------
 GLOBALS
 ------------------------------------------------------------*/
-
+const float		BOUNDING_RECT_SIZE = 0.40f;
 
 /*------------------------------------------------------------
 FUNCTIONS
@@ -32,7 +32,7 @@ void racing_load()
 	------------------------------------------------------------*/
 
 	// Informing the library that we're about to start adding triangles
-	
+
 	// player 1 mesh 
 	SquareMesh(&player1.pMesh, player1.size, player1.size, 0xFFB62891);
 
@@ -69,9 +69,9 @@ void racing_init()
 	player1.pGround = AEGfxGetWinMinY() + 50.0f;
 	player2.pGround = AEGfxGetWinMinY() + 50.0f;
 
-	player1.pCoord = {AEGfxGetWinMinX() / 2, player1.pGround}; //spawn at left half of screen
+	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
-	
+
 	/*------------------------------------------------------------
 	// INIT PLATFORM - MAP
 	------------------------------------------------------------*/
@@ -109,12 +109,19 @@ void racing_update()
 		next_state = QUIT;
 	}
 
-
 	/*------------------------------------------------------------
 	// PLAYER MOVEMENT
 	------------------------------------------------------------*/
 	input_handle();
 
+	//for (int i = 1; i < platform_max; i++)
+	//{
+	if (CollisionIntersection_RectRect(player1.pCoord, platformA[0].platVect) == true) {
+		player1.pCoord.y = platformA[0].platY + 27.0f;
+		player1.pCurrGround = platformA[0].platY + 27.0f;
+		std::cout << "test test test" << std::endl;
+	}
+	//}
 }
 
 void racing_draw()
@@ -155,7 +162,7 @@ void racing_draw()
 void racing_free()
 {
 	std::cout << "racing:Free\n";
-	
+
 }
 
 void racing_unload()
