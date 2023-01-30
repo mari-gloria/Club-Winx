@@ -7,7 +7,7 @@
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, Jump logic
-*
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision Intersection
 ==================================================================================*/
 
 //---------------------------------------------------------------------------

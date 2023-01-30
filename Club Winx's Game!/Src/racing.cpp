@@ -6,7 +6,7 @@
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload)
-*
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision 
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

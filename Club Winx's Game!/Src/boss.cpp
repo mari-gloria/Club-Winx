@@ -6,6 +6,7 @@
 * Primary Author: Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 * Secondary Authors:
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> bullet rendering and movement from player 
+*   Amirah Isa (amirah.b@digipen.edu) -> boss and health rendering
 *
 ==================================================================================*/
 
