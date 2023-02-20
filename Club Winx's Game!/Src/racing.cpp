@@ -196,6 +196,7 @@ void racing_update()
 	
 	//for splitscreen
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
+
 }
 
 void racing_draw()
@@ -203,10 +204,12 @@ void racing_draw()
 	std::cout << "racing:Draw\n";
 
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
 	------------------------------------------------------------*/
 	racing_map_draw();
+
 	/*------------------------------------------------------------
 	// DRAWING PLAYERS
 	------------------------------------------------------------*/
@@ -229,14 +232,25 @@ void racing_draw()
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
-	// DRAWING PLATFORMS - MAP
-	------------------------------------------------------------*/
-	//racing_map_draw();
-
-	/*------------------------------------------------------------
 	// DRAWING SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_draw();
+
+	/*------------------------------------------------------------
+	Camera Movement
+	------------------------------------------------------------*/
+	CameraMovement_Racing();
+
+	// Move the camera
+	/*AEGfxSetCamPosition(CamX,CamY);
+	if (AEInputCheckCurr(AEVK_W))
+		AEGfxSetCamPosition(CamX, CamY + 2);
+	else if (AEInputCheckCurr(AEVK_S))
+		AEGfxSetCamPosition(CamX, CamY - 2);
+	if (AEInputCheckCurr(AEVK_A))
+		AEGfxSetCamPosition(CamX- 2, CamY);
+	else if (AEInputCheckCurr(AEVK_D))
+		AEGfxSetCamPosition(CamX+ 2, CamY);*/
 
 }
 

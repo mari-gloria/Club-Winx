@@ -283,3 +283,54 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour)
 	*pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pMesh, "Failed to create square mesh !!");
 }
+
+// For racing.cpp
+void CameraMovement_Racing()
+{
+	//variables
+	f32 CamX{0.0f}, CamY{0.0f}; // Camera's X & Y Positions
+	f32 maxHeight; // maximum Y position players must reach for camera to go up
+	int count = 0; 
+
+	maxHeight = AEGfxGetWinMaxY();
+	//maxHeight = 100.0f;
+
+	AEGfxSetCamPosition(CamX, CamY);
+
+	if (player1.pCoord.y >= maxHeight || player2.pCoord.y >= maxHeight)
+	{
+		count++; // increment count 
+
+		// Calculate the target camera position to gradually move towards
+		f32 targetCamY = CamY + maxHeight;
+
+		// Gradually increase CamY until it reaches the target position
+		while (CamY < targetCamY)
+		{
+			// Increase CamY by a small amount
+			CamY += 10;
+
+			// Clamp CamY to the target value if it overshoots
+			if (CamY > targetCamY)
+			{
+				CamY = targetCamY;
+			}
+
+			// Set the camera position to the new values
+			AEGfxSetCamPosition(CamX, CamY);
+		}
+
+		//AEGfxSetCamPosition(CamX, targetCamY);
+
+		// Update the maxHeight value for the next time this code runs
+		maxHeight += maxHeight;
+
+		if (maxHeight > AEGfxGetWinMaxY() * (count+1))
+		{
+			maxHeight = AEGfxGetWinMaxY() * (count+1);
+		}
+	}
+
+	
+	return;
+}
