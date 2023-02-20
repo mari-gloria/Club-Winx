@@ -45,10 +45,10 @@ void racing_load()
 	// Informing the library that we're about to start adding triangles
 
 	// player 1 mesh 
-	SquareMesh(&player1.pMesh, player1.size, player1.size, 0xFFB62891);
+	SquareMesh(&player1.pMesh,  0xFFB62891);
 
 	// player 2 mesh
-	SquareMesh(&player2.pMesh, player2.size, player2.size, 0xFFFF00FF);
+	SquareMesh(&player2.pMesh,0xFFFF00FF);
 
 	// loading in platform meshes in map
 	racing_map_load();
@@ -77,8 +77,8 @@ void racing_init()
 	------------------------------------------------------------*/
 	//curretly set ground level = AEGfxGetWinMinY() + 50.0f
 	//need to update ground to patform levels after jumping! (implement once platforms can be rendered properly)
-	player1.pGround = AEGfxGetWinMinY() + 50.0f;
-	player2.pGround = AEGfxGetWinMinY() + 50.0f;
+	player1.pGround = AEGfxGetWinMinY() + player1.size / 2.f ;
+	player2.pGround = AEGfxGetWinMinY() + player2.size / 2.f ;
 
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
@@ -87,10 +87,11 @@ void racing_init()
 	// INIT PLATFORM - MAP
 	------------------------------------------------------------*/
 	// declaring values for start and end values for player1 & 2 - which is needed for racing map
-	player1.start = AEGfxGetWinMinX();
+	player1.start = AEGfxGetWinMinX() + main_platform.length;
 	player1.end = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
 
-	player2.start = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+	//player2.start = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+	player2.start = main_platform.length;
 	player2.end = AEGfxGetWinMaxX();
 
 	// calling racing map initialisation fucntion, using values from previous lines
@@ -142,8 +143,8 @@ void racing_update()
 
 		if (platformA[i].stepped)
 		{
-			player1.pCoord.y = platformA[i].platY + main_platform.height;
-			player1.pCurrGround = platformA[i].platY + main_platform.height;
+			player1.pCoord.y = platformA[i].platY + main_platform.height / 2.f + player1.size / 2.f;
+			player1.pCurrGround = platformA[i].platY + main_platform.height / 2.f + player1.size / 2.f;
 			player1.stepping = true;
 		}
 		else
@@ -168,8 +169,8 @@ void racing_update()
 
 		if (platformB[i].stepped)
 		{
-			player2.pCoord.y = platformB[i].platY + main_platform.height;
-			player2.pCurrGround = platformB[i].platY + main_platform.height;
+			player2.pCoord.y = platformB[i].platY + main_platform.height / 2.f + player2.size / 2.f;
+			player2.pCurrGround = platformB[i].platY + main_platform.height / 2.f + player2.size / 2.f;
 			player2.stepping = true;
 		}
 		else
@@ -180,7 +181,21 @@ void racing_update()
 		
 	}
 
-	//input_handle();
+	/*------------------------------------------------------------
+	MATRIX CALCULATION
+	------------------------------------------------------------*/
+	// for players 
+	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
+	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
+
+	//for platforms 
+	for (int i = 0; i < platform_max; i++) {
+		MatrixCalc(platformA[i].transform, main_platform.length, main_platform.height, 0.f, platformA[i].platVect);
+		MatrixCalc(platformB[i].transform, main_platform.length, main_platform.height, 0.f, platformB[i].platVect);
+	}
+	
+	//for splitscreen
+	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 }
 
 void racing_draw()
@@ -198,14 +213,16 @@ void racing_draw()
 	// Drawing object 1
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	// Set position for object 1
-	AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
+	//AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
+	 AEGfxSetTransform(player1.transform.m);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
-	AEGfxSetPosition(player2.pCoord.x, player2.pCoord.y);
+	//AEGfxSetPosition(player2.pCoord.x, player2.pCoord.y);
+	AEGfxSetTransform(player2.transform.m);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)

@@ -44,25 +44,44 @@ bool p1_on_ground = true;
 bool p2_jumping = false;
 bool p2_on_ground = true;
 
+void MatrixCalc(AEMtx33 & transform, const f32 length, const f32 height, const f32 direction, const AEVec2& coords)
+{
+	AEMtx33		 trans{}, rot{}, scale{};
+	// Compute the scaling matrix
+	AEMtx33Scale(&scale, length, height);
+	// Compute the rotation matrix 
+	AEMtx33Rot(&rot, direction);
+	// Compute the translation matrix
+	AEMtx33Trans(&trans, coords.x, coords.y);
+	// Concatenate the 3 matrix in the correct order in the object instance's "transform" matrix
+	AEMtx33Concat(&transform, &rot, &scale);
+	AEMtx33Concat(&transform, &trans, &transform);
+}
+
 bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight)
 {
 	//std::cout << "checkCollision" << std::endl;
 
 	//Player bounding box (min.x = player.x, min.y = player.y)
-	AEVec2 Amax;
-	Amax.x = A.x + Alength;
-	Amax.y = A.y + Aheight;
+	AEVec2 Amax, Amin;
+	Amax.x = A.x + Alength / 2.f;
+	Amax.y = A.y + Aheight / 2.f;
 
+	Amin.x = A.x - Alength / 2.f;
+	Amin.y = A.y - Aheight / 2.f; 
 	//Platform bounding box (minstep.x = platform.x, minstep.y = platform.y)
-	AEVec2 Bmax;
-	Bmax.x = B.x + Blength;
-	Bmax.y = B.y + Bheight;
+	AEVec2 Bmax, Bmin;
+	Bmax.x = B.x + Blength / 2.f;
+	Bmax.y = B.y + Bheight / 2.f;
+
+	Bmin.x = B.x - Blength / 2.f;
+	Bmin.y = B.y - Bheight / 2.f;
 
 	bool verticalCollision{ false };
 	bool horizontalCollision{ false };
 
 	//Check if player intersect platform vertically
-	if (A.y >= B.y && A.y <= Bmax.y && Amax.x >= B.x && A.x <= Bmax.x)
+	if (Amin.y >= Bmin.y && Amin.y <= Bmax.y && Amax.x >= Bmin.x && Amin.x <= Bmax.x)
 	{
 		verticalCollision = true;
 		horizontalCollision = true;
@@ -95,7 +114,7 @@ bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, c
 	if (verticalCollision == true && horizontalCollision == true)
 	{
 		//return true;
-		//std::cout << "collide true" << std::endl;
+		std::cout << "collide true" << std::endl;
 		return true;
 	}
 
@@ -146,10 +165,10 @@ void input_handle()
 		}
 
 
-		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX()) //left limit = MinX
+		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.f)) >= AEGfxGetWinMinX()) //left limit = MinX
 			player1.pCoord.x -= 3.0f;
 
-		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= -player1.size) //right limit = 0 - size
+		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.f) <= 0) //right limit = 0 - size
 			player1.pCoord.x += 3.0f;
 
 
@@ -190,10 +209,10 @@ void input_handle()
 		}
 
 
-		if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= 0) //left limit = 0
+		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size/2.f) >= 0)) //left limit = 0
 			player2.pCoord.x -= 3.0f;
 
-		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size) //right limit is = MaxX - size
+		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size/2.f) <= AEGfxGetWinMaxX() ) //right limit is = MaxX - size
 			player2.pCoord.x += 3.0f;
 
 		/*------------------------------------------------------------
@@ -247,18 +266,18 @@ void input_handle()
 	}
 }
 
-void SquareMesh(AEGfxVertexList** pMesh, f32 length, f32 height, u32 colour)
+void SquareMesh(AEGfxVertexList** pMesh, u32 colour)
 {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		0.0f, height, colour, 0.0f, 0.0f, // bottom left 
-		length, height, colour, 1.0f, 0.0f, // bottom right
-		0.0f, 0.0f, colour, 0.0f, 1.0f); //top left
+		-0.5f, -0.5f, colour, 0.0f, 0.0f, // bottom left 
+		0.5f, -0.5f, colour, 1.0f, 0.0f, // bottom right
+		-0.5f, 0.5f, colour, 0.0f, 1.0f); //top left
 
 	AEGfxTriAdd(
-		length, height, colour, 1.0f, 0.0f, // bottom right
-		length, 0.0f, colour, 1.0f, 1.0f, // top right 
-		0.0f, 0.0f, colour, 0.0f, 1.0f); // top left 
+		0.5f, -0.5f, colour, 1.0f, 0.0f, // bottom right
+		0.5f, 0.5f, colour, 1.0f, 1.0f, // top right 
+		-0.5f, 0.5f, colour, 0.0f, 1.0f); // top left 
 
 
 	*pMesh = AEGfxMeshEnd();

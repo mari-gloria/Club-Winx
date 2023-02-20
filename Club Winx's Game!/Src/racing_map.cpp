@@ -39,8 +39,10 @@ void racing_map_load()
 
 	// for every element, load in the mesh for both platformA & platformB, with the specific Mesh Pointer and values from main_pointer struct
 	for (int i = 0; i < platform_max; i++) {
-		SquareMesh(&platformA[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
-		SquareMesh(&platformB[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
+		//SquareMesh(&platformA[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
+		//SquareMesh(&platformB[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
+		SquareMesh(&platformA[i].platMesh,  main_platform.colour);
+		SquareMesh(&platformB[i].platMesh,  main_platform.colour);
 	}
 
 	// ==== revert back to these if not working ==== // 
@@ -176,11 +178,13 @@ void racing_map_draw()
 	DRAWING PLATFORMS
 	------------------------------------------------------------*/
 	for (int i = 0; i < platform_max; i++) {
-		AEGfxSetPosition(platformA[i].platVect.x, platformA[i].platVect.y);
+		//AEGfxSetPosition(platformA[i].platVect.x, platformA[i].platVect.y);
+		AEGfxSetTransform(platformA[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxMeshDraw(platformA[i].platMesh, AE_GFX_MDM_TRIANGLES);
 
-		AEGfxSetPosition(platformB[i].platVect.x, platformB[i].platVect.y);
+		//AEGfxSetPosition(platformB[i].platVect.x, platformB[i].platVect.y);
+		AEGfxSetTransform(platformB[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxMeshDraw(platformB[i].platMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -224,15 +228,18 @@ void racing_map_unload()
 void splitscreen_load()
 {
 	splitscreen.height = (AEGfxGetWinMaxY() - AEGfxGetWinMinY());
-	SquareMesh(&splitscreen.lMesh, splitscreen.length, splitscreen.height, splitscreen.colour);
+	//SquareMesh(&splitscreen.lMesh, splitscreen.length, splitscreen.height, splitscreen.colour);
+	SquareMesh(&splitscreen.lMesh, splitscreen.colour);
 	return;
 }
 
 // Purpose: initialise splitscreen position trhough vector
 void splitscreen_init()
 {
-	f32 Y = AEGfxGetWinMinY();
-	f32 X = - 9.0f;
+	//f32 Y = AEGfxGetWinMinY();
+	//f32 X = - 9.0f;
+	f32 Y = 0.0f ;
+	f32 X = 0.0f ;
 	/*f32 Y = 10.0f;
 	f32 X = - 9.0f;*/
 	splitscreen.lVect = { X, Y };
@@ -244,7 +251,8 @@ void splitscreen_draw()
 {
 	// Drawing object 1
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetPosition(splitscreen.lVect.x, splitscreen.lVect.y);
+	//AEGfxSetPosition(splitscreen.lVect.x, splitscreen.lVect.y);
+	AEGfxSetTransform(splitscreen.transform.m);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(splitscreen.lMesh, AE_GFX_MDM_TRIANGLES);
 	return;

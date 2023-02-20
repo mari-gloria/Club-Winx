@@ -32,6 +32,7 @@ struct Player { // initialise in each game mode before use
 	f32 pCurrGround{ 0.0f }; //y-coord of the current ground player is on
 	f32 start = 0.0f, end = 0.0f;
 	bool stepping{ true }; // is player stepping on smth 
+	AEMtx33 transform{}; // transform matrix
 };
 extern Player player1, player2;
 
@@ -54,6 +55,7 @@ struct Platform_details {
 	AEGfxVertexList* platMesh{ nullptr }; // mesh 
 	AEGfxTexture* platTex{ nullptr }; // texture
 	bool stepped{ false };
+	AEMtx33 transform{}; // transform matrix
 };
 extern Platform_details platformA[platform_max], platformB[platform_max];
 
@@ -68,6 +70,7 @@ struct Line {
 	f32 height{ 0.0f }; // height of line - cons
 	//f32 height = 100.0f;
 	u32 colour = 0xFF000000; // black
+	AEMtx33 transform{}; // transform mtx 
 }; extern Line splitscreen;
 
 // ---------------------------------------------------------------------------
@@ -95,6 +98,14 @@ struct Health { // initialise in each game mode before use
 };
 extern Health health;
 
+
+// ---------------------------------------------------------------------------
+// MATRIX CALCULATION 
+// - add under update() 
+// ---------------------------------------------------------------------------
+void MatrixCalc(AEMtx33& transform, const f32 length, const f32 height, const f32 direction, const AEVec2& coords);
+
+
 // HANDLES PLAYER INPUT FOR CURRENT GAME STATE ( DURING UPDATE ) //
 void input_handle();
 
@@ -107,7 +118,7 @@ length and height in FLOAT ( XX.Xf )
 colour in HEX Alpha, Red, Green, Blue
 
 ///// REMEMBER TO FREE/UNLOAD POINTER TO MESH \\\\\\\*/
-void SquareMesh(AEGfxVertexList** pMesh, f32 length, f32 height, u32 colour);
+void SquareMesh(AEGfxVertexList** pMesh, u32 colour);
 
 // ---------------------------------------------------------------------------
 // COLLISION
