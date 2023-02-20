@@ -1,3 +1,15 @@
+/*==================================================================================
+* All content - 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+*
+* Course: CSD1451
+* Group Name: Club Winx
+* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu) 
+* Secondary Authors:
+*	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, Jump logic
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision Intersection
+==================================================================================*/
+
 //---------------------------------------------------------------------------
 //includes
 
@@ -21,23 +33,101 @@ Player player1, player2;
 Platform_init main_platform;
 Platform_details platformA[platform_max], platformB[platform_max];
 Line splitscreen;
+Boss boss;
+Health health;
 
 //variables for RACING
 const float GRAVITY{ 5.0f };
-const int JUMP_HEIGHT_MAX{ 100 };
+const int JUMP_HEIGHT_MAX{ 70 };
 bool p1_jumping = false;
 bool p1_on_ground = true;
 bool p2_jumping = false;
 bool p2_on_ground = true;
 
+void MatrixCalc(AEMtx33 & transform, const f32 length, const f32 height, const f32 direction, const AEVec2& coords)
+{
+	AEMtx33		 trans{}, rot{}, scale{};
+	// Compute the scaling matrix
+	AEMtx33Scale(&scale, length, height);
+	// Compute the rotation matrix 
+	AEMtx33Rot(&rot, direction);
+	// Compute the translation matrix
+	AEMtx33Trans(&trans, coords.x, coords.y);
+	// Concatenate the 3 matrix in the correct order in the object instance's "transform" matrix
+	AEMtx33Concat(&transform, &rot, &scale);
+	AEMtx33Concat(&transform, &trans, &transform);
+}
 
+bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight)
+{
+	//std::cout << "checkCollision" << std::endl;
+
+	//Player bounding box (min.x = player.x, min.y = player.y)
+	AEVec2 Amax, Amin;
+	Amax.x = A.x + Alength / 2.f;
+	Amax.y = A.y + Aheight / 2.f;
+
+	Amin.x = A.x - Alength / 2.f;
+	Amin.y = A.y - Aheight / 2.f; 
+	//Platform bounding box (minstep.x = platform.x, minstep.y = platform.y)
+	AEVec2 Bmax, Bmin;
+	Bmax.x = B.x + Blength / 2.f;
+	Bmax.y = B.y + Bheight / 2.f;
+
+	Bmin.x = B.x - Blength / 2.f;
+	Bmin.y = B.y - Bheight / 2.f;
+
+	bool verticalCollision{ false };
+	bool horizontalCollision{ false };
+
+	//Check if player intersect platform vertically
+	if (Amin.y >= Bmin.y && Amin.y <= Bmax.y && Amax.x >= Bmin.x && Amin.x <= Bmax.x)
+	{
+		verticalCollision = true;
+		horizontalCollision = true;
+	}
+	/*if (player.y >= platform.y) {
+		verticalCollision = true;
+		std::cout << "vertical true" << std::endl;
+	}
+	else {
+		verticalCollision = false;
+		//std::cout << "vertical false" << std::endl;
+	}
+
+	if (verticalCollision == true) {
+		if (player.y > maxstep.y) {
+			toLand = true;
+		}
+	}
+
+	//Check if player intersect platform horizontally
+	if (max.x < platform.x || player.x > maxstep.x) {
+		horizontalCollision = false;
+		std::cout << "horizontal false" << std::endl;
+	}
+	else {
+		horizontalCollision = true;
+	}
+
+	//If player and platform is colliding*/
+	if (verticalCollision == true && horizontalCollision == true)
+	{
+		//return true;
+		std::cout << "collide true" << std::endl;
+		return true;
+	}
+
+	return false;
+	//std::cout << "collide false" << std::endl;
+}
 
 void input_handle()
 {
 	std::cout << "Input:Handle\n";
 	switch (curr_state)
 	{
-	case (RACING): 
+	case (RACING):
 		// ----------------------------------------------------------------------------------
 		// player one movement controls
 		//
@@ -46,9 +136,11 @@ void input_handle()
 		// D -> move right
 		//-----------------------------------------------------------------------------------
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
-			if (p1_on_ground && !p1_jumping) {
+			//if (p1_on_ground && !p1_jumping) {
+			if (player1.stepping && !p1_jumping) {
 				p1_jumping = true;
-				p1_on_ground = false;
+				//p1_on_ground = false;
+				player1.stepping = false;
 			}
 		}
 
@@ -64,19 +156,21 @@ void input_handle()
 		//adding jump limits
 		if (player1.pCoord.y <= player1.pGround) {//lower limit
 			player1.pCoord.y = player1.pGround;
-			p1_on_ground = true;
+			//p1_on_ground = true;
+			player1.stepping = true;
 		}
 
-		if (player1.pCoord.y >= player1.pGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
 			p1_jumping = false;
 		}
-			
 
-		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX()) //left limit = MinX
+
+		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.f)) >= AEGfxGetWinMinX()) //left limit = MinX
 			player1.pCoord.x -= 3.0f;
 
-		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= - player1.size) //right limit = 0 - size
+		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.f) <= 0) //right limit = 0 - size
 			player1.pCoord.x += 3.0f;
+
 
 		// ----------------------------------------------------------------------------------
 		// player one movement controls
@@ -86,9 +180,11 @@ void input_handle()
 		// right -> move right
 		//-----------------------------------------------------------------------------------
 		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
-			if (p2_on_ground && !p2_jumping) {
+			//if (p2_on_ground && !p2_jumping) {
+			if (player2.stepping && !p2_jumping) {
 				p2_jumping = true;
-				p2_on_ground = false;
+				//p2_on_ground = false;
+				player2.stepping = false;
 			}
 		}
 
@@ -104,20 +200,21 @@ void input_handle()
 		//adding jump limits
 		if (player2.pCoord.y <= player2.pGround) {//lower limit
 			player2.pCoord.y = player2.pGround;
-			p2_on_ground = true;
+			//p2_on_ground = true;
+			player2.stepping = true;
 		}
 
-		if (player2.pCoord.y >= player2.pGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
 			p2_jumping = false;
 		}
 
 
-		if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= 0) //left limit = 0
+		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size/2.f) >= 0)) //left limit = 0
 			player2.pCoord.x -= 3.0f;
 
-		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size) //right limit is = MaxX - size
+		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size/2.f) <= AEGfxGetWinMaxX() ) //right limit is = MaxX - size
 			player2.pCoord.x += 3.0f;
-		
+
 		/*------------------------------------------------------------
 		END OF RACING
 		------------------------------------------------------------*/
@@ -151,45 +248,38 @@ void input_handle()
 
 		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size)
 			player2.pCoord.x += 3.0f;
-		
+
 
 		/*------------------------------------------------------------
 		END OF BOSS
 		------------------------------------------------------------*/
 		break;
 
-
-
 	case RESTART:
 		break;
 
-
-
 	case QUIT:
 		break;
-
-
 
 	default:
 		AE_FATAL_ERROR("Invalid state for input handling!");
 	}
 }
 
-void SquareMesh(AEGfxVertexList** pMesh, f32 length, f32 height, u32 colour)
+void SquareMesh(AEGfxVertexList** pMesh, u32 colour)
 {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		0.0f, height, colour, 0.0f, 0.0f, // bottom left 
-		length, height, colour, 1.0f, 0.0f, // bottom right
-		0.0f, 0.0f, colour, 0.0f, 1.0f); //top left
-		
+		-0.5f, -0.5f, colour, 0.0f, 0.0f, // bottom left 
+		0.5f, -0.5f, colour, 1.0f, 0.0f, // bottom right
+		-0.5f, 0.5f, colour, 0.0f, 1.0f); //top left
+
 	AEGfxTriAdd(
-		length, height, colour, 1.0f, 0.0f, // bottom right
-		length, 0.0f, colour, 1.0f, 1.0f, // top right 
-		0.0f, 0.0f, colour, 0.0f, 1.0f); // top left 
-		
+		0.5f, -0.5f, colour, 1.0f, 0.0f, // bottom right
+		0.5f, 0.5f, colour, 1.0f, 1.0f, // top right 
+		-0.5f, 0.5f, colour, 0.0f, 1.0f); // top left 
+
 
 	*pMesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pMesh, "Failed to create square mesh !!");
 }
-
