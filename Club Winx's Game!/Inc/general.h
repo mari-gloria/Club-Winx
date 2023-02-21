@@ -94,7 +94,7 @@ struct Health { // initialise in each game mode before use
 	AEMtx33 transform{ };
 	AEVec2 Hcoord{ -35.0f, 300.0f  };
 	AEVec2 Hcoord2{};
-	f32 plength{ 50.0f };
+	f32 plength{ };
 	f32 pheight = 10.0f;
 	f32 length{ 1200 }; 
 	f32 height = 30.0f; 

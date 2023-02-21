@@ -43,13 +43,19 @@ AEGfxVertexList* pBullet{ nullptr };
 
 f64 bossTimeElapsed = 0.0;
 
-//Boss Damage
-int bossHP = 1200; //
-int damage = 100; //Player's hit
-int  defaulthp = 500;
+//Boss Health
+float bossHP = 150.f; //
+float damage = 10.f; //Player's hit
 bool bossAlive{ TRUE };
 bool bossHPbar{ TRUE };
-int playerHP = 50;
+float  boss_max_hp = 150.f;
+float hp_percentage;
+float default_hp = 1200.f; //length of hp
+float newBar;
+
+//Player Health
+float playerHP = 50.f;
+
 
 
 
@@ -203,11 +209,10 @@ void boss_update()
 		//for boss
 		MatrixCalc(boss.transform, boss.size, boss.size, 0.f, boss.Bcoord);
 
-		//for health bar MAX
-		health2.length = defaulthp;
-		MatrixCalc(health2.transform, health2.length, health2.height, 0.f, health2.Hcoord);
-		//for BOSS current health bar
-		health.length = bossHP;
+		//Update Boss's Current HP
+		hp_percentage = bossHP / boss_max_hp;
+		newBar = hp_percentage * default_hp;
+		health.length = newBar;
 		MatrixCalc(health.transform, health.length, health.height, 0.f, health.Hcoord);
 
 
