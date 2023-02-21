@@ -255,6 +255,98 @@ void input_handle()
 		------------------------------------------------------------*/
 		break;
 
+	case PUZZLE:
+		// ----------------------------------------------------------------------------------
+		// player one movement controls
+		//
+		// W -> jump
+		// A -> move left
+		// D -> move right
+		//-----------------------------------------------------------------------------------
+		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
+			//if (p1_on_ground && !p1_jumping) {
+			if (player1.stepping && !p1_jumping) {
+				p1_jumping = true;
+				//p1_on_ground = false;
+				player1.stepping = false;
+			}
+		}
+
+		//jumping mechanism
+		if (p1_jumping) {
+			player1.pCoord.y += GRAVITY;
+		}
+
+		else {
+			player1.pCoord.y -= GRAVITY;
+		}
+
+		//adding jump limits
+		if (player1.pCoord.y <= player1.pGround) {//lower limit
+			player1.pCoord.y = player1.pGround;
+			//p1_on_ground = true;
+			player1.stepping = true;
+		}
+
+		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+			p1_jumping = false;
+		}
+
+
+		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.f)) >= AEGfxGetWinMinX()) //left limit = MinX
+			player1.pCoord.x -= 3.0f;
+
+		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.f) <= 0) //right limit = 0 - size
+			player1.pCoord.x += 3.0f;
+
+
+		// ----------------------------------------------------------------------------------
+		// player one movement controls
+		//
+		// up -> jump
+		// left -> move left
+		// right -> move right
+		//-----------------------------------------------------------------------------------
+		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
+			//if (p2_on_ground && !p2_jumping) {
+			if (player2.stepping && !p2_jumping) {
+				p2_jumping = true;
+				//p2_on_ground = false;
+				player2.stepping = false;
+			}
+		}
+
+		//jumping mechanism
+		if (p2_jumping) {
+			player2.pCoord.y += GRAVITY;
+		}
+
+		else {
+			player2.pCoord.y -= GRAVITY;
+		}
+
+		//adding jump limits
+		if (player2.pCoord.y <= player2.pGround) {//lower limit
+			player2.pCoord.y = player2.pGround;
+			//p2_on_ground = true;
+			player2.stepping = true;
+		}
+
+		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+			p2_jumping = false;
+		}
+
+
+		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.f) >= 0)) //left limit = 0
+			player2.pCoord.x -= 3.0f;
+
+		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.f) <= AEGfxGetWinMaxX()) //right limit is = MaxX - size
+			player2.pCoord.x += 3.0f;
+
+		/*------------------------------------------------------------
+		END OF PUZZLE
+		------------------------------------------------------------*/
+
 	case RESTART:
 		break;
 

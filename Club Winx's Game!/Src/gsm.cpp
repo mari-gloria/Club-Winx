@@ -19,6 +19,7 @@
 #include "gamestatelist.h"
 #include "racing.h"
 #include "boss.h"
+#include "puzzle.h"
 
 #include <iostream>
 // ---------------------------------------------------------------------------
@@ -73,6 +74,14 @@ void GSM_update()
 		fpDraw =	boss_draw;
 		fpFree =	boss_free;
 		fpUnload =	boss_unload;
+		break;
+	case PUZZLE:
+		fpLoad = puzzle_load;
+		fpInit = puzzle_init;
+		fpUpdate = puzzle_update;
+		fpDraw = puzzle_draw;
+		fpFree = puzzle_free;
+		fpUnload = puzzle_unload;
 		break;
 	case RESTART:
 		break;

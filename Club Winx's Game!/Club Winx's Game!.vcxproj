@@ -102,6 +102,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Src\general.cpp" />
     <ClCompile Include="Src\gsm.cpp" />
     <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\puzzle.cpp" />
     <ClCompile Include="Src\racing.cpp" />
     <ClCompile Include="Src\racing_map.cpp" />
   </ItemGroup>
@@ -110,6 +111,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Inc\gamestatelist.h" />
     <ClInclude Include="Inc\general.h" />
     <ClInclude Include="Inc\gsm.h" />
+    <ClInclude Include="Inc\puzzle.h" />
     <ClInclude Include="Inc\racing.h" />
     <ClInclude Include="Inc\racing_map.h" />
   </ItemGroup>

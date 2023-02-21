@@ -123,6 +123,10 @@ void boss_update()
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = RACING;
 	}
+	if (AEInputCheckCurr(AEVK_3)) {
+		next_state = PUZZLE;
+	}
+
 
 	/*------------------------------------------------------------
 	PLAYER MOVEMENT

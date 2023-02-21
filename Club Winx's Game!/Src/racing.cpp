@@ -116,9 +116,11 @@ void racing_update()
 	if (AEInputCheckCurr(AEVK_2)) {
 		next_state = BOSS;
 	}
-
 	if (AEInputCheckCurr(AEVK_Q)) {
 		next_state = QUIT;
+	}
+	if (AEInputCheckCurr(AEVK_3)) {
+		next_state = PUZZLE;
 	}
 
 	/*------------------------------------------------------------
