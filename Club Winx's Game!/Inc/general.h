@@ -92,11 +92,11 @@ struct Health { // initialise in each game mode before use
 	AEGfxVertexList* pMesh{ nullptr }; // mesh    
 	AEGfxTexture* pTex{ nullptr }; // texture
 	AEMtx33 transform{ };
-	AEVec2 Hcoord{ -50.0f, 200.0f };
+	AEVec2 Hcoord{ -35.0f, 300.0f  };
 	AEVec2 Hcoord2{};
 	f32 plength{ 50.0f };
 	f32 pheight = 10.0f;
-	f32 length{ 500.0f }; 
+	f32 length{ 1200 }; 
 	f32 height = 30.0f; 
 };
 extern Health health, health2, p1health, p2health;

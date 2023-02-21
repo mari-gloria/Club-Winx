@@ -44,8 +44,8 @@ AEGfxVertexList* pBullet{ nullptr };
 f64 bossTimeElapsed = 0.0;
 
 //Boss Damage
-int bossHP = 500; //500.0
-int damage = 50; //Player's hit 40
+int bossHP = 1200; //
+int damage = 100; //Player's hit
 int  defaulthp = 500;
 bool bossAlive{ TRUE };
 bool bossHPbar{ TRUE };
@@ -331,11 +331,6 @@ void boss_draw()
 	 Rendering of Boss Health System
    ------------------------------------------------------------*/
 
-   // drawing MAX health
-	AEGfxSetTransform(health2.transform.m);
-	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxMeshDraw(health2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 
 	if (bossHP < 0) {
