@@ -124,8 +124,3 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour);
 // COLLISION
 // ---------------------------------------------------------------------------
 bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
-
-// ---------------------------------------------------------------------------
-// CAMERA MOVEMENT - Racing (for now)
-// ---------------------------------------------------------------------------
-void CameraMovement_Racing();
