@@ -29,6 +29,14 @@ GLOBALS
 ------------------------------------------------------------*/
 const float		BOUNDING_RECT_SIZE = 0.40f;
 
+// Camera Movement Variables
+static f32		maxHeight{ 0 };
+static f32		CamX{ 0.0f }, CamY{ 0.0f }; // Camera's X & Y Positions
+static int		count{ 1 };
+static f32		maxHeight_copy{ 0 };
+static const f32 H = 200.0f;
+
+
 /*------------------------------------------------------------
 FUNCTIONS
 ------------------------------------------------------------*/
@@ -64,6 +72,7 @@ void racing_load()
 	/*------------------------------------------------------------
 	CREATING FONTS
 	------------------------------------------------------------*/
+
 
 	return;
 }
@@ -102,6 +111,14 @@ void racing_init()
 	// INIT SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_init();
+
+
+	///*------------------------------------------------------------
+	// INIT - Camera Movement
+	//------------------------------------------------------------*/
+
+	maxHeight = H;
+	maxHeight_copy = H;
 
 	return;
 }
@@ -198,6 +215,21 @@ void racing_update()
 	
 	//for splitscreen
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
+
+	///*------------------------------------------------------------
+	// UPDATE - Camera Movement
+	// if the player.y + size is over or at maxHeight, CamY will increase
+	//------------------------------------------------------------*/
+	if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
+	{
+		count++;
+		CamY+=maxHeight_copy; // Calculate the target camera position to gradually move towards
+
+		// maxHeight Incrementing
+		maxHeight = (maxHeight_copy * count);
+	}
+
+
 }
 
 void racing_draw()
@@ -205,10 +237,12 @@ void racing_draw()
 	std::cout << "racing:Draw\n";
 
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
 	------------------------------------------------------------*/
 	racing_map_draw();
+
 	/*------------------------------------------------------------
 	// DRAWING PLAYERS
 	------------------------------------------------------------*/
@@ -233,14 +267,19 @@ void racing_draw()
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
-	// DRAWING PLATFORMS - MAP
-	------------------------------------------------------------*/
-	//racing_map_draw();
-
-	/*------------------------------------------------------------
 	// DRAWING SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_draw();
+
+	/*------------------------------------------------------------
+	 DRAWING - Camera Movement
+	------------------------------------------------------------*/
+	AEGfxSetCamPosition(CamX, CamY); // Set Camera's Position to values of CamX & CamY
+
+	// Testing
+	/*std::cout << "==========================" << maxHeight << std::endl;
+	std::cout << "++++++++++++++++++++++++++++++" << (player1.pCoord.y + player1.size) << std::endl;
+	std::cout << "___________________________________ X: " << CamX << "  Y: " << CamY << std::endl;*/
 
 }
 

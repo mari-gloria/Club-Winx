@@ -229,7 +229,7 @@ void racing_map_unload()
 // Purppose: load splitscreen
 void splitscreen_load()
 {
-	splitscreen.height = (AEGfxGetWinMaxY() - AEGfxGetWinMinY());
+	splitscreen.height = (AEGfxGetWinMaxY() - AEGfxGetWinMinY()) * 4;
 	//SquareMesh(&splitscreen.lMesh, splitscreen.length, splitscreen.height, splitscreen.colour);
 	SquareMesh(&splitscreen.lMesh, splitscreen.colour);
 	return;

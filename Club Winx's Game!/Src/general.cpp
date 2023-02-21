@@ -38,7 +38,8 @@ Health health, health2, p1health, p2health;
 
 //variables for RACING
 const float GRAVITY{ 5.0f };
-const int JUMP_HEIGHT_MAX{ 70 };
+//const int JUMP_HEIGHT_MAX{ 70 };
+const int JUMP_HEIGHT_MAX{ 80 }; // mari -> trying for camera movement
 bool p1_jumping = false;
 bool p1_on_ground = true;
 bool p2_jumping = false;
