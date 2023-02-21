@@ -90,12 +90,14 @@ void puzzle_draw()
 	------------------------------------------------------------*/
 	// Drawing player 1
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTransform(player1.transform.m);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
 	AEGfxSetTransform(player2.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 

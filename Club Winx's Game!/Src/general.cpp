@@ -34,7 +34,7 @@ Platform_init main_platform;
 Platform_details platformA[platform_max], platformB[platform_max];
 Line splitscreen;
 Boss boss;
-Health health;
+Health health, health2, p1health, p2health;
 
 //variables for RACING
 const float GRAVITY{ 5.0f };

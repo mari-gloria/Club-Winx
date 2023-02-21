@@ -217,6 +217,7 @@ void racing_draw()
 	// Set position for object 1
 	//AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
 	 AEGfxSetTransform(player1.transform.m);
+	 AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
@@ -225,6 +226,7 @@ void racing_draw()
 	// drawing player 2
 	//AEGfxSetPosition(player2.pCoord.x, player2.pCoord.y);
 	AEGfxSetTransform(player2.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)

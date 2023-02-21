@@ -81,22 +81,25 @@ struct Boss { // initialise in each game mode before use
 	AEGfxVertexList* pMesh1{ nullptr }; // mesh 
 	AEGfxVertexList* pMesh2{ nullptr }; // mesh 
 	AEGfxTexture* pTex{ nullptr }; // texture
+	AEMtx33 transform{}; // transform mtx 
+	AEVec2 Bcoord{ 250.0f, -100.0f }; //position of boss
 	f32 size = 350.0f; //player size 
 };
 extern Boss boss;
 
 struct Health { // initialise in each game mode before use 
 
-	AEGfxVertexList* pMesh1{ nullptr }; // mesh 
-	AEGfxVertexList* pMesh2{ nullptr };
-	AEGfxVertexList* pMesh3{ nullptr };
-	AEGfxVertexList* pMesh4{ nullptr };
-	AEGfxVertexList* pMesh5{ nullptr };
+	AEGfxVertexList* pMesh{ nullptr }; // mesh    
 	AEGfxTexture* pTex{ nullptr }; // texture
-	f32 length = 500.0f;
-	f32 height{ 30.0f };
+	AEMtx33 transform{ };
+	AEVec2 Hcoord{ -50.0f, 200.0f };
+	AEVec2 Hcoord2{};
+	f32 plength{ 50.0f };
+	f32 pheight = 10.0f;
+	f32 length{ 500.0f }; 
+	f32 height = 30.0f; 
 };
-extern Health health;
+extern Health health, health2, p1health, p2health;
 
 
 // ---------------------------------------------------------------------------

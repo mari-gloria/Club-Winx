@@ -181,11 +181,13 @@ void racing_map_draw()
 		//AEGfxSetPosition(platformA[i].platVect.x, platformA[i].platVect.y);
 		AEGfxSetTransform(platformA[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(platformA[i].platMesh, AE_GFX_MDM_TRIANGLES);
 
 		//AEGfxSetPosition(platformB[i].platVect.x, platformB[i].platVect.y);
 		AEGfxSetTransform(platformB[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(platformB[i].platMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
@@ -253,6 +255,7 @@ void splitscreen_draw()
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	//AEGfxSetPosition(splitscreen.lVect.x, splitscreen.lVect.y);
 	AEGfxSetTransform(splitscreen.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(splitscreen.lMesh, AE_GFX_MDM_TRIANGLES);
 	return;

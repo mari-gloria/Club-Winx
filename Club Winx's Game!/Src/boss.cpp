@@ -44,8 +44,12 @@ AEGfxVertexList* pBullet{ nullptr };
 f64 bossTimeElapsed = 0.0;
 
 //Boss Damage
-int bossHP = 15;
-int damage = 1; //Player's hit
+int bossHP = 500; //500.0
+int damage = 50; //Player's hit 40
+int  defaulthp = 500;
+bool bossAlive{ TRUE };
+bool bossHPbar{ TRUE };
+int playerHP = 50;
 
 
 
@@ -74,16 +78,15 @@ void boss_load()
 	//creating bullet mesh
 	SquareMesh(&pBullet, 0xFFFFFFFF);
 	
-	//}
-	//Creating Boss Mesh
-	//SquareMesh(&boss.pMesh1, boss.size, boss.size, 0xFFFFFF00);
-	//SquareMesh(&boss.pMesh2, boss.size, boss.size, 0x000000FF);
-	//Creating Boss HP Bar
-	//SquareMesh(&health.pMesh1, health.length, health.height, 0x00FF0000);
-	//SquareMesh(&health.pMesh2, health.length - 250.0f, health.height, 0x00FF0000);
-	//SquareMesh(&health.pMesh3, health.length - 350.0f, health.height, 0x00FF0000);
-	//SquareMesh(&health.pMesh4, health.length, health.height, 0x00999999);
-	//SquareMesh(&health.pMesh5, health.length - 450.0f, health.height - 20.0f, 0x00FF0000);
+	SquareMesh(&boss.pMesh1, 0xFFFFFF00);
+	//Creating Health Mesh
+	//SquareMesh(&health.pMesh1,0x00FF0000);
+	SquareMesh(&health2.pMesh, 0x00999999);
+	SquareMesh(&health.pMesh, 0x00FF0000);
+
+	//PLeyar Meash
+	SquareMesh(&p1health.pMesh, 0x00FF0000);
+	SquareMesh(&p2health.pMesh, 0x00FF0000);
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -105,6 +108,8 @@ void boss_init()
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
 
 	bossTimeElapsed = 0.0;
+	bool BossAlive = { TRUE };
+	bool bossHP = { TRUE };
 }
 
 void boss_update()
@@ -195,6 +200,28 @@ void boss_update()
 
 		}
 
+		//for boss
+		MatrixCalc(boss.transform, boss.size, boss.size, 0.f, boss.Bcoord);
+
+		//for health bar MAX
+		health2.length = defaulthp;
+		MatrixCalc(health2.transform, health2.length, health2.height, 0.f, health2.Hcoord);
+		//for BOSS current health bar
+		health.length = bossHP;
+		MatrixCalc(health.transform, health.length, health.height, 0.f, health.Hcoord);
+
+
+
+		//for player2's health bar
+		p2health.plength = playerHP;
+		p2health.Hcoord2 = { player2.pCoord.x, player2.pCoord.y + 35.0f };
+		MatrixCalc(p2health.transform, p2health.plength, p2health.pheight, 0.f, p2health.Hcoord2);
+
+		//for player1's health bar
+		p1health.plength = playerHP;
+		p1health.Hcoord2 = { player1.pCoord.x, player1.pCoord.y + 35.0f };
+		MatrixCalc(p1health.transform, p1health.plength, p1health.pheight, 0.f, p1health.Hcoord2);
+
 	}
 	/*------------------------------------------------------------
 	MATRIX CALCULATION 
@@ -237,6 +264,7 @@ void boss_draw()
 	// Set position for object 1
 	//AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y);
 	AEGfxSetTransform(player1.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
@@ -256,15 +284,26 @@ void boss_draw()
 	AEGfxSetTransform(player2.transform.m);
 	// No texture for object 1
 	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
-	//Drawing HP for player 2
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetPosition(player2.pCoord.x, player2.pCoord.y + 55.0f);
+
+	/*------------------------------------------------------------
+	DRAWING PLAYERS's Health Bar
+	------------------------------------------------------------*/
+
+	//Player 1 health bar
+	AEGfxSetTransform(p1health.transform.m);
 	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//AEGfxMeshDraw(health.pMesh5, AE_GFX_MDM_TRIANGLES);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxMeshDraw(p1health.pMesh, AE_GFX_MDM_TRIANGLES);
+
+	//Player 2 Health Bar
+	AEGfxSetTransform(p2health.transform.m);
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxMeshDraw(p2health.pMesh, AE_GFX_MDM_TRIANGLES);
 
 
 
@@ -289,75 +328,59 @@ void boss_draw()
 
 	}
 	/*------------------------------------------------------------
-	 Rendering of Boss HP Bar
-	------------------------------------------------------------*/
-	//Max HP
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetPosition(-290, 190);
+	 Rendering of Boss Health System
+   ------------------------------------------------------------*/
+
+   // drawing MAX health
+	AEGfxSetTransform(health2.transform.m);
 	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//AEGfxMeshDraw(health.pMesh4, AE_GFX_MDM_TRIANGLES);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxMeshDraw(health2.pMesh, AE_GFX_MDM_TRIANGLES);
 
-	if (bossHP > 9) {
-		//Drawing Boss
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(150, -250);
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
 
-		//Drawing health bar
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(-290, 190);
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEGfxMeshDraw(health.pMesh1, AE_GFX_MDM_TRIANGLES);
+	if (bossHP < 0) {
 
+		bossHPbar = FALSE;
+		bossAlive = FALSE; //Boss DIES	
+		health.length = bossHP;
 	}
-	else if (bossHP > 5) {
 
-		//Drawing Boss
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(150, -250);
+
+	if (bossHPbar == TRUE) {
+		// drawing Current Health
+		AEGfxSetTransform(health.transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
-
-		//Drawing health bar
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(-290, 190);
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEGfxMeshDraw(health.pMesh2, AE_GFX_MDM_TRIANGLES);
-
-
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxMeshDraw(health.pMesh, AE_GFX_MDM_TRIANGLES);
 	}
-	else if (bossHP > 3) {
+	else {
 
-		//Drawing Boss
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(150, -250);
+		// drawing Current Health
+		AEGfxSetTransform(health.transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(0.0f);
+		AEGfxMeshDraw(health.pMesh, AE_GFX_MDM_TRIANGLES);
+	}
 
-		//Drawing health bar
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(-290, 190);
+	if (bossAlive == TRUE) {
+
+		// drawing boss
+		AEGfxSetTransform(boss.transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEGfxMeshDraw(health.pMesh3, AE_GFX_MDM_TRIANGLES);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
 
 
 	}
 	else {
 
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetPosition(150, -250);
+		// BOSS DIES
+		AEGfxSetTransform(boss.transform.m);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(0.0f);
 		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		//AEGfxMeshDraw(boss.pMesh2, AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
 	}
 
 	
@@ -375,11 +398,11 @@ void boss_unload()
 
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
-	//AEGfxMeshFree(boss.pMesh1);
-	//AEGfxMeshFree(boss.pMesh2);
-	//AEGfxMeshFree(health.pMesh1);
-	//AEGfxMeshFree(health.pMesh2);
-	//AEGfxMeshFree(health.pMesh3);
+	AEGfxMeshFree(health.pMesh);
+	AEGfxMeshFree(health2.pMesh);
+	AEGfxMeshFree(p1health.pMesh);
+	AEGfxMeshFree(p2health.pMesh);
+
 	
 	//for (int i = 0; i < MAX_BULLETS; i++) {
 		AEGfxMeshFree(pBullet);
