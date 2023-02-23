@@ -15,6 +15,7 @@ enum GS_STATES
 	RACING = 0,
 	BOSS,
 	PUZZLE,
+	/*END_OR_ROUND,*/
 	RESTART,
-	QUIT
+	QUIT,
 };

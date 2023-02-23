@@ -17,6 +17,8 @@
 
 #include "gsm.h"
 #include "gamestatelist.h"
+#include "win_lose.h"
+
 #include "racing.h"
 #include "boss.h"
 #include "puzzle.h"
@@ -83,6 +85,14 @@ void GSM_update()
 		fpFree = puzzle_free;
 		fpUnload = puzzle_unload;
 		break;
+	//case END_OF_ROUND:
+	//	fpLoad = EOR_load;
+	//	fpInit = EOR_init;
+	//	fpUpdate = EOR_update;
+	//	fpDraw = EOR_draw;
+	//	fpFree = EOR_free;
+	//	fpUnload = EOR_unload;
+	//	break;
 	case RESTART:
 		break;
 	case QUIT:
