@@ -56,7 +56,20 @@ float newBar;
 //Player Health
 float playerHP = 50.f;
 
+// BOSS ATTACKS
+const int MAXWAVE = { 5 };
+struct bosspew {
+	AEVec2 coords; // coords
+	AEMtx33 transform; // transform 
+	AEVec2 velocity; // 
+	bool shot{ FALSE };
+	f32 direction; // 
+};
 
+bosspew bossbullets1[MAXWAVE], bossbullets2[MAXWAVE];
+AEGfxVertexList* pbossbullet{ nullptr };
+
+const f32 gravity = 9.8f;
 
 
 
@@ -94,6 +107,8 @@ void boss_load()
 	SquareMesh(&p1health.pMesh, 0x00FF0000);
 	SquareMesh(&p2health.pMesh, 0x00FF0000);
 
+	// boss bullet mesh 
+	SquareMesh(&pbossbullet, 0x00FF0000);
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
@@ -151,10 +166,18 @@ void boss_update()
 	{
 		if (bossTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
 		{
+			//bossbullets1[i].shot == FALSE && bossbullets2[i].shot == FALSE
 			bullets1[i].shot = TRUE;
 			std::cout << " bullet1 no. " << i << "launched\n";
 			bullets2[i].shot = TRUE;
 			std::cout << " bullet2 no. " << i << "launched\n";
+			
+
+			/*bossbullets1[i].shot = TRUE;
+			std::cout << " bossbullet1 no. " << i << "launched\n";
+			bossbullets2[i].shot = TRUE;
+			std::cout << " bossbullet2 no. " << i << "launched\n";*/
+			//bossTimeElapsed = 0.0;
 			bossTimeElapsed = 0.0;
 		}
 		if (bossHP < 3) { //bullets will stop shooting when monster dies
@@ -181,7 +204,7 @@ void boss_update()
 
 		if (bullets2[i].shot)
 		{
-			bullets2[i].bCoord.x += 10.0f; // bullet speed 
+			bullets2[i].bCoord.x += 10.0f; // bullet speed to change to const variable
 		}
 		else {
 			bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y  };
@@ -206,28 +229,33 @@ void boss_update()
 
 		}
 
-		//for boss
-		MatrixCalc(boss.transform, boss.size, boss.size, 0.f, boss.Bcoord);
-
-		//Update Boss's Current HP
-		hp_percentage = bossHP / boss_max_hp;
-		newBar = hp_percentage * default_hp;
-		health.length = newBar;
-		MatrixCalc(health.transform, health.length, health.height, 0.f, health.Hcoord);
-
-
-
-		//for player2's health bar
-		p2health.plength = playerHP;
-		p2health.Hcoord2 = { player2.pCoord.x, player2.pCoord.y + 35.0f };
-		MatrixCalc(p2health.transform, p2health.plength, p2health.pheight, 0.f, p2health.Hcoord2);
-
-		//for player1's health bar
-		p1health.plength = playerHP;
-		p1health.Hcoord2 = { player1.pCoord.x, player1.pCoord.y + 35.0f };
-		MatrixCalc(p1health.transform, p1health.plength, p1health.pheight, 0.f, p1health.Hcoord2);
-
 	}
+	// BOSS ATTACKS 
+	//for (int i = 0; i < MAXWAVE; i++)
+	//{
+		/*if (bossTimeElapsed >= 0.5 && bossbullets1[i].shot == FALSE && bossbullets2[i].shot == FALSE) // every 2 secs
+		{
+			bossbullets1[i].shot = TRUE;
+			std::cout << " bossbullet1 no. " << i << "launched\n";
+			bossbullets2[i].shot = TRUE;
+			std::cout << " bossbullet2 no. " << i << "launched\n";
+			bossTimeElapsed = 0.0;
+		}
+	//}
+	for (int i = 0; i < MAXWAVE; i++)
+	{
+		if (bossbullets1[i].shot)
+		{
+			bossbullets1[i].coords.x -= 10.0f; // bullet speed
+		}
+		else {
+			bossbullets1[i].coords = { boss.Bcoord.x + (boss.length / 2.0f), boss.Bcoord.y };
+		}
+		if (bossbullets1[i].coords.x <= AEGfxGetWinMinX()) // if exit map
+		{
+			bossbullets1[i].shot = FALSE;
+		}
+	}*/
 	/*------------------------------------------------------------
 	MATRIX CALCULATION 
 	------------------------------------------------------------*/
@@ -251,8 +279,32 @@ void boss_update()
 
 	}
 
+	//for boss
+	MatrixCalc(boss.transform, boss.length, boss.height, 0.f, boss.Bcoord);
+
+	//Update Boss's Current HP
+	hp_percentage = bossHP / boss_max_hp;
+	newBar = hp_percentage * default_hp;
+	health.length = newBar;
+	MatrixCalc(health.transform, health.length, health.height, 0.f, health.Hcoord);
+
+
+	//for player2's health bar
+	p2health.plength = playerHP;
+	p2health.Hcoord2 = { player2.pCoord.x, player2.pCoord.y + 35.0f };
+	MatrixCalc(p2health.transform, p2health.plength, p2health.pheight, 0.f, p2health.Hcoord2);
+
+	//for player1's health bar
+	p1health.plength = playerHP;
+	p1health.Hcoord2 = { player1.pCoord.x, player1.pCoord.y + 35.0f };
+	MatrixCalc(p1health.transform, p1health.plength, p1health.pheight, 0.f, p1health.Hcoord2);
 	
 
+	// for boss attacks
+	for (int i = 0; i < MAXWAVE; i++)
+	{
+		MatrixCalc(bossbullets1[i].transform, 20.0f, 20.0f, 0.f, bossbullets1[i].coords);
+	}
 	
 }
 
@@ -333,10 +385,20 @@ void boss_draw()
 
 	}
 	/*------------------------------------------------------------
+	DRAWING  BOSS ATTACKS
+	------------------------------------------------------------*/
+	for (int i = 0; i < MAXWAVE; i++) {
+		if (bossbullets1[i].shot)
+		{
+			//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+			AEGfxSetTransform(bossbullets1[i].transform.m);
+			AEGfxTextureSet(NULL, 0, 0);
+			AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
+		}
+	}
+	/*------------------------------------------------------------
 	 Rendering of Boss Health System
    ------------------------------------------------------------*/
-
-
 
 	if (bossHP < 0) {
 
@@ -403,7 +465,8 @@ void boss_unload()
 	AEGfxMeshFree(p1health.pMesh);
 	AEGfxMeshFree(p2health.pMesh);
 
-	
+	AEGfxMeshFree(pbossbullet);
+
 	//for (int i = 0; i < MAX_BULLETS; i++) {
 		AEGfxMeshFree(pBullet);
 		//AEGfxMeshFree(pBullet);//}

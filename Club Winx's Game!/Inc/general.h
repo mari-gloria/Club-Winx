@@ -92,8 +92,9 @@ struct Boss { // initialise in each game mode before use
 	AEGfxVertexList*	pMesh2		{ nullptr };			// mesh 
 	AEGfxTexture*		pTex		{ nullptr };			// texture
 	AEMtx33				transform	{};						// transform mtx 
-	AEVec2				Bcoord		{ 250.0f, -100.0f };	// position of boss
-	f32					size		{ 350.0f };				// boss size 
+	AEVec2				Bcoord		{ 380.0f, -30.0f };	// position of boss
+	f32 length = 250.0f; //boss length 
+	f32 height = 450.f; // boss height
 };
 extern Boss boss;
 
