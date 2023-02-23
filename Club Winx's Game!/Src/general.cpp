@@ -28,7 +28,8 @@
 GLOBALS
 ------------------------------------------------------------*/
 
-//declaring players & platforms
+//declaring background texture, players, platforms, splitscreen, boss, health
+BG bgRacing, bgPuzzle, bgBoss;
 Player player1, player2;
 Platform platformA[platform_max], platformB[platform_max];
 Line splitscreen;

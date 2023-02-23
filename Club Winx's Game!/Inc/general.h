@@ -19,6 +19,29 @@
 
 
 
+
+
+/*--------------------------------------------------------------------------
+BCKGROUND TEXTURE
+---------------------------------------------------------------------------*/
+struct BG {
+	//AEVec2				bgCoord		{ AEGfxGetWinMinX(), AEGfxGetWinMinY() };	// player x y (min)
+	AEVec2				bgCoord		{ 0.f, 0.f };	// player x y (min)
+	AEGfxVertexList*	bgMesh		{ nullptr };	// mesh
+	AEGfxTexture*		bgTex		{ nullptr };	// texture
+	AEMtx33				transform	{};				// transform matrix
+	//f32					length		{AEGfxGetWinMaxX() - AEGfxGetWinMinX()}; // default length of BG
+	//f32					height		{AEGfxGetWinMaxY() - AEGfxGetWinMinY()}; // default height of BG (may need to change for racing)
+	f32					length		{0.f}; // default length of BG
+	f32					height		{0.f}; // default height of BG (may need to change for racing)
+
+};
+extern BG bgRacing, bgPuzzle, bgBoss;
+
+
+
+
+
 /*--------------------------------------------------------------------------
 PLAYERS
 ---------------------------------------------------------------------------*/
