@@ -268,10 +268,7 @@ void boss_update()
 	MATRIX CALCULATION 
 	------------------------------------------------------------*/
 	// for background
-	MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.f, bgBoss.bgCoord);
-	//if (bgBoss.bgMesh && bgBoss.transform.m && bgBoss.bgTex) {
-	//	std::cout << "==================== texture!!!" << std::endl;
-	//}
+	MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.0f, bgBoss.bgCoord);
 
 	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);

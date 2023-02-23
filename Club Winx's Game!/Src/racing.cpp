@@ -257,8 +257,6 @@ void racing_draw()
 {
 	std::cout << "racing:Draw\n";
 
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
 	------------------------------------------------------------*/
@@ -270,6 +268,7 @@ void racing_draw()
 	// DRAWING PLAYERS
 	------------------------------------------------------------*/
 	// Drawing object 1
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTransform(player1.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for object 1
@@ -278,6 +277,7 @@ void racing_draw()
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTransform(player2.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for object 1

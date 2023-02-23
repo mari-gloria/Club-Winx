@@ -35,12 +35,14 @@ void racing_map_load()
 	// 17 platforms in a map - thus need to create mesh for 17*2 (player1 = A, player2 = B)
 	// as all length, height and colour is the same - so just use the main platform struct for that
 	// create another struct for all the specific details of platform, so as to load in the meshes for those
-	
+
 
 	// for every element, load in the mesh for both platformA & platformB, with the specific Mesh Pointer and values from main_pointer struct
 	for (int i = 0; i < platform_max; i++) {
 		//SquareMesh(&platformA[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
 		//SquareMesh(&platformB[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
+		platformA[i].platTex = AEGfxTextureLoad("Assets/platform.jpg");
+		platformB[i].platTex = AEGfxTextureLoad("Assets/platform.jpg");
 		SquareMesh(&platformA[i].platMesh, 0xFFFFFF00);
 		SquareMesh(&platformB[i].platMesh, 0xFFFFFF00);
 	}
@@ -209,14 +211,19 @@ void racing_map_draw()
 	DRAWING PLATFORMS
 	------------------------------------------------------------*/
 	for (int i = 0; i < platform_max; i++) {
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		//AEGfxSetTextureMode(AE_GFX_TM_PRECISE);
+
 		AEGfxSetTransform(platformA[i].transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxTextureSet(platformA[i].platTex, 0, 0);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxMeshDraw(platformA[i].platMesh, AE_GFX_MDM_TRIANGLES);
 
 		AEGfxSetTransform(platformB[i].transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxTextureSet(platformB[i].platTex, 0, 0);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxMeshDraw(platformB[i].platMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
@@ -250,6 +257,8 @@ void racing_map_unload()
 	for (int i = 0; i < platform_max; i++) {
 		AEGfxMeshFree(platformA[i].platMesh);
 		AEGfxMeshFree(platformB[i].platMesh);
+		AEGfxTextureUnload(platformA[i].platTex); // Unload Texture
+		AEGfxTextureUnload(platformB[i].platTex); // Unload Texture
 	}
 
 	return;
