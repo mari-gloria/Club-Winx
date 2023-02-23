@@ -15,6 +15,7 @@
 
 #include "AEEngine.h"
 #include "AEGameStateMgr.h"
+#include "AEGraphics.h"
 
 #include "gsm.h"
 #include "gamestatelist.h"
@@ -84,9 +85,9 @@ void boss_load()
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
-	//AEGfxSetBackgroundColor(0.0f, 0.0f, 255.0f);
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 255.0f);
+	bgBoss.bgTex = AEGfxTextureLoad("Assets/Boss_BG.png");		// BG Texture
 	SquareMesh(&bgBoss.bgMesh, 0);							// BG Mesh
-	bgBoss.bgTex = AEGfxTextureLoad("Assets/Boss_BG.jpg");		// BG Texture
 	bgBoss.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgBoss.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 	
@@ -268,6 +269,9 @@ void boss_update()
 	------------------------------------------------------------*/
 	// for background
 	MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.f, bgBoss.bgCoord);
+	//if (bgBoss.bgMesh && bgBoss.transform.m && bgBoss.bgTex) {
+	//	std::cout << "==================== texture!!!" << std::endl;
+	//}
 
 	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
@@ -326,12 +330,12 @@ void boss_draw()
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetTextureMode(AE_GFX_TM_PRECISE);
 	AEGfxSetTransform(bgBoss.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxSetTextureMode(AE_GFX_TM_PRECISE);
-	AEGfxTextureSet(bgBoss.bgTex, 0, 0);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxTextureSet(bgBoss.bgTex, 0.f, 0.f);
 	AEGfxMeshDraw(bgBoss.bgMesh, AE_GFX_MDM_TRIANGLES);
-
 
 	/*------------------------------------------------------------
 	DRAWING PLAYERS
@@ -352,7 +356,6 @@ void boss_draw()
 	//Drawing HP for player 1
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetPosition(player1.pCoord.x, player1.pCoord.y + 55.0f);
-
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//AEGfxMeshDraw(health.pMesh5, AE_GFX_MDM_TRIANGLES);
@@ -466,7 +469,8 @@ void boss_draw()
 		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
 	}
 
-	
+
+
 }
 
 void boss_free()
