@@ -41,19 +41,15 @@ void racing_map_load()
 	for (int i = 0; i < platform_max; i++) {
 		//SquareMesh(&platformA[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
 		//SquareMesh(&platformB[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
-		SquareMesh(&platformA[i].platMesh,  main_platform.colour);
-		SquareMesh(&platformB[i].platMesh,  main_platform.colour);
+		SquareMesh(&platformA[i].platMesh, 0xFFFFFF00);
+		SquareMesh(&platformB[i].platMesh, 0xFFFFFF00);
 	}
-
-	// ==== revert back to these if not working ==== // 
-	//// platform for player 1
-	//SquareMesh(&platform1.PMesh, platform1.length, platform1.height, platform1.colour);
-
-	//// platform for player 2
-	//SquareMesh(&platform2.PMesh, platform2.length, platform2.height, platform2.colour);
 
 	return;
 }
+
+
+
 
 
 // Purpose: initialise the struct values for the platforms : such as the x & y values of the platform
@@ -74,16 +70,46 @@ void racing_map_init(f32 start, f32 end, int player)
 	//	- before the for loop breaks to go to the next i value, initialise the vector(x & y values of the platform)
 	
 	// Variables
-	f32 min_limit = start + 10.0f;
-	f32 max_limit = end - 10.0f;
-	f32 backX, prevX, prevY;
-	bool is_reverse = false;
+	f32 min_limit = start + platformA[0].length / 2 + 50.0f; //50.0f buffer
+	f32 max_limit = end - platformA[0].length / 2 - 50.0f; //50.0f buffer
+	//f32 backX, prevX, prevY;
+	//bool is_reverse = false;
 
 	// Create a variable to hold the previous i, in order for it to be saved for the next i
 
 	/*------------------------------------------------------------
 	// INIT PLATFORM - MAP
 	------------------------------------------------------------*/
+	switch (player) {
+
+	case 1: //draw map for player 1
+		platformA[0].platVect.x = player1.pCoord.x;
+		platformA[0].platVect.y = player1.pCoord.y + 75.0f;
+
+		for (int i = 1; i < platform_max; i++) {
+			//x-coord: random x coord is generated within min and max limit
+			//y-coord: increases by 75.0f from prev platform
+			platformA[i].platVect.x = rand_float(min_limit, max_limit);
+			platformA[i].platVect.y = platformA[i - 1].platVect.y + 75.0f;
+		}
+
+		break;
+
+	case 2: //draw map for player 2
+		platformB[0].platVect.x = player2.pCoord.x;
+		platformB[0].platVect.y = player2.pCoord.y + 75.0f;
+
+		for (int i = 1; i < platform_max; i++) {
+			//x-coord: random x coord is generated within min and max limit
+			//y-coord: increases by 75.0f from prev platform
+			platformB[i].platVect.x = rand_float(min_limit, max_limit);
+			platformB[i].platVect.y = platformB[i - 1].platVect.y + 75.0f;
+		}
+		break;
+	}
+
+	//old code!
+	/*
 	if (player == 1)
 	{
 		// Initialise First Platforms
@@ -160,9 +186,14 @@ void racing_map_init(f32 start, f32 end, int player)
 
 	//platform1.PCoord = { (AEGfxGetWinMinX() / 2) - 20.0f , platform1.Pspawn };
 	//platform2.PCoord = { (AEGfxGetWinMaxX() / 2) - 20.0f , platform2.Pspawn };
+	*/
 
 	return;
 }
+
+
+
+
 
 // Purpose: function that will draw the map using the initialised values from the initialise functions 
 void racing_map_draw()
@@ -178,14 +209,14 @@ void racing_map_draw()
 	DRAWING PLATFORMS
 	------------------------------------------------------------*/
 	for (int i = 0; i < platform_max; i++) {
-		//AEGfxSetPosition(platformA[i].platVect.x, platformA[i].platVect.y);
 		AEGfxSetTransform(platformA[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(platformA[i].platMesh, AE_GFX_MDM_TRIANGLES);
 
-		//AEGfxSetPosition(platformB[i].platVect.x, platformB[i].platVect.y);
 		AEGfxSetTransform(platformB[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(platformB[i].platMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
@@ -209,6 +240,10 @@ void racing_map_draw()
 	return;
 }
 
+
+
+
+
 void racing_map_unload()
 {
 	// Unload all the platforms, using the same for loop as in load function
@@ -219,6 +254,10 @@ void racing_map_unload()
 
 	return;
 }
+
+
+
+
 
 /*------------------------------------------------------------
 / FUNCTIONS - SPLIT SCREEN
@@ -233,6 +272,10 @@ void splitscreen_load()
 	return;
 }
 
+
+
+
+
 // Purpose: initialise splitscreen position trhough vector
 void splitscreen_init()
 {
@@ -246,6 +289,10 @@ void splitscreen_init()
 	return;
 }
 
+
+
+
+
 // Purpose: draw out splitscreen
 void splitscreen_draw()
 {
@@ -253,10 +300,15 @@ void splitscreen_draw()
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	//AEGfxSetPosition(splitscreen.lVect.x, splitscreen.lVect.y);
 	AEGfxSetTransform(splitscreen.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(splitscreen.lMesh, AE_GFX_MDM_TRIANGLES);
 	return;
 }
+
+
+
+
 
 // Purpose: unload split screen
 void splitscreen_unload()

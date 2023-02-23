@@ -5,17 +5,13 @@
 * Group Name: Club Winx
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
 * Secondary Authors:
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 *
 ==================================================================================*/
 
 
-enum GS_STATES
-{
-	RACING = 0,
-	BOSS,
-	PUZZLE,
-	/*END_OR_ROUND,*/
-	RESTART,
-	QUIT,
-};
+void puzzle_load();
+void puzzle_init();
+void puzzle_update();
+void puzzle_draw();
+void puzzle_free();
+void puzzle_unload();
