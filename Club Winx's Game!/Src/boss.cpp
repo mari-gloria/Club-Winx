@@ -81,8 +81,15 @@ void boss_load()
 {
 	std::cout << "boss:Load\n";
 
-	//setting bg
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 255.0f);
+	/*------------------------------------------------------------
+	SETTING BACKGROUND
+	------------------------------------------------------------*/
+	//AEGfxSetBackgroundColor(0.0f, 0.0f, 255.0f);
+	SquareMesh(&bgBoss.bgMesh, 0);							// BG Mesh
+	bgBoss.bgTex = AEGfxTextureLoad("Assets/Boss_BG.jpg");		// BG Texture
+	bgBoss.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
+	bgBoss.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+	
 
 	/*------------------------------------------------------------
 	CREATING OBJECTS AND SHAPES
@@ -259,6 +266,9 @@ void boss_update()
 	/*------------------------------------------------------------
 	MATRIX CALCULATION 
 	------------------------------------------------------------*/
+	// for background
+	MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.f, bgBoss.bgCoord);
+
 	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
@@ -311,6 +321,17 @@ void boss_update()
 void boss_draw()
 {
 	std::cout << "boss:Draw\n";
+
+	/*------------------------------------------------------------
+	DRAWING BACKGROUND
+	------------------------------------------------------------*/
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetTransform(bgBoss.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxSetTextureMode(AE_GFX_TM_PRECISE);
+	AEGfxTextureSet(bgBoss.bgTex, 0, 0);
+	AEGfxMeshDraw(bgBoss.bgMesh, AE_GFX_MDM_TRIANGLES);
+
 
 	/*------------------------------------------------------------
 	DRAWING PLAYERS
@@ -458,14 +479,17 @@ void boss_unload()
 {
 	std::cout << "boss:Unload\n";
 
+	AEGfxMeshFree(bgBoss.bgMesh); // free BG Mesh
+	AEGfxTextureUnload(bgBoss.bgTex); // Unload Texture
+
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
 	AEGfxMeshFree(health.pMesh);
 	AEGfxMeshFree(health2.pMesh);
 	AEGfxMeshFree(p1health.pMesh);
 	AEGfxMeshFree(p2health.pMesh);
-
 	AEGfxMeshFree(pbossbullet);
+
 
 	//for (int i = 0; i < MAX_BULLETS; i++) {
 		AEGfxMeshFree(pBullet);
