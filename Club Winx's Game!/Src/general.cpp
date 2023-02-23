@@ -25,39 +25,30 @@
 
 
 /*------------------------------------------------------------
-Defines
+GLOBALS
 ------------------------------------------------------------*/
 
-//delta time, app run time
-float	 g_dt;
-double	 g_appTime;
-
-
-
-//declaring players & platforms
-Player		player1, player2;
-ScoreBoard	score_board;
-RacingItems racing_items[MAX_NUM_ITEMS];
-
-Platform	platformA[MAX_NUM_PLATFORMS], platformB[MAX_NUM_PLATFORMS];
-Line		splitscreen;
-
-Boss		boss;
-Health		health, health2, p1health, p2health;
+//declaring background texture, players, platforms, splitscreen, boss, health
+BG bgRacing, bgPuzzle, bgBoss;
+Player player1, player2;
+Platform platformA[platform_max], platformB[platform_max];
+Line splitscreen;
+Boss boss;
+Health health, health2, p1health, p2health;
 
 
 
 //variables for RACING
-const float		GRAVITY{ 5.0f };
-const int		JUMP_HEIGHT_MAX{ 100 };
+const float GRAVITY{ 5.0f };
+const int JUMP_HEIGHT_MAX{ 100 };
+bool p1_jumping = false;
+bool p1_on_ground = true;
+bool p2_jumping = false;
+bool p2_on_ground = true;
 
 
 
 
-
-/*------------------------------------------------------------
-Functions
-------------------------------------------------------------*/
 
 void MatrixCalc(AEMtx33 & transform, const f32 length, const f32 height, const f32 direction, const AEVec2& coords)
 {
@@ -100,8 +91,6 @@ bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, c
 	bool verticalCollision{ false };
 	bool horizontalCollision{ false };
 
-	
-
 	//Check if player intersect platform vertically
 	if (Amin.y >= Bmin.y && Amin.y <= Bmax.y && Amax.x >= Bmin.x && Amin.x <= Bmax.x)
 	{
@@ -110,14 +99,16 @@ bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, c
 	}
 	
 
-	//If player and platform is colliding
+	//If player and platform is colliding*/
 	if (verticalCollision == true && horizontalCollision == true)
 	{
-		//std::cout << "collide true" << std::endl;
+		//return true;
+		std::cout << "collide true" << std::endl;
 		return true;
 	}
 
 	return false;
+	//std::cout << "collide false" << std::endl;
 }
 
 
@@ -138,40 +129,41 @@ void input_handle()
 		 D -> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
-			if (player1.pOnGround && !player1.pJumping) {
-				player1.pJumping = true;
-				player1.pOnGround = false;
+			//if (p1_on_ground && !p1_jumping) {
+			if (player1.stepping && !p1_jumping) {
+				p1_jumping = true;
+				//p1_on_ground = false;
+				player1.stepping = false;
 			}
 		}
 
 		//jumping mechanism
-		if (player1.pJumping) {
-			player1.pCoord.y += GRAVITY * player1.pAcceleration * g_dt;
+		if (p1_jumping) {
+			player1.pCoord.y += GRAVITY;
 		}
 
 		else {
-			player1.pCoord.y -= GRAVITY * player1.pAcceleration * g_dt;
+			player1.pCoord.y -= GRAVITY;
 		}
 
 		//adding jump limits
 		if (player1.pCoord.y <= player1.pGround) {//lower limit
 			player1.pCoord.y = player1.pGround;
-			player1.pOnGround = true;
+			//p1_on_ground = true;
+			player1.stepping = true;
+		}
+
+		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+			p1_jumping = false;
 		}
 
 
-		if (player1.pCoord.y >= player1.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
-			player1.pJumping = false;
-		}
+		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.f)) >= AEGfxGetWinMinX()) //left limit = MinX
+			player1.pCoord.x -= 3.0f;
 
+		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.f) <= 0) //right limit = 0 - size
+			player1.pCoord.x += 3.0f;
 
-		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.0f)) >= AEGfxGetWinMinX()) { //left limit = MinX
-			player1.pCoord.x -= 3.0f * player1.pAcceleration * g_dt;
-		}
-
-		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.0f) <= 0) { //right limit = 0 - size
-			player1.pCoord.x += 3.0f * player1.pAcceleration * g_dt;
-		}
 
 		/*----------------------------------------------------------------------------------
 		 player 2 movement controls
@@ -181,45 +173,45 @@ void input_handle()
 		 right -> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
-			if (player2.pOnGround && !player2.pJumping) {
-				player2.pJumping = true;
-				player2.pOnGround = false;
+			//if (p2_on_ground && !p2_jumping) {
+			if (player2.stepping && !p2_jumping) {
+				p2_jumping = true;
+				//p2_on_ground = false;
+				player2.stepping = false;
 			}
 		}
 
 		//jumping mechanism
-		if (player2.pJumping) {
-			player2.pCoord.y += GRAVITY * player2.pAcceleration * g_dt;
+		if (p2_jumping) {
+			player2.pCoord.y += GRAVITY;
 		}
 
 		else {
-			player2.pCoord.y -= GRAVITY * player2.pAcceleration * g_dt;
+			player2.pCoord.y -= GRAVITY;
 		}
 
 		//adding jump limits
 		if (player2.pCoord.y <= player2.pGround) {//lower limit
 			player2.pCoord.y = player2.pGround;
-			player2.pOnGround = true;
+			//p2_on_ground = true;
+			player2.stepping = true;
+		}
+
+		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+			p2_jumping = false;
 		}
 
 
-		if (player2.pCoord.y >= player2.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
-			player2.pJumping = false;
-		}
+		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size/2.f) >= 0)) //left limit = 0
+			player2.pCoord.x -= 3.0f;
 
-
-		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.0f)) >= 0) //left limit = MinX
-			player2.pCoord.x -= 3.0f * player2.pAcceleration * g_dt;
-
-		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.0f) <= AEGfxGetWinMaxX()) //right limit = 0 - size
-			player2.pCoord.x += 3.0f * player2.pAcceleration * g_dt;
+		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size/2.f) <= AEGfxGetWinMaxX() ) //right limit is = MaxX - size
+			player2.pCoord.x += 3.0f;
 
 		/*------------------------------------------------------------
 		END OF RACING
 		------------------------------------------------------------*/
 		break;
-
-
 
 
 
@@ -256,16 +248,7 @@ void input_handle()
 		------------------------------------------------------------*/
 		break;
 
-
-
-
-
 	case PUZZLE:
-		
-
-		/*------------------------------------------------------------
-		END OF PUZZLE
-		------------------------------------------------------------*/
 		/*----------------------------------------------------------------------------------
 		 player 1 movement controls
 
@@ -274,81 +257,88 @@ void input_handle()
 		 D -> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
-			if (player1.pOnGround && !player1.pJumping) {
-				player1.pJumping = true;
-				player1.pOnGround = false;
+			//if (p1_on_ground && !p1_jumping) {
+			if (player1.stepping && !p1_jumping) {
+				p1_jumping = true;
+				//p1_on_ground = false;
+				player1.stepping = false;
 			}
 		}
 
 		//jumping mechanism
-		if (player1.pJumping) {
-			player1.pCoord.y += GRAVITY * player1.pAcceleration * g_dt;
+		if (p1_jumping) {
+			player1.pCoord.y += GRAVITY;
 		}
 
 		else {
-			player1.pCoord.y -= GRAVITY * player1.pAcceleration * g_dt;
+			player1.pCoord.y -= GRAVITY;
 		}
 
 		//adding jump limits
 		if (player1.pCoord.y <= player1.pGround) {//lower limit
 			player1.pCoord.y = player1.pGround;
-			player1.pOnGround = true;
+			//p1_on_ground = true;
+			player1.stepping = true;
+		}
+
+		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+			p1_jumping = false;
 		}
 
 
-		if (player1.pCoord.y >= player1.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
-			player1.pJumping = false;
-		}
+		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.f)) >= AEGfxGetWinMinX()) //left limit = MinX
+			player1.pCoord.x -= 3.0f;
 
+		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.f) <= 0) //right limit = 0 - size
+			player1.pCoord.x += 3.0f;
 
-		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.0f)) >= AEGfxGetWinMinX()) { //left limit = MinX
-			player1.pCoord.x -= 3.0f * player1.pAcceleration * g_dt;
-		}
-
-		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.0f) <= 0) { //right limit = 0 - size
-			player1.pCoord.x += 3.0f * player1.pAcceleration * g_dt;
-		}
 
 		/*----------------------------------------------------------------------------------
 		 player 2 movement controls
-
+		
 		 up -> jump
 		 left -> move left
 		 right -> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
-			if (player2.pOnGround && !player2.pJumping) {
-				player2.pJumping = true;
-				player2.pOnGround = false;
+			//if (p2_on_ground && !p2_jumping) {
+			if (player2.stepping && !p2_jumping) {
+				p2_jumping = true;
+				//p2_on_ground = false;
+				player2.stepping = false;
 			}
 		}
 
 		//jumping mechanism
-		if (player2.pJumping) {
-			player2.pCoord.y += GRAVITY * player2.pAcceleration * g_dt;
+		if (p2_jumping) {
+			player2.pCoord.y += GRAVITY;
 		}
 
 		else {
-			player2.pCoord.y -= GRAVITY * player2.pAcceleration * g_dt;
+			player2.pCoord.y -= GRAVITY;
 		}
 
 		//adding jump limits
 		if (player2.pCoord.y <= player2.pGround) {//lower limit
 			player2.pCoord.y = player2.pGround;
-			player2.pOnGround = true;
+			//p2_on_ground = true;
+			player2.stepping = true;
+		}
+
+		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+			p2_jumping = false;
 		}
 
 
-		if (player2.pCoord.y >= player2.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
-			player2.pJumping = false;
-		}
+		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.f) >= 0)) //left limit = 0
+			player2.pCoord.x -= 3.0f;
 
+		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.f) <= AEGfxGetWinMaxX()) //right limit is = MaxX - size
+			player2.pCoord.x += 3.0f;
 
-		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.0f)) >= 0) //left limit = MinX
-			player2.pCoord.x -= 3.0f * player2.pAcceleration * g_dt;
-
-		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.0f) <= AEGfxGetWinMaxX()) //right limit = 0 - size
-			player2.pCoord.x += 3.0f * player2.pAcceleration * g_dt;
+		/*------------------------------------------------------------
+		END OF PUZZLE
+		------------------------------------------------------------*/
 
 	case RESTART:
 		break;
@@ -386,19 +376,9 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour)
 
 
 
-int rand_num(int min, int max)
-{
-	int r = (int)rand() / (int)RAND_MAX;
-	return min + r * (max - min);
-}
 
-float rand_num(float min, float max)
+float rand_float(float min, float max)
 {
 	float r = (float)rand() / (float)RAND_MAX;
 	return min + r * (max - min);
-}
-
-ItemType rand_item() {
-	int temp = rand_num(0, 1);
-	return temp? GOOD : BAD;
 }

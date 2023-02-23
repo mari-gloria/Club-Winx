@@ -21,7 +21,6 @@
 #include "racing_map.h"
 
 #include <iostream>
-#include <algorithm>
 // ---------------------------------------------------------------------------
 
 
@@ -39,7 +38,7 @@ void racing_map_load()
 	
 
 	// for every element, load in the mesh for both platformA & platformB, with the specific Mesh Pointer and values from main_pointer struct
-	for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
+	for (int i = 0; i < platform_max; i++) {
 		//SquareMesh(&platformA[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
 		//SquareMesh(&platformB[i].platMesh, main_platform.length, main_platform.height, main_platform.colour);
 		SquareMesh(&platformA[i].platMesh, 0xFFFFFF00);
@@ -87,23 +86,11 @@ void racing_map_init(f32 start, f32 end, int player)
 		platformA[0].platVect.x = player1.pCoord.x;
 		platformA[0].platVect.y = player1.pCoord.y + 75.0f;
 
-		//in progress -kristy
-		//generate a list of random platform numbers 
-		/*int rand_nums[MAX_NUM_ITEMS];
-		for (int i = 0; i < MAX_NUM_ITEMS; i ++) {
-			rand_nums[i] = rand_num(0, MAX_NUM_PLATFORMS);
-		}
-
-		std::sort(rand_nums[0], rand_nums[MAX_NUM_ITEMS - 1]);
-
-		int item_count = 0;*/
-
-		//init platforms
-		for (int i = 1; i < MAX_NUM_PLATFORMS; i++) {
+		for (int i = 1; i < platform_max; i++) {
 			//x-coord: random x coord is generated within min and max limit
-			//y-coord: increases by 100.0f from prev platform
-			platformA[i].platVect.x = rand_num(min_limit, max_limit);
-			platformA[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
+			//y-coord: increases by 75.0f from prev platform
+			platformA[i].platVect.x = rand_float(min_limit, max_limit);
+			platformA[i].platVect.y = platformA[i - 1].platVect.y + 75.0f;
 		}
 
 		break;
@@ -112,11 +99,11 @@ void racing_map_init(f32 start, f32 end, int player)
 		platformB[0].platVect.x = player2.pCoord.x;
 		platformB[0].platVect.y = player2.pCoord.y + 75.0f;
 
-		for (int i = 1; i < MAX_NUM_PLATFORMS; i++) {
+		for (int i = 1; i < platform_max; i++) {
 			//x-coord: random x coord is generated within min and max limit
-			//y-coord: increases by 100.0f from prev platform
-			platformB[i].platVect.x = rand_num(min_limit, max_limit);
-			platformB[i].platVect.y = platformB[i - 1].platVect.y + 100.0f;
+			//y-coord: increases by 75.0f from prev platform
+			platformB[i].platVect.x = rand_float(min_limit, max_limit);
+			platformB[i].platVect.y = platformB[i - 1].platVect.y + 75.0f;
 		}
 		break;
 	}
@@ -221,7 +208,7 @@ void racing_map_draw()
 	/*------------------------------------------------------------
 	DRAWING PLATFORMS
 	------------------------------------------------------------*/
-	for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
+	for (int i = 0; i < platform_max; i++) {
 		AEGfxSetTransform(platformA[i].transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
@@ -260,7 +247,7 @@ void racing_map_draw()
 void racing_map_unload()
 {
 	// Unload all the platforms, using the same for loop as in load function
-	for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
+	for (int i = 0; i < platform_max; i++) {
 		AEGfxMeshFree(platformA[i].platMesh);
 		AEGfxMeshFree(platformB[i].platMesh);
 	}
@@ -279,7 +266,7 @@ void racing_map_unload()
 // Purppose: load splitscreen
 void splitscreen_load()
 {
-	splitscreen.height = AEGfxGetWinMaxY() * AEGfxGetWinMaxY();
+	splitscreen.height = (AEGfxGetWinMaxY() - AEGfxGetWinMinY()) * 4;
 	//SquareMesh(&splitscreen.lMesh, splitscreen.length, splitscreen.height, splitscreen.colour);
 	SquareMesh(&splitscreen.lMesh, splitscreen.colour);
 	return;

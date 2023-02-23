@@ -115,6 +115,9 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Inc\racing.h" />
     <ClInclude Include="Inc\racing_map.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Boss_BG.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
