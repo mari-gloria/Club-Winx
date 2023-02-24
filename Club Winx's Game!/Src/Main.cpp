@@ -94,7 +94,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			// check if forcing the application to quit
 			if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-				curr_state = QUIT;
+				next_state = QUIT;
 
 			//app runtime, delta time
 			g_dt = (f32)AEFrameRateControllerGetFrameTime();
