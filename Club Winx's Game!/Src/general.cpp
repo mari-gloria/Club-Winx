@@ -259,85 +259,36 @@ void input_handle()
 		 A -> move left
 		 D -> move right
 		-----------------------------------------------------------------------------------*/
-		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
-			if (player1.pOnGround && !player1.pJumping) {
-				player1.pJumping = true;
-				player1.pOnGround = false;
-			}
-		}
+		// player one input
+		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size)
+			player1.pCoord.y += 3.0f;
 
-		//jumping mechanism
-		if (player1.pJumping) {
-			player1.pCoord.y += GRAVITY * player1.pAcceleration * g_dt;
-		}
+		else if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY())
+			player1.pCoord.y -= 3.0f;
 
-		else {
-			player1.pCoord.y -= GRAVITY * player1.pAcceleration * g_dt;
-		}
+		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX())
+			player1.pCoord.x -= 3.0f;
 
-		//adding jump limits
-		if (player1.pCoord.y <= player1.pGround) {//lower limit
-			player1.pCoord.y = player1.pGround;
-			player1.pOnGround = true;
-		}
+		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= AEGfxGetWinMaxX() - player1.size)
+			player1.pCoord.x += 3.0f;
 
+		//player two input
+		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size)
+			player2.pCoord.y += 3.0f;
 
-		if (player1.pCoord.y >= player1.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
-			player1.pJumping = false;
-		}
+		else if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY())
+			player2.pCoord.y -= 3.0f;
 
+		if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= AEGfxGetWinMinX())
+			player2.pCoord.x -= 3.0f;
 
-		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.0f)) >= AEGfxGetWinMinX()) { //left limit = MinX
-			player1.pCoord.x -= 3.0f * player1.pAcceleration * g_dt;
-		}
+		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size)
+			player2.pCoord.x += 3.0f;
 
-		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.0f) <= 0) { //right limit = 0 - size
-			player1.pCoord.x += 3.0f * player1.pAcceleration * g_dt;
-		}
-
-		/*----------------------------------------------------------------------------------
-		 player 2 movement controls
-
-		 up -> jump
-		 left -> move left
-		 right -> move right
-		-----------------------------------------------------------------------------------*/
-		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
-			if (player2.pOnGround && !player2.pJumping) {
-				player2.pJumping = true;
-				player2.pOnGround = false;
-			}
-		}
-
-		//jumping mechanism
-		if (player2.pJumping) {
-			player2.pCoord.y += GRAVITY * player2.pAcceleration * g_dt;
-		}
-
-		else {
-			player2.pCoord.y -= GRAVITY * player2.pAcceleration * g_dt;
-		}
-
-		//adding jump limits
-		if (player2.pCoord.y <= player2.pGround) {//lower limit
-			player2.pCoord.y = player2.pGround;
-			player2.pOnGround = true;
-		}
-
-
-		if (player2.pCoord.y >= player2.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
-			player2.pJumping = false;
-		}
-
-
-		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.0f)) >= 0) //left limit = MinX
-			player2.pCoord.x -= 3.0f * player2.pAcceleration * g_dt;
-
-		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.0f) <= AEGfxGetWinMaxX()) //right limit = 0 - size
-			player2.pCoord.x += 3.0f * player2.pAcceleration * g_dt;
 		/*------------------------------------------------------------
 		END OF PUZZLE
 		------------------------------------------------------------*/
+
 
 	case RESTART:
 		break;

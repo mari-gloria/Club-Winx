@@ -12,7 +12,8 @@
 
 enum GS_STATES
 {
-	RACING = 0,
+	MENU = 0,
+	RACING,
 	BOSS,
 	PUZZLE,
 	/*END_OR_ROUND,*/

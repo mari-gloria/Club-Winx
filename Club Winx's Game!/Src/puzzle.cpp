@@ -5,7 +5,8 @@
 * Group Name: Club Winx
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
 * Secondary Authors:
-*	
+*	Yeo Hui Shan (huishan.y@digipen.edu)
+*
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
@@ -16,21 +17,41 @@
 #include "gsm.h"
 #include "gamestatelist.h"
 #include "general.h"
-
 #include <iostream>
 // ---------------------------------------------------------------------------
 
+//#define PUZZLE_MAP_W 840
+//#define PUZZLE_MAP_H 520
+
+// ----- TEXTURE DECLARATIONS ----- //
+// Textures for Puzzle Mode
+AEGfxTexture* Key;
+AEGfxTexture* Spiderweb;
 
 void puzzle_load()
 {
 	std::cout << "puzzle:Load\n";
 
 	AEGfxSetBackgroundColor(255.0f, 0.0f, 0.0f);
+	bgPuzzle.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
+	bgPuzzle.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
+	// Textures for Puzzle
+	bgPuzzle.bgTex = AEGfxTextureLoad("Assets/PUZZLE_2.png");
+	AE_ASSERT_MESG(bgPuzzle.bgTex, "Failed to create bgPuzzle.bgTex!!");
+
+	Key = AEGfxTextureLoad("Assets/KEY.png");
+	AE_ASSERT_MESG(Key, "Failed to create Key!!");
+
+	Spiderweb = AEGfxTextureLoad("Assets/SPIDERWEB.png");
+	AE_ASSERT_MESG(Spiderweb, "Failed to create Spiderweb!!");
 
 	/*------------------------------------------------------------
 	CREATING OBJECTS AND SHAPES
 	------------------------------------------------------------*/
+	// BG mesh
+	SquareMesh(&bgPuzzle.bgMesh, 0);
+
 	// player 1 mesh 
 	SquareMesh(&player1.pMesh, 0xFFB62891);
 
@@ -76,6 +97,9 @@ void puzzle_update()
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
+	// for background
+	MatrixCalc(bgPuzzle.transform, bgPuzzle.length, bgPuzzle.height, 0.0f, bgPuzzle.bgCoord);
+
 	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
@@ -84,6 +108,16 @@ void puzzle_update()
 void puzzle_draw()
 {
 	std::cout << "puzzle:Draw\n";
+
+	/*------------------------------------------------------------
+	DRAWING BACKGROUND
+	------------------------------------------------------------*/
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetTransform(bgPuzzle.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 0.0f);
+	AEGfxTextureSet(bgPuzzle.bgTex, 0.0f, 0.0f);
+	AEGfxMeshDraw(bgPuzzle.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	DRAWING PLAYERS
@@ -106,12 +140,18 @@ void puzzle_draw()
 void puzzle_free()
 {
 	std::cout << "puzzle:Free\n";
+
+	AEGfxMeshFree(player1.pMesh);
+	AEGfxMeshFree(player2.pMesh);
+	AEGfxMeshFree(bgPuzzle.bgMesh);
 }
 
 void puzzle_unload()
 {
 	std::cout << "puzzle:Unload\n";
 
-	AEGfxMeshFree(player1.pMesh);
-	AEGfxMeshFree(player2.pMesh);
+	AEGfxTextureUnload(bgPuzzle.bgTex);
+	AEGfxTextureUnload(Key);
+	AEGfxTextureUnload(Spiderweb);
+
 }

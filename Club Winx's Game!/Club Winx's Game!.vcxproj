@@ -98,6 +98,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Buttons.cpp" />
+    <ClCompile Include="Src\MainMenu.cpp" />
     <ClCompile Include="Src\boss.cpp" />
     <ClCompile Include="Src\general.cpp" />
     <ClCompile Include="Src\gsm.cpp" />
@@ -108,6 +110,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Src\win_lose.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Inc\Buttons.h" />
     <ClInclude Include="Inc\boss.h" />
     <ClInclude Include="Inc\gamestatelist.h" />
     <ClInclude Include="Inc\general.h" />
@@ -116,6 +119,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Inc\racing.h" />
     <ClInclude Include="Inc\racing_map.h" />
     <ClInclude Include="Inc\win_lose.h" />
+    <ClInclude Include="Inc\MainMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
