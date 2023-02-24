@@ -29,12 +29,12 @@ defines
 ------------------------------------------------------------*/
 
 // Camera Movement Variables
-static f32			maxHeight		{ 0 };
-static int			count			{ 1 };
-static f32			maxHeight_copy	{ 0 };
-static const f32	H				{ 200.0f };
-
-static f32			CamX{ 0.0f }, CamY{ 0.0f }; // Camera's X & Y Positions
+static f32			CamX{ 0.0f },
+CamY{ 0.0f };	// Camera's X & Y Positions
+//static f32			maxHeight		{ 0 };
+//static int			count			{ 1 };
+//static f32			maxHeight_copy	{ 0 };
+//static const f32	H				{ 200.0f };
 
 
 
@@ -62,6 +62,9 @@ void racing_load()
 
 	// player 2 mesh
 	SquareMesh(&player2.pMesh,0xFFFF00FF);
+
+	// score board mesh
+	SquareMesh(&score_board.sMesh, 0xFF000000);
 
 	// loading in platform meshes in map
 	racing_map_load();
@@ -93,11 +96,21 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT PLAYERS
 	------------------------------------------------------------*/
-	player1.pGround = AEGfxGetWinMinY() + player1.size / 2.f ;
-	player2.pGround = AEGfxGetWinMinY() + player2.size / 2.f ;
+	player1.pGround = AEGfxGetWinMinY() + player1.size / 2.f;
+	player1.pCurrGround = player1.pGround;
+	player2.pGround = AEGfxGetWinMinY() + player2.size / 2.f;
+	player2.pCurrGround = player2.pGround;
 
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
+
+
+
+	/*------------------------------------------------------------
+	// INIT SCOREBOARD
+	------------------------------------------------------------*/
+	score_board.sCoord.x = 0.0f;
+	score_board.sCoord.y = 150.0f;
 
 
 
@@ -128,8 +141,8 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
-	maxHeight = H;
-	maxHeight_copy = H;
+	//maxHeight = H;
+	//maxHeight_copy = H;
 
 	return;
 }
@@ -158,7 +171,42 @@ void racing_update()
 	------------------------------------------------------------*/
 	input_handle();
 
-	for (int i = 0; i < platform_max; i++)
+
+	//checking for collision
+	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
+	{
+		//player 1
+		if (CollisionIntersection_RectRect(player1.pCoord, player1.size, player1.size,
+			platformA[i].platVect, platformA[i].length, platformA[i].height) == true) {
+
+			player1.pPrevGround = player1.pCurrGround;
+			player1.pCurrGround = platformA[i].platVect.y + platformA[i].height / 2.0f + player1.size / 2.0f;
+			player1.maxCurrHeight = platformA[i + 1].platVect.y - platformA[i + 1].height / 2.0f - player1.size / 2.0f + 10.0f;
+
+			player1.pCoord.y = player1.pCurrGround;
+
+			player1.pOnGround = true;
+
+		}
+
+
+		//player 2
+		if (CollisionIntersection_RectRect(player2.pCoord, player2.size, player2.size,
+			platformB[i].platVect, platformB[i].length, platformB[i].height) == true) {
+
+			player2.pPrevGround = player2.pCurrGround;
+			player2.pCurrGround = platformB[i].platVect.y + platformB[i].height / 2.0f + player2.size / 2.0f;
+			//player2.maxCurrHeight = platformB[i].platVect.y - platformB[i].height / 2.0f - player2.size / 2.0f;
+
+			player2.pCoord.y = player2.pCurrGround;
+
+			player2.pOnGround = true;
+
+		}
+	}
+
+
+	/*for (int i = 0; i < platform_max; i++)
 	{
 		if (CollisionIntersection_RectRect(player1.pCoord, player1.size, player1.size, 
 											platformA[i].platVect, platformA[i].length, platformA[i].height) == true) {
@@ -215,7 +263,7 @@ void racing_update()
 			//player1.pCurrGround = player1.pGround;
 		}
 
-	}
+	}*/
 
 
 
@@ -226,8 +274,11 @@ void racing_update()
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
+	//for scoreboard
+	MatrixCalc(score_board.transform, score_board.length, score_board.height, 0.0f, score_board.sCoord);
+
 	//for platforms 
-	for (int i = 0; i < platform_max; i++) {
+	for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
 		MatrixCalc(platformA[i].transform, platformA[i].length, platformA[i].height, 0.f, platformA[i].platVect);
 		MatrixCalc(platformB[i].transform, platformB[i].length, platformB[i].height, 0.f, platformB[i].platVect);
 	}
@@ -241,14 +292,16 @@ void racing_update()
 	// UPDATE - Camera Movement
 	// if the player.y + size is over or at maxHeight, CamY will increase
 	//------------------------------------------------------------*/
-	if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
+
+	/*if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
 	{
 		count++;
 		CamY+=maxHeight_copy; // Calculate the target camera position to gradually move towards
 
 		// maxHeight Incrementing
 		maxHeight = (maxHeight_copy * count);
-	}
+	}*/
 
 
 }
@@ -256,8 +309,6 @@ void racing_update()
 void racing_draw()
 {
 	std::cout << "racing:Draw\n";
-
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
@@ -269,18 +320,20 @@ void racing_draw()
 	/*------------------------------------------------------------
 	// DRAWING PLAYERS
 	------------------------------------------------------------*/
-	// Drawing object 1
+	// Drawing player 1
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTransform(player1.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	// No texture for object 1
+	// No texture for player 1
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTransform(player2.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	// No texture for object 1
+	// No texture for player 2
 	AEGfxTextureSet(NULL, 0, 0);
 	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
@@ -291,6 +344,18 @@ void racing_draw()
 	// DRAWING SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_draw();
+
+
+
+	/*------------------------------------------------------------
+	// DRAWING SCORE BOARD
+	------------------------------------------------------------*/
+	/*AEGfxSetTransform(score_board.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	// No texture for scoreboard
+	AEGfxTextureSet(NULL, 0, 0);
+	// Drawing the mesh (list of triangles)
+	AEGfxMeshDraw(score_board.sMesh, AE_GFX_MDM_TRIANGLES);*/
 
 
 
