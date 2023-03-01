@@ -44,8 +44,8 @@ RacingItems racing_items[MAX_NUM_ITEMS];
 Platform	platformA[MAX_NUM_PLATFORMS], platformB[MAX_NUM_PLATFORMS];
 Line		splitscreen;
 
-Boss		boss;
-Health		health, health2, p1health, p2health;
+//Boss		boss;
+Health	 p1health, p2health;
 
 
 

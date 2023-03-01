@@ -82,6 +82,10 @@ struct Player { // initialise in each game mode before use
 	bool				usedItem{ false };		// indicate if item has been used
 
 	AEMtx33				transform{};				// transform matrix
+
+	
+	f32					HP{ 100.f };						// player health
+	bool				alive{ true };					// player alive/dead
 };
 extern Player player1, player2;
 
@@ -183,37 +187,23 @@ struct Line {
 extern Line			splitscreen;
 
 
-
-
-
-/*--------------------------------------------------------------------------
-Boss
----------------------------------------------------------------------------*/
-struct Boss { // initialise in each game mode before use 
-
-	AEGfxVertexList*	pMesh1		{ nullptr };			// mesh 
-	AEGfxVertexList*	pMesh2		{ nullptr };			// mesh 
-	AEGfxTexture*		pTex		{ nullptr };			// texture
-	AEMtx33				transform	{};						// transform mtx 
-	AEVec2				Bcoord		{ 380.0f, -30.f };	// position of boss
-	f32 length = 150.0f; //boss length 
-	f32 height = 200.f; // boss height
-};
-extern Boss boss;
-
 struct Health { // initialise in each game mode before use 
 
-	AEGfxVertexList*	pMesh		{ nullptr };			// mesh    
-	AEGfxTexture*		pTex		{ nullptr };			// texture
-	AEMtx33				transform	{};
-	AEVec2				Hcoord		{ -35.0f, 300.0f  };
-	AEVec2				Hcoord2		{};
-	f32					plength		{};
-	f32					pheight		{ 10.0f };
-	f32					length		{ 1200 }; 
-	f32					height		{ 30.0f };
+	AEGfxVertexList* pMesh{ nullptr };			// mesh    
+	AEGfxTexture* pTex{ nullptr };			// texture
+	AEMtx33				transform{};
+	AEVec2				Hcoord{ -35.0f, 300.0f };
+	AEVec2				Hcoord2{};
+	f32					plength{};
+	f32					pheight{ 10.0f };
+	f32					length{ 1200 };
+	f32					height{ 30.0f };
 };
-extern Health health, health2, p1health, p2health;
+extern Health health2, p1health, p2health;
+
+
+
+
 
 
 

@@ -370,7 +370,9 @@ void racing_draw()
 void racing_free()
 {
 	std::cout << "racing:Free\n";
-
+	CamX = 0.0f; 
+	CamY = 0.f;
+	AEGfxSetCamPosition(CamX, CamY);
 }
 
 void racing_unload()
