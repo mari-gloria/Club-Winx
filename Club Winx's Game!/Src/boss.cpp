@@ -95,14 +95,13 @@ Boss
 struct Boss { // initialise in each game mode before use 
 
 	AEGfxVertexList* pMesh1{ nullptr };			// mesh 
-	AEGfxVertexList* pMesh2{ nullptr };			// mesh 
 	AEGfxTexture* pTex{ nullptr };			// texture
 	AEMtx33				transform{};						// transform mtx 
 	AEVec2				Bcoord{ 380.0f, -30.f };	// position of boss
 	bool				alive{ true };
 	Health				Bhealth;
-	f32 length = 150.0f; //boss length 
-	f32 height = 200.f; // boss height
+	f32 length = 200.0f; //boss length 
+	f32 height = 150.f; // boss height
 	f32 HP{ BOSS_MAX_HP };
 };
 //extern Boss boss;
@@ -119,7 +118,7 @@ void boss_load()
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 255.0f);
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	bgBoss.bgTex = AEGfxTextureLoad("Assets/Boss_BG.png");		// BG Texture
 	SquareMesh(&bgBoss.bgMesh, 0);							// BG Mesh
 	bgBoss.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
@@ -131,7 +130,7 @@ void boss_load()
 	------------------------------------------------------------*/
 	// player 1 mesh 
 	//SquareMesh(&player1.pMesh, player1.size, player1.size, 0xFFB62891);
-	SquareMesh(&player1.pMesh,  0xFFB62891);
+	SquareMesh(&player1.pMesh, 0xFFB62891); //0xFFB62891
 	// player 2 mesh
 	//SquareMesh(&player2.pMesh, player2.size, player2.size, 0xFFFF00FF);
 	SquareMesh(&player2.pMesh, 0xFFFF00FF);
@@ -154,7 +153,9 @@ void boss_load()
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
-
+	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
+	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
+	boss.pTex = AEGfxTextureLoad("Assets/BOSS.png");
 
 	/*------------------------------------------------------------
 	CREATING FONTS
@@ -172,8 +173,7 @@ void boss_init()
 
 	player1.HP = player2.HP = PLAYER_MAX_HP;
 
-	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
-	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
+	
 
 	DEFAULT_HP = (f32)AEGetWindowWidth();
 
@@ -275,7 +275,7 @@ void boss_update()
 		{
 			bullets1[i].bCoord.x += BULLETSPEED; // bullet speed 
 		}
-		else {
+		else if (player1.alive) {
 			bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
 		}
 
@@ -288,7 +288,7 @@ void boss_update()
 		{
 			bullets2[i].bCoord.x += BULLETSPEED; // bullet speed s
 		}
-		else {
+		else if (player2.alive) {
 			bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
 		}
 
@@ -389,7 +389,7 @@ void boss_update()
 	MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.0f, bgBoss.bgCoord);
 
 	// for players 
-	MatrixCalc(player1.transform, player1.size, player1.size, PI, player1.pCoord);
+	MatrixCalc(player1.transform, player1.size, player1.size, 0.0f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
 	// for bullet 
@@ -447,7 +447,7 @@ void boss_draw()
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTextureMode(AE_GFX_TM_PRECISE);
+	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
 	AEGfxSetTransform(bgBoss.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -466,8 +466,9 @@ void boss_draw()
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransform(player1.transform.m);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		AEGfxTextureSet(player1.pTex, 0, 0);
-		//AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 0.0f);
+		AEGfxSetTransparency(1.0f);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 0.0f);
+		 AEGfxTextureSet(player1.pTex, 0, 0);
 		// Drawing the mesh (list of triangles)
 		AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
@@ -538,11 +539,13 @@ void boss_draw()
 	if (boss.alive) {
 
 		// drawing boss
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransform(boss.transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxTextureSet(boss.pTex, 0, 0);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
 		// drawing Current boss.Bhealth
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetTransform(boss.Bhealth.transform.m);
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
@@ -576,12 +579,12 @@ void boss_unload()
 	AEGfxTextureUnload(player2.pTex);
 	AEGfxMeshFree(player2.pMesh);
 	AEGfxMeshFree(boss.Bhealth.pMesh);
-	//AEGfxMeshFree(health2.pMesh);
 	AEGfxMeshFree(p1health.pMesh);
 	AEGfxMeshFree(p2health.pMesh);
 	AEGfxMeshFree(pbossbullet);
 
-
+	AEGfxMeshFree(boss.pMesh1);
+	AEGfxTextureUnload(boss.pTex);
 	//for (int i = 0; i < MAX_BULLETS; i++) {
 		AEGfxMeshFree(pBullet);
 		//AEGfxMeshFree(pBullet);//}

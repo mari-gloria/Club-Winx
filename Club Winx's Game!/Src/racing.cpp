@@ -77,7 +77,8 @@ void racing_load()
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
-
+	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
+	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
 
 
 	/*------------------------------------------------------------
@@ -321,20 +322,20 @@ void racing_draw()
 	// DRAWING PLAYERS
 	------------------------------------------------------------*/
 	// Drawing player 1
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransform(player1.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for player 1
-	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxTextureSet(player1.pTex, 0, 0);
 	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTransform(player2.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	// No texture for player 2
-	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxTextureSet(player2.pTex, 0, 0);
 	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
@@ -385,6 +386,8 @@ void racing_unload()
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
 
+	AEGfxTextureUnload(player1.pTex);
+	AEGfxTextureUnload(player2.pTex);
 
 
 	/*------------------------------------------------------------
