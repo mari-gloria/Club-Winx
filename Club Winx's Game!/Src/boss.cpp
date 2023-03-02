@@ -500,7 +500,7 @@ void boss_draw()
 			AEGfxTextureSet(NULL, 0, 0);
 			AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
 		}
-		if (bullets2[i].shot && player1.alive)
+		if (bullets2[i].shot && player2.alive)
 		{
 			//AEGfxSetPosition(bullets2[i].bCoord.x, bullets2[i].bCoord.y);
 			AEGfxSetTransform(bullets2[i].transform.m);

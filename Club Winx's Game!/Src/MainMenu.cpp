@@ -249,7 +249,7 @@ INITIALISE BUTTONS AND VARIABLES FOR MAIN MENU
 ------------------------------------------------------------*/
 void MainMenu_Update()
 {
-	AEInputUpdate();
+	//AEInputUpdate();
 	AEInputGetCursorPosition(&mouseInput_x, &mouseInput_y);
 	std::cout << mouseInput_x << ", " << mouseInput_y << std::endl;
 
@@ -275,7 +275,7 @@ void MainMenu_Update()
 			hover_start = true;
 			std::cout << "start hover" << std::endl;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				start_click = true;
 				toggle = MODESELECTIONPAGE;
@@ -360,7 +360,7 @@ void MainMenu_Update()
 			story_click = false, arcade_click = false, back_click = false;
 		}
 
-		if (AEInputCheckCurr(AEVK_LBUTTON))
+		if (AEInputCheckTriggered(AEVK_LBUTTON))
 		{
 			if (hover_story == true)
 			{
