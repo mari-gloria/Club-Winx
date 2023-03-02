@@ -210,6 +210,7 @@ void boss_update()
 	if (player2.HP < 0)
 	{
 		player2.alive = false;
+		std::cout << "player 2 dead \n";
 	}
 	/*------------------------------------------------------------
 	BOSS UPDATE
@@ -262,12 +263,22 @@ void boss_update()
 	}
 	for (int i = 0; i < MAX_BULLETS; i++)
 	{
-		if (bullets1[i].shot && player1.alive)
+	
+		if (player1.alive) {
+
+			if (bullets1[i].shot)
+			{
+				bullets1[i].bCoord.x += BULLETSPEED; // bullet speed 
+				std::cout << "bullets 1 no. " << i << " launched \n";
+			}
+			else
+			{
+				bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
+			}
+		} 
+		else //if player ded
 		{
-			bullets1[i].bCoord.x += BULLETSPEED; // bullet speed 
-		}
-		else if (player1.alive) {
-			bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
+			bullets1[i].shot = false;
 		}
 
 		if (bullets1[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
@@ -275,14 +286,22 @@ void boss_update()
 			bullets1[i].shot = FALSE;
 		}
 
-		if (bullets2[i].shot && player2.alive)
+		if (player2.alive) {
+			
+			if (bullets2[i].shot)
+			{
+				bullets2[i].bCoord.x += BULLETSPEED; // bullet speed 
+				std::cout << "bullets 2 no. " << i << " launched \n";
+			}
+			else 
+			{
+				bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
+			}
+		}
+		else //if player ded
 		{
-			bullets2[i].bCoord.x += BULLETSPEED; // bullet speed s
+			bullets2[i].shot = false;
 		}
-		else if (player2.alive) {
-			bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
-		}
-
 		if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
 		{
 			bullets2[i].shot = FALSE;
