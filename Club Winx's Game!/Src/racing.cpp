@@ -36,7 +36,6 @@ static bool			if_win{ false };
 
 
 
-
 /*------------------------------------------------------------
 FUNCTIONS
 ------------------------------------------------------------*/
@@ -140,15 +139,18 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
+	CamX = 0.0f, CamY = 0.0f;
 	maxHeight = H;
 	maxHeight_copy = H;
+	count = 1;
 
 	/*------------------------------------------------------------
 	// INIT - Racing Win Texture
 	------------------------------------------------------------*/
 	// winRacing.bgCoord = {player}
-	winRacing.length = 80.0f;
-	winRacing.height = 40.0f;
+	winRacing.length = 120.0f;
+	winRacing.height = 70.0f;
+	if_win = false;
 
 	return;
 }
@@ -169,7 +171,9 @@ void racing_update()
 	if (AEInputCheckCurr(AEVK_3)) {
 		next_state = PUZZLE;
 	}
-
+	if (AEInputCheckCurr(AEVK_BACK)) {
+		next_state = RESTART;
+	}
 
 
 	/*------------------------------------------------------------
@@ -194,7 +198,7 @@ void racing_update()
 			player1.pOnGround = true;
 
 			// if collision on last platform
-			if (i == 50)
+			if (i == (MAX_NUM_PLATFORMS -1))
 			{
 				Racing_Win(true, 1);
 				if_win = true;
@@ -216,7 +220,7 @@ void racing_update()
 			player2.pOnGround = true;
 
 			// if collision on last platform
-			if (i == 50)
+			if (i == (MAX_NUM_PLATFORMS - 1))
 			{
 				Racing_Win(true, 2);
 				if_win = true;
@@ -307,8 +311,9 @@ void racing_update()
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 
 	// for winning texture
-	if (if_win == true)
-	MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
+	if (if_win == true) {
+		MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
+	}
 
 
 	///*------------------------------------------------------------
@@ -316,16 +321,15 @@ void racing_update()
 	// if the player.y + size is over or at maxHeight, CamY will increase
 	//------------------------------------------------------------*/
 	//CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
-
+	std::cout << "maxHeight: " << maxHeight << "\nPlayer 1: " << (player1.pCoord.y + player1.size) << std::endl;
 	if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
 	{
-		count++;
+
 		CamY+=maxHeight_copy; // Calculate the target camera position to gradually move towards
 
 		// maxHeight Incrementing
-		maxHeight = (maxHeight_copy * count);
+		maxHeight = (maxHeight_copy * ++count);
 	}
-
 
 }
 
@@ -427,7 +431,6 @@ void racing_unload()
 	// Unload Platform Meshes
 	------------------------------------------------------------*/
 	racing_map_unload();
-
 
 
 	/*------------------------------------------------------------

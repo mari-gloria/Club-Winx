@@ -98,7 +98,7 @@ void racing_map_init(f32 start, f32 end, int player)
 			platformA[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
 
 			// END POINT: if last platform, let x be the center of the platform area
-			if (i == 50)
+			if (i == (MAX_NUM_PLATFORMS - 1))
 			{
 				platformA[i].platVect.x = (min_limit + max_limit) / 2;
 				platformA[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
@@ -119,7 +119,7 @@ void racing_map_init(f32 start, f32 end, int player)
 			platformB[i].platVect.y = platformB[i - 1].platVect.y + 100.0f;
 
 			// END POINT: if last platform, let x be the center of the platform area, and init the length here
-			if (i == 50)
+			if (i == (MAX_NUM_PLATFORMS - 1))
 			{
 				platformB[i].platVect.x = (min_limit + max_limit) / 2;
 				platformB[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;

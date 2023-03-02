@@ -28,7 +28,7 @@ double	 g_appTime;
 
 
 //declaring players & platforms
-BG			bgRacing, bgPuzzle, bgBoss;
+BG			bgRacing, bgPuzzle, bgBoss, bgEOR;
 BG			winRacing;
 
 Player		player1, player2;
