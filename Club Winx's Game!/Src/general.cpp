@@ -13,14 +13,7 @@
 //---------------------------------------------------------------------------
 //includes
 
-#include "AEEngine.h"
-#include "AEVec2.h"
-#include "AEGraphics.h"
-
-#include "general.h"
-#include <iostream>
-#include "gsm.h"
-#include "gamestatelist.h"
+#include "General.h"
 // ---------------------------------------------------------------------------
 
 

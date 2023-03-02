@@ -13,16 +13,7 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "AEEngine.h"
-#include "AEGameStateMgr.h"
-//#include "AEGraphics.h"
-
-#include "gsm.h"
-#include "gamestatelist.h"
-#include "boss.h"
-#include "general.h"
-
-#include <iostream>
+#include "General.h"
 // ---------------------------------------------------------------------------
 
 

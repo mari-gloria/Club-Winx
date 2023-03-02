@@ -11,13 +11,9 @@
 
 // ---------------------------------------------------------------------------
 // includes
-#include "AEEngine.h"
-#include "AEGameStateMgr.h"
 
-#include "gsm.h"
-#include "gamestatelist.h"
-#include "general.h"
-#include <iostream>
+#include "General.h"
+
 // ---------------------------------------------------------------------------
 
 //#define PUZZLE_MAP_W 840

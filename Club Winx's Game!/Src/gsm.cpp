@@ -12,19 +12,7 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "AEEngine.h"
-#include "AEGameStateMgr.h"
-
-#include "gsm.h"
-#include "gamestatelist.h"
-#include "win_lose.h"
-#include "MainMenu.h"
-
-#include "racing.h"
-#include "boss.h"
-#include "puzzle.h"
-
-#include <iostream>
+#include "General.h"
 // ---------------------------------------------------------------------------
 
 /*------------------------------------------------------------

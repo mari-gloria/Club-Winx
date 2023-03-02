@@ -18,25 +18,25 @@
     <ClCompile Include="Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\gsm.cpp">
+    <ClCompile Include="Src\GSM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\racing.cpp">
+    <ClCompile Include="Src\Racing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\boss.cpp">
+    <ClCompile Include="Src\Boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\general.cpp">
+    <ClCompile Include="Src\General.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\racing_map.cpp">
+    <ClCompile Include="Src\RacingMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\puzzle.cpp">
+    <ClCompile Include="Src\Puzzle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\win_lose.cpp">
+    <ClCompile Include="Src\WinLose.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\MainMenu.cpp">
@@ -47,25 +47,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Inc\gsm.h">
+    <ClInclude Include="Inc\GSM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\racing.h">
+    <ClInclude Include="Inc\Racing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\gamestatelist.h">
+    <ClInclude Include="Inc\GameStateList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\boss.h">
+    <ClInclude Include="Inc\Boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\general.h">
+    <ClInclude Include="Inc\General.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\racing_map.h">
+    <ClInclude Include="Inc\RacingMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\puzzle.h">
+    <ClInclude Include="Inc\Puzzle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inc\MainMenu.h">
@@ -76,7 +76,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Inc\win_lose.h">
+    <ClInclude Include="Inc\WinLose.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

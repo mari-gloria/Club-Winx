@@ -100,25 +100,25 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
   <ItemGroup>
     <ClCompile Include="Src\Buttons.cpp" />
     <ClCompile Include="Src\MainMenu.cpp" />
-    <ClCompile Include="Src\boss.cpp" />
-    <ClCompile Include="Src\general.cpp" />
-    <ClCompile Include="Src\gsm.cpp" />
+    <ClCompile Include="Src\Boss.cpp" />
+    <ClCompile Include="Src\General.cpp" />
+    <ClCompile Include="Src\GSM.cpp" />
     <ClCompile Include="Src\Main.cpp" />
-    <ClCompile Include="Src\puzzle.cpp" />
-    <ClCompile Include="Src\racing.cpp" />
-    <ClCompile Include="Src\racing_map.cpp" />
-    <ClCompile Include="Src\win_lose.cpp" />
+    <ClCompile Include="Src\Puzzle.cpp" />
+    <ClCompile Include="Src\Racing.cpp" />
+    <ClCompile Include="Src\RacingMap.cpp" />
+    <ClCompile Include="Src\WinLose.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\Buttons.h" />
-    <ClInclude Include="Inc\boss.h" />
-    <ClInclude Include="Inc\gamestatelist.h" />
-    <ClInclude Include="Inc\general.h" />
-    <ClInclude Include="Inc\gsm.h" />
-    <ClInclude Include="Inc\puzzle.h" />
-    <ClInclude Include="Inc\racing.h" />
-    <ClInclude Include="Inc\racing_map.h" />
-    <ClInclude Include="Inc\win_lose.h" />
+    <ClInclude Include="Inc\Boss.h" />
+    <ClInclude Include="Inc\GameStateList.h" />
+    <ClInclude Include="Inc\General.h" />
+    <ClInclude Include="Inc\GSM.h" />
+    <ClInclude Include="Inc\Puzzle.h" />
+    <ClInclude Include="Inc\Racing.h" />
+    <ClInclude Include="Inc\RacingMap.h" />
+    <ClInclude Include="Inc\WinLose.h" />
     <ClInclude Include="Inc\MainMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

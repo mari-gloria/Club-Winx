@@ -11,17 +11,8 @@
 
 // ---------------------------------------------------------------------------
 // includes
-#include "AEEngine.h"
-#include "AEGameStateMgr.h"
 
-#include "gsm.h"
-#include "gamestatelist.h"
-#include "racing.h"
-#include "general.h"
-#include "racing_map.h"
-
-#include <iostream>
-#include <algorithm>
+#include "General.h"
 // ---------------------------------------------------------------------------
 
 

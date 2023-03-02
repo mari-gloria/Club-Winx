@@ -9,16 +9,7 @@
 *
 ==================================================================================*/
 
-#include "AEEngine.h"
-#include "AEGameStateMgr.h"
-#include "MainMenu.h"
-#include "gsm.h"
-#include "gamestatelist.h"
-#include "general.h"
-#include "Buttons.h"
-#include <fstream>
-#include <iostream>
-#include <string>
+#include "General.h"
 
 // Window Size
 #define WINDOW_W 1080

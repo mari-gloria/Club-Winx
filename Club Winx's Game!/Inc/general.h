@@ -13,8 +13,25 @@
 
 // ---------------------------------------------------------------------------
 //includes
+#include "AEEngine.h"
 #include "AEVec2.h"
 #include "AEGraphics.h"
+#include "AEGameStateMgr.h"
+
+#include "Boss.h"
+#include "Buttons.h"
+#include "GameStateList.h"
+#include "GSM.h"
+#include "MainMenu.h"
+#include "Puzzle.h"
+#include "Racing.h"
+#include "RacingMap.h"
+#include "WinLose.h"
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
 // ---------------------------------------------------------------------------
 
 
