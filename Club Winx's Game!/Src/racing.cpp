@@ -317,19 +317,19 @@ void racing_draw()
 	// Drawing player 1
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransform(player1.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	// No texture for player 1
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
 	AEGfxTextureSet(player1.pTex, 0, 0);
-	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetTransform(player2.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	// No texture for player 2
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
 	AEGfxTextureSet(player2.pTex, 0, 0);
-	// Drawing the mesh (list of triangles)
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 

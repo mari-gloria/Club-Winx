@@ -456,9 +456,9 @@ void boss_draw()
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransform(player1.transform.m);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTransparency(1.0f);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 0.0f);
 		 AEGfxTextureSet(player1.pTex, 0, 0);
 		// Drawing the mesh (list of triangles)
 		AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
@@ -475,10 +475,10 @@ void boss_draw()
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransform(player2.transform.m);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
 		AEGfxTextureSet(player2.pTex, 0, 0);
-		//AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 0.0f);
-		// Drawing the mesh (list of triangles)
 		AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 		//health bar
@@ -533,7 +533,9 @@ void boss_draw()
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransform(boss.transform.m);
 		AEGfxTextureSet(boss.pTex, 0, 0);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
 		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
 		// drawing Current boss.Bhealth
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
