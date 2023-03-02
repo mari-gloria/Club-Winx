@@ -96,6 +96,14 @@ void racing_map_init(f32 start, f32 end, int player)
 			//y-coord: increases by 100.0f from prev platform
 			platformA[i].platVect.x = rand_num(min_limit, max_limit);
 			platformA[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
+
+			// END POINT: if last platform, let x be the center of the platform area
+			if (i == 50)
+			{
+				platformA[i].platVect.x = (min_limit + max_limit) / 2;
+				platformA[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
+				platformA[i].length = 350.0f; // make end platform longer
+			}
 		}
 
 		break;
@@ -109,6 +117,14 @@ void racing_map_init(f32 start, f32 end, int player)
 			//y-coord: increases by 100.0f from prev platform
 			platformB[i].platVect.x = rand_num(min_limit, max_limit);
 			platformB[i].platVect.y = platformB[i - 1].platVect.y + 100.0f;
+
+			// END POINT: if last platform, let x be the center of the platform area, and init the length here
+			if (i == 50)
+			{
+				platformB[i].platVect.x = (min_limit + max_limit) / 2;
+				platformB[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
+				platformB[i].length = 350.0f; // make end platform longer
+			}
 		}
 		break;
 	}
@@ -227,6 +243,7 @@ void racing_map_draw()
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxMeshDraw(platformB[i].platMesh, AE_GFX_MDM_TRIANGLES);
+
 	}
 
 

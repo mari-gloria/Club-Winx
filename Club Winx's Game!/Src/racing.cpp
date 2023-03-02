@@ -24,11 +24,15 @@ defines
 // Camera Movement Variables
 static f32			CamX{ 0.0f },
 CamY{ 0.0f };	// Camera's X & Y Positions
-//static f32			maxHeight		{ 0 };
-//static int			count			{ 1 };
-//static f32			maxHeight_copy	{ 0 };
-//static const f32	H				{ 200.0f };
 
+//// 
+static f32			maxHeight		{ 0 };
+static int			count			{ 1 };
+static f32			maxHeight_copy	{ 0 };
+static const f32	H				{ 200.0f };
+
+///
+static bool			if_win{ false };
 
 
 
@@ -65,6 +69,8 @@ void racing_load()
 	// loading in line
 	splitscreen_load();
 
+	// loading win texture
+	SquareMesh(&winRacing.bgMesh, 0xFFFF00FF);
 
 
 	/*------------------------------------------------------------
@@ -72,12 +78,11 @@ void racing_load()
 	------------------------------------------------------------*/
 	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
-
+	winRacing.bgTex = AEGfxTextureLoad("Assets/Racing_Winner.png");
 
 	/*------------------------------------------------------------
 	CREATING FONTS
 	------------------------------------------------------------*/
-
 
 
 	return;
@@ -135,8 +140,15 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
-	//maxHeight = H;
-	//maxHeight_copy = H;
+	maxHeight = H;
+	maxHeight_copy = H;
+
+	/*------------------------------------------------------------
+	// INIT - Racing Win Texture
+	------------------------------------------------------------*/
+	// winRacing.bgCoord = {player}
+	winRacing.length = 80.0f;
+	winRacing.height = 40.0f;
 
 	return;
 }
@@ -181,6 +193,13 @@ void racing_update()
 
 			player1.pOnGround = true;
 
+			// if collision on last platform
+			if (i == 50)
+			{
+				Racing_Win(true, 1);
+				if_win = true;
+			}
+
 		}
 
 
@@ -195,6 +214,13 @@ void racing_update()
 			player2.pCoord.y = player2.pCurrGround;
 
 			player2.pOnGround = true;
+
+			// if collision on last platform
+			if (i == 50)
+			{
+				Racing_Win(true, 2);
+				if_win = true;
+			}
 
 		}
 	}
@@ -280,22 +306,25 @@ void racing_update()
 	//for splitscreen
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 
+	// for winning texture
+	if (if_win == true)
+	MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 
 
 	///*------------------------------------------------------------
 	// UPDATE - Camera Movement
 	// if the player.y + size is over or at maxHeight, CamY will increase
 	//------------------------------------------------------------*/
-	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
+	//CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
 
-	/*if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
+	if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
 	{
 		count++;
 		CamY+=maxHeight_copy; // Calculate the target camera position to gradually move towards
 
 		// maxHeight Incrementing
 		maxHeight = (maxHeight_copy * count);
-	}*/
+	}
 
 
 }
@@ -352,6 +381,17 @@ void racing_draw()
 	AEGfxMeshDraw(score_board.sMesh, AE_GFX_MDM_TRIANGLES);*/
 
 
+	/*------------------------------------------------------------
+	// DRAWING Winner Texture
+	------------------------------------------------------------*/
+	if (if_win == true) {
+		AEGfxSetTransform(winRacing.transform.m);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(winRacing.bgTex, 0, 0);
+		AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
+	}
 
 	/*------------------------------------------------------------
 	 DRAWING - Camera Movement
@@ -394,4 +434,11 @@ void racing_unload()
 	// Unload Split Screen Meshes
 	------------------------------------------------------------*/
 	splitscreen_unload();
+
+	/*------------------------------------------------------------
+	// Unload Player Meshes
+	------------------------------------------------------------*/
+	AEGfxMeshFree(winRacing.bgMesh);
+	AEGfxTextureUnload(winRacing.bgTex);
+
 }

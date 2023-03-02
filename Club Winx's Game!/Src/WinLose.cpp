@@ -1,14 +1,15 @@
-//
-//// Include these Header files
-//#include "General.h"
-//
-//
-//// ================================================================================================================ //
-//// ======================================== FUNCTIONS RELATED FOR RACING ========================================== //
-//// ================================================================================================================ //
-//
-//// Purpose: Checks who won the game
-//// Returns: if there's a winner
+
+// Include these Header files
+#include "General.h"
+
+int Racing_WINNER{ 0 }, Racing_LOSER{ 0 };
+
+// ================================================================================================================ //
+// ======================================== FUNCTIONS RELATED FOR RACING ========================================== //
+// ================================================================================================================ //
+
+// Purpose: Checks who won the game
+// Returns: if there's a winner
 //bool Racing_win()
 //{
 //	// variable
@@ -93,37 +94,73 @@
 //
 //	return;
 //}
-//
-//// ================================================================================================================ //
-//// ======================================== FUNCTIONS FOR STATE CHANGE ============================================ //
-//// ================================================================================================================ //
-//
-//void EOR_load()
-//{
-//	return;
-//}
-//
-//void EOR_init()
-//{
-//	return;
-//}
-//
-//void EOR_update()
-//{
-//	return;
-//}
-//
-//void EOR_draw()
-//{
-//	return;
-//}
-//
-//void EOR_free()
-//{
-//	return;
-//}
-//
-//void EOR_unload()
-//{
-//	return;
-//}
+
+
+void Racing_Win(bool win, int player)
+{
+	if (win == true) {
+		
+		switch (player)
+		{
+			case 1:
+				Racing_WINNER = PLAYERONE;
+				Racing_LOSER = PLAYERTWO;
+
+				// check if won
+				std::cout << "Won Player 1" << std::endl;
+				// bool to yes show pic near player head
+				winRacing.bgCoord = { player1.pCoord.x + 40.0f, player1.pCoord.y + 40.0f };
+				// next_state = END_OF_ROUND;
+				break;
+
+			case 2:
+				Racing_WINNER = PLAYERONE;
+				Racing_LOSER = PLAYERTWO;
+
+				// check if won
+				std::cout << "Won Player 2" << std::endl; 
+				winRacing.bgCoord = { player2.pCoord.x + 40.0f, player2.pCoord.y + 40.0f };
+				//next_state = END_OF_ROUND;
+				break;
+		}
+	}
+
+	return;
+}
+
+//void Racing_EndCond()
+
+// ================================================================================================================ //
+// ======================================== FUNCTIONS FOR STATE CHANGE ============================================ //
+// ================================================================================================================ //
+
+void EOR_load()
+{
+
+	return;
+}
+
+void EOR_init()
+{
+	return;
+}
+
+void EOR_update()
+{
+	return;
+}
+
+void EOR_draw()
+{
+	return;
+}
+
+void EOR_free()
+{
+	return;
+}
+
+void EOR_unload()
+{
+	return;
+}

@@ -65,7 +65,7 @@ struct BG {
 	f32					height		{0.f}; // default height of BG (may need to change for racing)
 
 };
-extern BG bgRacing, bgPuzzle, bgBoss;
+extern BG bgRacing, bgPuzzle, bgBoss, winRacing;
 
 
 
@@ -163,7 +163,7 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-#define MAX_NUM_PLATFORMS 50
+#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
 
 // generic platform details such as length, height, colour
 struct Platform {
