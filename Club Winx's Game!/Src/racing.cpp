@@ -30,6 +30,7 @@ static f32			maxHeight		{ 0 };
 static int			count			{ 1 };
 static f32			maxHeight_copy	{ 0 };
 static const f32	H				{ 200.0f };
+static bool			firstround_over{ false };
 
 ///
 static bool			if_win{ false };
@@ -143,6 +144,8 @@ void racing_init()
 	maxHeight = H;
 	maxHeight_copy = H;
 	count = 1;
+	firstround_over = false;
+
 
 	/*------------------------------------------------------------
 	// INIT - Racing Win Texture
@@ -329,7 +332,16 @@ void racing_update()
 
 		// maxHeight Incrementing
 		maxHeight = (maxHeight_copy * ++count);
+		if (count == 4) firstround_over = true;
 	}
+	
+	// if both player falls off, restart the whole game
+	if (firstround_over == true && (player1.pCoord.y + player1.size < (maxHeight_copy * (count - 3))) && (player2.pCoord.y + player2.size < (maxHeight_copy * (count - 3))))
+	{
+		next_state = RESTART;
+	}
+
+
 
 }
 
