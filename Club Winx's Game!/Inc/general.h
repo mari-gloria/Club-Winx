@@ -164,8 +164,8 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
-//#define MAX_NUM_PLATFORMS 11 // testing
+//#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
+#define MAX_NUM_PLATFORMS 5 // testing
 
 
 // generic platform details such as length, height, colour

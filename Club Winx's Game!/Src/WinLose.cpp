@@ -99,7 +99,7 @@ int Racing_WINNER{ 0 }, Racing_LOSER{ 0 };
 
 void Racing_Win(bool win, int player)
 {
-	auto start_time = std::chrono::high_resolution_clock::now();
+	//auto start_time = std::chrono::high_resolution_clock::now();
 	//f32 frame_before = 0.0f, time_before = 0.0f;
 	if (win == true) {
 		

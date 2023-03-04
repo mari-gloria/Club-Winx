@@ -29,11 +29,11 @@ CamY{ 0.0f };	// Camera's X & Y Positions
 static f32			maxHeight		{ 0 };
 static int			count			{ 1 };
 static f32			maxHeight_copy	{ 0 };
-static const f32	H				{ 200.0f };
+static const f32	H				{ 220.0f };
 static bool			firstround_over{ false };
 
 ///
-static bool			if_win{ false };
+static int			if_win{ 0 } ; // 0: None, 1: Player_one, 2: Player_two
 
 
 
@@ -153,7 +153,7 @@ void racing_init()
 	// winRacing.bgCoord = {player}
 	winRacing.length = 120.0f;
 	winRacing.height = 70.0f;
-	if_win = false;
+	if_win = 0;
 
 	return;
 }
@@ -200,11 +200,12 @@ void racing_update()
 
 			player1.pOnGround = true;
 
-			// if collision on last platform
-			if (i == (MAX_NUM_PLATFORMS -1))
+			// if collision on last platform and other player hasn't won
+			if ((if_win != 2) && i == (MAX_NUM_PLATFORMS - 1))
 			{
+				if_win = 1;
 				Racing_Win(true, 1);
-				if_win = true;
+				MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 			}
 
 		}
@@ -222,11 +223,12 @@ void racing_update()
 
 			player2.pOnGround = true;
 
-			// if collision on last platform
-			if (i == (MAX_NUM_PLATFORMS - 1))
+			// if collision on last platform, and other player hasn't won
+			if ((if_win != 1) && i == (MAX_NUM_PLATFORMS - 1))
 			{
+				if_win = 2;
 				Racing_Win(true, 2);
-				if_win = true;
+				MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 			}
 
 		}
@@ -314,9 +316,15 @@ void racing_update()
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 
 	// for winning texture
-	if (if_win == true) {
-		MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
-	}
+	//switch (if_win)
+	//{
+	//	case 1:
+	//		break;
+	//	case 2:
+	//		break;
+
+	//}
+
 
 
 	///*------------------------------------------------------------
@@ -400,14 +408,12 @@ void racing_draw()
 	/*------------------------------------------------------------
 	// DRAWING Winner Texture
 	------------------------------------------------------------*/
-	if (if_win == true) {
 		AEGfxSetTransform(winRacing.transform.m);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTransparency(1.0f);
 		AEGfxTextureSet(winRacing.bgTex, 0, 0);
 		AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
-	}
 
 	/*------------------------------------------------------------
 	 DRAWING - Camera Movement
