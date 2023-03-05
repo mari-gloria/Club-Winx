@@ -41,6 +41,7 @@ Line		splitscreen;
 
 //Boss		boss;
 Health	 p1health, p2health;
+Puzzle puzzle;
 
 
 
@@ -112,6 +113,44 @@ bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, c
 	return false;
 }
 
+bool CollisionIntersection_Item(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight)
+{
+
+
+	//Player bounding box 
+	AEVec2 Amax, Amin,Bmax, Bmin, onetime;
+
+
+	Amax.y = A.y + Aheight / 2.f;
+	Bmax.y = B.y + Bheight / 2.f; 	//Item bounding box 
+	Bmin.y = B.y - Bheight / 2.f;
+	onetime.y = Bheight - 1.f;
+
+
+	bool collide{ false };
+
+
+
+	if (Amax.y >= Bmin.y && Bmax.y - onetime.y >= Amax.y) {
+
+		collide = true;
+
+	}
+
+
+	//If player and item collide
+	if (collide == true )
+	{
+		
+		return true;
+	}
+	else {
+		return false;
+
+	}
+
+
+}
 
 
 

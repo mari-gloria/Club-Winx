@@ -13,6 +13,7 @@
 // includes
 
 #include "General.h"
+#include "../Main.h"
 
 // ---------------------------------------------------------------------------
 
@@ -24,6 +25,11 @@
 AEGfxTexture* Key;
 AEGfxTexture* Spiderweb;
 
+int counter = 0;
+bool turntransparent = { FALSE };
+
+bool itemdie = { FALSE };
+
 void puzzle_load()
 {
 	std::cout << "puzzle:Load\n";
@@ -33,7 +39,7 @@ void puzzle_load()
 	bgPuzzle.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
 	// Textures for Puzzle
-	bgPuzzle.bgTex = AEGfxTextureLoad("Assets/PUZZLE_2.png");
+	bgPuzzle.bgTex = AEGfxTextureLoad("Assets/PUZZLE.png");
 	AE_ASSERT_MESG(bgPuzzle.bgTex, "Failed to create bgPuzzle.bgTex!!");
 
 	Key = AEGfxTextureLoad("Assets/KEY.png");
@@ -53,6 +59,9 @@ void puzzle_load()
 
 	// player 2 mesh
 	SquareMesh(&player2.pMesh, 0xFFFF00FF);
+
+	//Item
+	SquareMesh(&puzzle.pMesh, 0x00FFFF00);
 }
 
 void puzzle_init()
@@ -64,6 +73,8 @@ void puzzle_init()
 	------------------------------------------------------------*/
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { player1.pCoord.x + 100.f, player1.pCoord.y };
+
+
 }
 
 void puzzle_update()
@@ -100,6 +111,38 @@ void puzzle_update()
 	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
+
+	MatrixCalc(puzzle.transform, puzzle.length, puzzle.height, 0.f, puzzle.IVector);
+
+	if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
+		puzzle.IVector, puzzle.length, puzzle.height) == true)
+	{
+		std::cout << "COLLIDE  " << std::endl;
+
+
+
+		turntransparent = TRUE;
+		itemdie = TRUE;
+
+	}
+	if (CollisionIntersection_Item(player1.pCoord, player1.size, player1.size,
+		puzzle.IVector, puzzle.length, puzzle.height) == true)
+	{
+		std::cout << "CHECK CHECK" << std::endl;
+
+
+		turntransparent = TRUE;
+		itemdie = TRUE;
+
+	}
+
+
+	if (turntransparent == TRUE) {
+
+
+		++counter;
+	}
+	turntransparent = FALSE;
 }
 
 void puzzle_draw()
@@ -126,11 +169,41 @@ void puzzle_draw()
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
+
+
 	// drawing player 2
 	AEGfxSetTransform(player2.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxTextureSet(NULL, 0, 0);
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
+
+	//Item Collecteed
+	if (itemdie == TRUE) {
+
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(0.0f);
+		AEGfxSetTransform(puzzle.transform.m);
+		AEGfxMeshDraw(puzzle.pMesh, AE_GFX_MDM_TRIANGLES);
+
+	}
+	else {
+
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTransform(puzzle.transform.m);
+		AEGfxMeshDraw(puzzle.pMesh, AE_GFX_MDM_TRIANGLES);
+
+	}
+
+
+	//FONTS
+	char strBuf[1000];
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	memset(strBuf, 0, 1000 * sizeof(char));
+	sprintf_s(strBuf, "No.of keys: %d", counter);
+	AEGfxPrint(fontID, strBuf, -0.95f, 0.5f, 0.8f, 1.0f, 1.0f, 1.0f);
 
 }
 
@@ -141,6 +214,7 @@ void puzzle_free()
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
 	AEGfxMeshFree(bgPuzzle.bgMesh);
+	AEGfxMeshFree(puzzle.pMesh);
 }
 
 void puzzle_unload()

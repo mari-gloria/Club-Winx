@@ -222,6 +222,28 @@ struct Health { // initialise in each game mode before use
 extern Health health2, p1health, p2health;
 
 
+struct Puzzle { // initialise in each game mode before use 
+	AEGfxVertexList* pMesh{ nullptr };
+	AEGfxVertexList* pMesh2{ nullptr };
+	AEVec2				IVector{ 320.0f, 0.0f };
+	//AEVec2				IVector2{ 30.0f, 0.0f };
+
+	AEGfxVertexList* platMesh{ nullptr };	// mesh 
+	AEGfxTexture* platTex{ nullptr };	// texture
+	//bool				stepped{ false };
+	AEMtx33				transform{};
+	//AEMtx33				transform2{};
+
+
+
+	// transform matrix
+	f32					length{ 20.0f };
+	f32					height{ 20.0f };
+
+	AEVec2				pVel{ 0.0f, 0.0f };
+
+};
+extern Puzzle puzzle;
 
 
 
@@ -268,6 +290,7 @@ Check for collision
 ---------------------------------------------------------------------------*/
 bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
 
+bool CollisionIntersection_Item(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
 
 
 
