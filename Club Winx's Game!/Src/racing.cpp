@@ -44,7 +44,14 @@ void racing_load()
 {
 	std::cout << "racing:Load\n";
 
-	AEGfxSetBackgroundColor(0.0f, 255.0f, 0.0f);
+	/*------------------------------------------------------------
+	SETTING BACKGROUND
+	------------------------------------------------------------*/
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png");		// BG Texture
+	SquareMesh(&bgRacing.bgMesh, 0);							// BG Mesh
+	bgRacing.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
+	bgRacing.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
 
 
@@ -165,17 +172,20 @@ void racing_update()
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
-	if (AEInputCheckCurr(AEVK_2)) {
+	if (AEInputCheckCurr(AEVK_1)) {
+		next_state = PUZZLE;
+	}
+	if (AEInputCheckCurr(AEVK_3)) {
 		next_state = BOSS;
 	}
 	if (AEInputCheckCurr(AEVK_Q)) {
 		next_state = QUIT;
 	}
-	if (AEInputCheckCurr(AEVK_3)) {
-		next_state = PUZZLE;
-	}
 	if (AEInputCheckCurr(AEVK_BACK)) {
 		next_state = RESTART;
+	}
+	if (AEInputCheckCurr(AEVK_ESCAPE)) {
+		next_state = MENU;
 	}
 
 
@@ -299,6 +309,9 @@ void racing_update()
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
+	// for background
+	MatrixCalc(bgRacing.transform, bgRacing.length, bgRacing.height, 0.0f, bgRacing.bgCoord);
+
 	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
@@ -356,6 +369,17 @@ void racing_update()
 void racing_draw()
 {
 	std::cout << "racing:Draw\n";
+
+	/*------------------------------------------------------------
+	DRAWING BACKGROUND
+	------------------------------------------------------------*/
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
+	AEGfxSetTransform(bgRacing.transform.m);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxTextureSet(bgRacing.bgTex, 0.f, 0.f);
+	AEGfxMeshDraw(bgRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	// DRAWING PLATFORMS - MAP
@@ -434,6 +458,9 @@ void racing_free()
 void racing_unload()
 {
 	std::cout << "racing:Unload\n";
+
+	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
+	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes

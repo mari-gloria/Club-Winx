@@ -254,17 +254,18 @@ void MainMenu_Update()
 	std::cout << mouseInput_x << ", " << mouseInput_y << std::endl;
 
 	if (AEInputCheckCurr(AEVK_1)) {
-		next_state = RACING;
+		next_state = PUZZLE;
 	}
 	if (AEInputCheckCurr(AEVK_2)) {
+		next_state = RACING;
+	}
+	if (AEInputCheckCurr(AEVK_3)) {
 		next_state = BOSS;
 	}
 	if (AEInputCheckCurr(AEVK_Q)) {
 		next_state = QUIT;
 	}
-	if (AEInputCheckCurr(AEVK_3)) {
-		next_state = PUZZLE;
-	}
+	
 
 	// ----- Menu Buttons State Manager ----- //
 	if (toggle == MAINMENU)
@@ -289,7 +290,7 @@ void MainMenu_Update()
 			hover_tutorial = true;
 			std::cout << "tutorial hover" << std::endl;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				tutorial_click = true;
 				toggle = TUTORIAL;
@@ -301,7 +302,7 @@ void MainMenu_Update()
 			hover_options = true;
 			std::cout << "options hover" << std::endl;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				options_click = true;
 				toggle = OPTIONS;
@@ -313,7 +314,7 @@ void MainMenu_Update()
 			hover_credits = true;
 			std::cout << "credit hover" << std::endl;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				credits_click = true;
 				toggle = CREDITS;
@@ -325,7 +326,7 @@ void MainMenu_Update()
 			hover_quit = true;
 			std::cout << "quit hover" << std::endl;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				quit_click = true;
 				toggle = QUITGAME;
@@ -387,7 +388,7 @@ void MainMenu_Update()
 		{
 			hover_racing = true;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				racing_click = true;
 				next_state = RACING;
@@ -398,7 +399,7 @@ void MainMenu_Update()
 		{
 			hover_puzzle = true;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				puzzle_click = true;
 				next_state = PUZZLE;
@@ -409,7 +410,7 @@ void MainMenu_Update()
 		{
 			hover_boss = true;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				boss_click = true;
 				next_state = BOSS;
@@ -420,7 +421,7 @@ void MainMenu_Update()
 		{
 			hover_backmode = true;
 
-			if (AEInputCheckCurr(AEVK_LBUTTON))
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				backmode_click = true;
 				toggle = MODESELECTIONPAGE;

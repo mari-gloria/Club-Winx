@@ -187,16 +187,18 @@ void boss_update()
 	/*------------------------------------------------------------
 	CHANGE STATE CONDITION
 	------------------------------------------------------------*/
+	if (AEInputCheckCurr(AEVK_1)) {
+		next_state = PUZZLE;
+	}
+	if (AEInputCheckCurr(AEVK_2)) {
+		next_state = RACING;
+	}
 	if (AEInputCheckCurr(AEVK_Q)) {
 		next_state = QUIT;
 	}
-	if (AEInputCheckCurr(AEVK_1)) {
-		next_state = RACING;
+	if (AEInputCheckCurr(AEVK_ESCAPE)) {
+		next_state = MENU;
 	}
-	if (AEInputCheckCurr(AEVK_3)) {
-		next_state = PUZZLE;
-	}
-
 
 	/*------------------------------------------------------------
 	PLAYER UPDATE
