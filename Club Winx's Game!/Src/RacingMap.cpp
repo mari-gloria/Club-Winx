@@ -15,6 +15,13 @@
 #include "General.h"
 // ---------------------------------------------------------------------------
 
+/*--------------------------------------------------------------------------
+Items for racing - boost/disadvantage for players
+---------------------------------------------------------------------------*/
+
+//variables for items
+int rand_nums[MAX_NUM_ITEMS]; //list of random platform numbers
+
 
 /*------------------------------------------------------------
 / FUNCTIONS - PLATFORMS
@@ -23,6 +30,25 @@
 // Purpose: loads the platform meshes in the map in racing_load function
 void racing_map_load()
 {
+	//creating circle shape for collectables
+	AEGfxMeshStart();
+	int Parts = 12;
+	for (float i = 0; i < Parts; ++i)
+	{
+		AEGfxTriAdd(
+			0.0f, 0.0f, 0xFFFFFF00, 0.0f, 0.0f,
+			cosf(i * 2 * PI / Parts) * 0.5f, sinf(i * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f,
+			cosf((i + 1) * 2 * PI / Parts) * 0.5f, sinf((i + 1) * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f);
+	}
+
+	for (int i = 0; i < MAX_NUM_ITEMS; i++)
+	{
+		racing_items[i].pMesh = AEGfxMeshEnd();
+		AE_ASSERT_MESG(racing_items[i].pMesh, "fail to create object!!");
+	}
+	
+	
+
 	// ====  Explanation ==== //
 	// 17 platforms in a map - thus need to create mesh for 17*2 (player1 = A, player2 = B)
 	// as all length, height and colour is the same - so just use the main platform struct for that
@@ -82,14 +108,10 @@ void racing_map_init(f32 start, f32 end, int player)
 
 		//in progress -kristy
 		//generate a list of random platform numbers 
-		/*int rand_nums[MAX_NUM_ITEMS];
 		for (int i = 0; i < MAX_NUM_ITEMS; i ++) {
-			rand_nums[i] = rand_num(0, MAX_NUM_PLATFORMS);
+			rand_nums[i] = 0 + i * (rand_num(1, 3));
 		}
 
-		std::sort(rand_nums[0], rand_nums[MAX_NUM_ITEMS - 1]);
-
-		int item_count = 0;*/
 
 		for (int i = 1; i < MAX_NUM_PLATFORMS; i++) {
 			//x-coord: random x coord is generated within min and max limit
@@ -104,6 +126,13 @@ void racing_map_init(f32 start, f32 end, int player)
 				platformA[i].platVect.y = platformA[i - 1].platVect.y + 100.0f;
 				platformA[i].length = 350.0f; // make end platform longer
 			}
+		}
+
+		//update position of items
+		for (int i = 0; i < MAX_NUM_ITEMS; i++)
+		{
+			int platform_num = rand_nums[i];
+			racing_items[i].pCoord = { platformA[platform_num].platVect.x,  platformA[platform_num].platVect.y + racing_items[i].size };
 		}
 
 		break;
@@ -246,6 +275,17 @@ void racing_map_draw()
 
 	}
 
+	/*------------------------------------------------------------
+	DRAWING ITEMS
+	------------------------------------------------------------*/
+	for (int i = 0; i < MAX_NUM_ITEMS; i++)
+	{
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEGfxSetTransform(racing_items[i].transform.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(racing_items[i].pMesh, AE_GFX_MDM_TRIANGLES);
+	}
 
 
 	// ==== revert back to these if not working ==== //

@@ -33,6 +33,7 @@ BG			winRacing;
 
 Player		player1, player2;
 ScoreBoard	score_board;
+
 RacingItems racing_items[MAX_NUM_ITEMS];
 
 Platform	platformA[MAX_NUM_PLATFORMS], platformB[MAX_NUM_PLATFORMS];
@@ -333,7 +334,3 @@ float rand_num(float min, float max)
 	return min + r * (max - min);
 }
 
-ItemType rand_item() {
-	int temp = rand_num(0, 1);
-	return temp ? GOOD : BAD;
-}

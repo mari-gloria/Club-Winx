@@ -132,16 +132,15 @@ extern ScoreBoard score_board;
 /*--------------------------------------------------------------------------
 Items for racing - boost/disadvantage for players
 ---------------------------------------------------------------------------*/
-#define MAX_NUM_ITEMS 10
+#define MAX_NUM_ITEMS 5
 
 //item types will be randomly generated
 enum ItemType {
-	BAD = 0,
+	NOTHING = 0,
+	BAD,
 	GOOD
 };
 
-//Generates a random item type - GOOD/BAD
-ItemType rand_item();
 
 struct RacingItems {
 	AEVec2				pCoord{ 0.0f, 0.0f };	// item x,y coordinates
@@ -149,10 +148,11 @@ struct RacingItems {
 	AEGfxTexture* pTex{ nullptr };	// texture
 	f32					size{ 20.0f };		// item size
 
-	ItemType			itemType{ rand_item() };
+	ItemType			itemType;
 
 	AEMtx33				transform{};				// transform matrix
 };
+
 extern RacingItems racing_items[MAX_NUM_ITEMS];
 
 
@@ -165,7 +165,7 @@ Platform
 
 // Global constant for array for platforms
 //#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
-#define MAX_NUM_PLATFORMS 5 // testing
+#define MAX_NUM_PLATFORMS 10 // testing
 
 
 // generic platform details such as length, height, colour

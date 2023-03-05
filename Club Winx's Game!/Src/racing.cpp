@@ -324,6 +324,11 @@ void racing_update()
 		MatrixCalc(platformA[i].transform, platformA[i].length, platformA[i].height, 0.f, platformA[i].platVect);
 		MatrixCalc(platformB[i].transform, platformB[i].length, platformB[i].height, 0.f, platformB[i].platVect);
 	}
+
+	//for items 
+	for (int i = 0; i < MAX_NUM_ITEMS; i++) {
+		MatrixCalc(racing_items[i].transform, racing_items[i].size, racing_items[i].size, 0.f, racing_items[i].pCoord);
+	}
 	
 	//for splitscreen
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
