@@ -30,19 +30,19 @@ int rand_nums[MAX_NUM_ITEMS]; //list of random platform numbers
 // Purpose: loads the platform meshes in the map in racing_load function
 void racing_map_load()
 {
-	//creating circle shape for collectables
-	AEGfxMeshStart();
-	int Parts = 12;
-	for (float i = 0; i < Parts; ++i)
-	{
-		AEGfxTriAdd(
-			0.0f, 0.0f, 0xFFFFFF00, 0.0f, 0.0f,
-			cosf(i * 2 * PI / Parts) * 0.5f, sinf(i * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f,
-			cosf((i + 1) * 2 * PI / Parts) * 0.5f, sinf((i + 1) * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f);
-	}
-
 	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
+		//creating circle shape for collectables
+		AEGfxMeshStart();
+		int Parts = 12;
+		for (float i = 0; i < Parts; ++i)
+		{
+			AEGfxTriAdd(
+				0.0f, 0.0f, 0xFFFFFF00, 0.0f, 0.0f,
+				cosf(i * 2 * PI / Parts) * 0.5f, sinf(i * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f,
+				cosf((i + 1) * 2 * PI / Parts) * 0.5f, sinf((i + 1) * 2 * PI / Parts) * 0.5f, 0xFFFFFF00, 0.0f, 0.0f);
+		}
+
 		racing_items[i].pMesh = AEGfxMeshEnd();
 		AE_ASSERT_MESG(racing_items[i].pMesh, "fail to create object!!");
 	}
