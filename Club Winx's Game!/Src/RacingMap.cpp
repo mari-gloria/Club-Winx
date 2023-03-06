@@ -133,6 +133,9 @@ void racing_map_init(f32 start, f32 end, int player)
 		{
 			int platform_num = rand_nums[i];
 			racing_items[i].pCoord = { platformA[platform_num].platVect.x,  platformA[platform_num].platVect.y + racing_items[i].size };
+
+			//update collected
+			racing_items[i].collected = false;
 		}
 
 		break;
@@ -280,11 +283,14 @@ void racing_map_draw()
 	------------------------------------------------------------*/
 	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		AEGfxSetTransform(racing_items[i].transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxMeshDraw(racing_items[i].pMesh, AE_GFX_MDM_TRIANGLES);
+		if (!racing_items[i].collected)
+		{
+			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+			AEGfxSetBlendMode(AE_GFX_BM_NONE);
+			AEGfxSetTransform(racing_items[i].transform.m);
+			AEGfxTextureSet(NULL, 0, 0);
+			AEGfxMeshDraw(racing_items[i].pMesh, AE_GFX_MDM_TRIANGLES);
+		}
 	}
 
 

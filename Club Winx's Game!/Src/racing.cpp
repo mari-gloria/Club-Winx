@@ -195,7 +195,7 @@ void racing_update()
 	input_handle();
 
 
-	//checking for collision
+	//checking for player-platform collision
 	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
 	{
 		//player 1
@@ -303,6 +303,22 @@ void racing_update()
 		}
 
 	}*/
+
+	//checking for player-item collision
+	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
+	{
+		//player 1
+		if (CollisionIntersection_RectRect( player1.pCoord, player1.size, player1.size,
+											racing_items[i].pCoord, racing_items[i].size, racing_items[i].size) == true) {
+
+			racing_items[i].collected = true;
+
+		}
+
+
+		//player 2
+		
+	}
 
 
 

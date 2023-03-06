@@ -144,11 +144,13 @@ enum ItemType {
 
 struct RacingItems {
 	AEVec2				pCoord{ 0.0f, 0.0f };	// item x,y coordinates
-	AEGfxVertexList* pMesh{ nullptr };	// mesh 
-	AEGfxTexture* pTex{ nullptr };	// texture
+	AEGfxVertexList*	pMesh{ nullptr };	// mesh 
+	AEGfxTexture*		pTex{ nullptr };	// texture
 	f32					size{ 20.0f };		// item size
 
 	ItemType			itemType;
+
+	bool				collected;
 
 	AEMtx33				transform{};				// transform matrix
 };
