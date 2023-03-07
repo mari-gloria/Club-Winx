@@ -244,9 +244,26 @@ struct Puzzle { // initialise in each game mode before use
 
 	AEVec2				pVel{ 0.0f, 0.0f };
 
+	//Map
+	AEGfxVertexList* pMeshwall{ nullptr };
+	AEGfxVertexList* pMeshwall2{ nullptr };
+	AEVec2           wallposition{};
+
 };
 extern Puzzle puzzle;
 
+//Puzzle binary map
+struct GameObj {
+	unsigned int type; //type of object for puzzle
+	AEGfxVertexList* pMeshwall{ nullptr };
+	AEGfxVertexList* pMeshwall2{ nullptr };
+
+};
+
+struct GameObjInst {
+	GameObj* pObject;
+	unsigned int flag;
+};
 
 
 
