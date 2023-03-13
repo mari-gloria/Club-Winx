@@ -70,7 +70,14 @@ struct BG {
 extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing;
 
 
-
+/*--------------------------------------------------------------------------
+AUDIO
+---------------------------------------------------------------------------*/
+struct Audio {
+	AEAudio			audio	{ nullptr };
+	AEAudioGroup	aGroup	{ nullptr };
+};
+extern Audio jump;
 
 
 /*--------------------------------------------------------------------------

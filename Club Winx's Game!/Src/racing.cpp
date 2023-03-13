@@ -92,6 +92,12 @@ void racing_load()
 	------------------------------------------------------------*/
 
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
+	jump.aGroup = AEAudioCreateGroup();
+
 	return;
 }
 
@@ -193,6 +199,7 @@ void racing_update()
 	// PLAYER MOVEMENT
 	------------------------------------------------------------*/
 	input_handle();
+	AEAudioUpdate();
 
 
 	//checking for player-platform collision
@@ -209,6 +216,7 @@ void racing_update()
 			player1.pCoord.y = player1.pCurrGround;
 
 			player1.pOnGround = true;
+			// AEAudioPlay(jump.audio, jump.aGroup, 20, 0, 1);
 
 			// if collision on last platform and other player hasn't won
 			if ((if_win != 2) && i == (MAX_NUM_PLATFORMS - 1))
@@ -482,6 +490,8 @@ void racing_unload()
 
 	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
+
+	AEAudioExit(); //exit the audio
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes

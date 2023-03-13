@@ -27,9 +27,11 @@ double	 g_appTime;
 
 
 
-//declaring players & platforms
+//declaring structs: BG, player, scoreboard, racingitems, platform, line, boss, health, puzzle
 BG			bgRacing, bgPuzzle, bgBoss, bgWin;
 BG			winRacing;
+
+Audio		jump;
 
 Player		player1, player2;
 ScoreBoard	score_board;
@@ -172,6 +174,7 @@ void input_handle()
 			if (player1.pOnGround && !player1.pJumping) {
 				player1.pJumping = true;
 				player1.pOnGround = false;
+				AEAudioPlay(jump.audio, jump.aGroup, 0.75, 1, 0);
 			}
 		}
 
