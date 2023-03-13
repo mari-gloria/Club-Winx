@@ -82,13 +82,53 @@ void GSM_update()
 		fpFree = puzzle_free;
 		fpUnload = puzzle_unload;
 		break;
-	case END_OF_ROUND:
-		fpLoad = EOR_load;
-		fpInit = EOR_init;
-		fpUpdate = EOR_update;
-		fpDraw = EOR_draw;
-		fpFree = EOR_free;
-		fpUnload = EOR_unload;
+	//case END_OF_ROUND:
+	//	fpLoad = EOR_load;
+	//	fpInit = EOR_init;
+	//	fpUpdate = EOR_update;
+	//	fpDraw = EOR_draw;
+	//	fpFree = EOR_free;
+	//	fpUnload = EOR_unload;
+	//	break;
+	case WIN_PLAYERONE:
+		fpLoad = WIN_PLAYERONE_load;
+		fpInit = WIN_PLAYERONE_init;
+		fpUpdate = WIN_PLAYERONE_update;
+		fpDraw = WIN_PLAYERONE_draw;
+		fpFree = WIN_PLAYERONE_free;
+		fpUnload = WIN_PLAYERONE_unload;
+		break;
+	case WIN_PLAYERTWO:
+		fpLoad = WIN_PLAYERTWO_load;
+		fpInit = WIN_PLAYERTWO_init;
+		fpUpdate = WIN_PLAYERTWO_update;
+		fpDraw = WIN_PLAYERTWO_draw;
+		fpFree = WIN_PLAYERTWO_free;
+		fpUnload = WIN_PLAYERTWO_unload;
+		break;
+	case WIN_BOTHPLAYERS:
+		fpLoad = WIN_BOTHPLAYERS_load;
+		fpInit = WIN_BOTHPLAYERS_init;
+		fpUpdate = WIN_BOTHPLAYERS_update;
+		fpDraw = WIN_BOTHPLAYERS_draw;
+		fpFree = WIN_BOTHPLAYERS_free;
+		fpUnload = WIN_BOTHPLAYERS_unload;
+		break;
+	case LOSE_BOTHPLAYERS:
+		fpLoad = LOSE_BOTHPLAYERS_load;
+		fpInit = LOSE_BOTHPLAYERS_init;
+		fpUpdate = LOSE_BOTHPLAYERS_update;
+		fpDraw = LOSE_BOTHPLAYERS_draw;
+		fpFree = LOSE_BOTHPLAYERS_free;
+		fpUnload = LOSE_BOTHPLAYERS_unload;
+		break;
+	case ENDGAME:
+		fpLoad = ENDGAME_load;
+		fpInit = ENDGAME_init;
+		fpUpdate = ENDGAME_update;
+		fpDraw = ENDGAME_draw;
+		fpFree = ENDGAME_free;
+		fpUnload = ENDGAME_unload;
 		break;
 	case RESTART:
 		break;

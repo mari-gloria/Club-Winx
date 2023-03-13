@@ -4,7 +4,6 @@
 
 int Racing_WINNER{ 0 }, Racing_LOSER{ 0 };
 
-
 // ================================================================================================================ //
 // ======================================== FUNCTIONS RELATED FOR RACING ========================================== //
 // ================================================================================================================ //
@@ -115,7 +114,7 @@ void Racing_Win(bool win, int player)
 				winRacing.bgCoord = { player1.pCoord.x + 60.0f, player1.pCoord.y + 60.0f };
 				// if press enter, goes to end of round
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					next_state = END_OF_ROUND;
+					next_state = WIN_PLAYERONE;
 				}
 				break;
 
@@ -127,7 +126,7 @@ void Racing_Win(bool win, int player)
 				std::cout << "Won Player 2" << std::endl; 
 				winRacing.bgCoord = { player2.pCoord.x + 60.0f, player2.pCoord.y + 60.0f };
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					next_state = END_OF_ROUND;
+					next_state = WIN_PLAYERTWO;
 				}
 				break;
 		}
@@ -136,108 +135,3 @@ void Racing_Win(bool win, int player)
 	return;
 }
 
-//void Racing_EndCond()
-
-// ================================================================================================================ //
-// ======================================== FUNCTIONS FOR STATE CHANGE ============================================ //
-// ================================================================================================================ //
-
-// Camera Movement Variables
-static f32			CamX{ 0.0f },
-CamY{ 0.0f };	// Camera's X & Y Positions
-
-void EOR_load()
-{
-	std::cout << "EOR:Load\n";
-
-	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
-	/*------------------------------------------------------------
-	SETTING BACKGROUND
-	------------------------------------------------------------*/
-	SquareMesh(&bgEOR.bgMesh, 0xFFFF00FF);
-	bgEOR.bgTex = AEGfxTextureLoad("Assets/EOR_BG.png");
-	bgEOR.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
-	bgEOR.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
-
-
-	return;
-}
-
-void EOR_init()
-{
-	std::cout << "EOR:Initialize\n";
-	
-	return;
-}
-
-void EOR_update()
-{
-	std::cout << "EOR:Update\n";
-
-	/*------------------------------------------------------------
-	// CHANGE STATE CONDITIONS
-	------------------------------------------------------------*/
-	// if press back, go replay
-	if (AEInputCheckCurr(AEVK_BACK)) {
-		next_state = RACING;
-	}
-	//if (AEInputCheckCurr(AEVK_2)) {
-	//	next_state = BOSS;
-	//}
-	if (AEInputCheckCurr(AEVK_Q)) {
-		next_state = QUIT;
-	}
-	//if (AEInputCheckCurr(AEVK_3)) {
-	//	next_state = PUZZLE;
-	//}
-
-	// if press enter/return, go to the next game
-	if (AEInputCheckTriggered(AEVK_RETURN)) {
-		next_state = BOSS;
-	}
-
-	/*------------------------------------------------------------
-	// MATRIX CALCULATIONS
-	------------------------------------------------------------*/
-	MatrixCalc(bgEOR.transform, bgEOR.length, bgEOR.height, 0.f, bgEOR.bgCoord);
-
-	
-	return;
-}
-
-void EOR_draw()
-{
-	std::cout << "EOR:Draw\n";
-
-	/*------------------------------------------------------------
-	DRAWING BACKGROUND
-	------------------------------------------------------------*/
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
-	AEGfxSetTransform(bgEOR.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgEOR.bgTex, 0.f, 0.f);
-	AEGfxMeshDraw(bgEOR.bgMesh, AE_GFX_MDM_TRIANGLES);
-
-	
-	return;
-}
-
-void EOR_free()
-{
-	std::cout << "EOR:Free\n";
-
-	return;
-}
-
-void EOR_unload()
-{
-	std::cout << "EOR:Unload\n";
-
-	// Unload Background
-	AEGfxMeshFree(bgEOR.bgMesh); // free BG Mesh
-	AEGfxTextureUnload(bgEOR.bgTex); // Unload Texture
-
-	return;
-}

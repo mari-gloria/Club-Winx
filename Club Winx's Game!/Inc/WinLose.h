@@ -1,3 +1,12 @@
+/*==================================================================================
+* All content - 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+*
+* Course: CSD1451
+* Group Name: Club Winx
+* Primary Author: 
+* Secondary Authors:
+*	
+==================================================================================*/
 
 // variables
 
@@ -9,12 +18,3 @@ enum end_condtion { NONE = 0, PLAYERONE, PLAYERTWO, RE_ROUND};
 //bool Racing_lose();
 //void Racing_win_lose_condition();
 void Racing_Win(bool win, int player);
-
-
-// Functions for state change //
-void EOR_load();
-void EOR_init();
-void EOR_update();
-void EOR_draw();
-void EOR_free();
-void EOR_unload();
