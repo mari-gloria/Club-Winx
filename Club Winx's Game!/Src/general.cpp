@@ -47,9 +47,13 @@ Puzzle puzzle;
 
 
 
-//variables for RACING
-const float		GRAVITY{ 5.0f };
-const int		JUMP_HEIGHT_MAX{ 100 };
+//input handle
+const float		PLAYER_MOVE{ 8.0f };
+
+const float		GRAVITY{ -8.0f };
+const float		PLAYER_JUMP{ 8.0f };
+
+const float		JUMP_HEIGHT_MAX{ 100.0f };
 
 
 
@@ -76,51 +80,175 @@ void MatrixCalc(AEMtx33 & transform, const f32 length, const f32 height, const f
 
 bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight)
 {
-	//std::cout << "checkCollision" << std::endl;
-
 	//Player bounding box (min.x = player.x, min.y = player.y)
 	AEVec2 Amax, Amin;
-	Amax.x = A.x + Alength / 2.f;
-	Amax.y = A.y + Aheight / 2.f;
+	Amax.x = A.x + Alength / 2.0f;
+	Amax.y = A.y + Aheight / 2.0f;
 
-	Amin.x = A.x - Alength / 2.f;
-	Amin.y = A.y - Aheight / 2.f;
+	Amin.x = A.x - Alength / 2.0f;
+	Amin.y = A.y - Aheight / 2.0f;
 
 	//Platform bounding box (minstep.x = platform.x, minstep.y = platform.y)
 	AEVec2 Bmax, Bmin;
-	Bmax.x = B.x + Blength / 2.f;
-	Bmax.y = B.y + Bheight / 2.f;
+	Bmax.x = B.x + Blength / 2.0f;
+	Bmax.y = B.y + Bheight / 2.0f;
 
-	Bmin.x = B.x - Blength / 2.f;
-	Bmin.y = B.y - Bheight / 2.f;
+	Bmin.x = B.x - Blength / 2.0f;
+	Bmin.y = B.y - Bheight / 2.0f;
 
-	bool verticalCollision{ false };
-	bool horizontalCollision{ false };
-
-	//Check if player intersect platform vertically
 	if (Amin.y >= Bmin.y && Amin.y <= Bmax.y && Amax.x >= Bmin.x && Amin.x <= Bmax.x)
+		//if (Amax.x < Bmin.y || Amax.y < Bmin.y || Amin.x > Bmax.x || Amin.y > Bmax.y)
 	{
-		verticalCollision = true;
-		horizontalCollision = true;
-	}
-
-
-	//If player and platform is colliding
-	if (verticalCollision == true && horizontalCollision == true)
-	{
-		//std::cout << "collide true" << std::endl;
 		return true;
 	}
 
 	return false;
 }
 
+
+bool CollisionIntersection_RectRect_usingVel(const AABB& aabb1, const AEVec2& vel1,
+	const AABB& aabb2, const AEVec2& vel2)
+{
+	// testing for static collision
+	if (aabb1.max.x > aabb2.min.x ||
+		aabb1.max.y > aabb2.min.y ||
+		aabb1.min.x < aabb2.max.x ||
+		aabb1.min.y < aabb2.max.y) {
+
+		// calculating relative vel
+		AEVec2 relVel = { vel2.x - vel1.x, vel2.y - vel1.y };
+		float tFirst = 0;
+		float tLast = g_dt;
+
+		/*----------------------------
+		 working with x-axis
+		----------------------------*/
+		if (relVel.x <= 0) {
+
+			//case 1
+			if (aabb1.min.x > aabb2.max.x) {
+				return 0; //aabb2 is moving away
+			}
+
+			// case 4 - revisited
+			if (aabb1.max.x < aabb2.min.x) {
+				float dFirst = aabb1.max.x - aabb2.min.x;
+				tFirst = max(dFirst / relVel.x, tFirst);
+			}
+
+		}
+
+		if (relVel.x >= 0) {
+
+			// case 2 - revisited
+			if (aabb1.min.x > aabb2.max.x) {
+				float dFirst = aabb1.min.x - aabb2.max.x;
+				tFirst = max(dFirst / relVel.x, tFirst);
+			}
+
+			// case 3
+			if (aabb1.max.x < aabb2.min.x) {
+				return 0;
+			}
+
+		}
+
+		// case 5
+		if (tFirst > tLast) {
+			return 0;
+		}
+
+
+
+		/*----------------------------
+		 working with y-axis
+		----------------------------*/
+		if (relVel.y <= 0) {
+
+			//case 1
+			if (aabb1.min.y > aabb2.max.y) {
+				return 0; //aabb2 is moving away
+			}
+
+			// case 4 - revisited
+			if (aabb1.max.y < aabb2.min.y) {
+				float dFirst = aabb1.max.y - aabb2.min.y;
+				tFirst = max(dFirst / relVel.y, tFirst);
+			}
+
+		}
+
+		if (relVel.y >= 0) {
+
+			// case 2 - revisited
+			if (aabb1.min.y > aabb2.max.y) {
+				float dFirst = aabb1.min.y - aabb2.max.y;
+				tFirst = max(dFirst / relVel.y, tFirst);
+			}
+
+			// case 3
+			if (aabb1.max.y < aabb2.min.y) {
+				return 0;
+			}
+
+		}
+
+		// case 5
+		if (tFirst > tLast) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	return 0;
+}
+
+
+COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2)
+{
+
+	//player hotspots
+	AEVec2 Atop, Abottom, Aleft, Aright;
+
+	Atop.x = (aabb1.min.x + aabb1.max.x) / 2.0f;
+	Atop.y = aabb1.max.y;
+
+	Abottom.x = (aabb1.min.x + aabb1.max.x) / 2.0f;
+	Abottom.y = aabb1.min.y;
+
+	//platform hotspots
+	AEVec2 Btop, Bbottom, Bleft, Bright;
+
+	Btop.x = (aabb2.min.x + aabb2.max.x) / 2.0f;
+	Btop.y = aabb2.max.y;
+
+	Bbottom.x = (aabb2.min.x + aabb2.max.x) / 2.0f;
+	Bbottom.y = aabb2.min.y;
+
+
+	if (Atop.y > Bbottom.y && vel1.y > 0)
+	{
+
+		return COLLISION_TOP;
+	}
+
+	else//if (Abottom.y < Btop.y && vel1.x < 0)
+	{
+		return COLLISION_BOTTOM;
+	}
+
+	return COLLISION_INVALID;
+}
+
+
+
 bool CollisionIntersection_Item(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight)
 {
 
 
 	//Player bounding box 
-	AEVec2 Amax, Amin,Bmax, Bmin, onetime;
+	AEVec2 Amax, Amin, Bmax, Bmin, onetime;
 
 
 	Amax.y = A.y + Aheight / 2.f;
@@ -141,9 +269,9 @@ bool CollisionIntersection_Item(const AEVec2& A, f32 Alength, f32 Aheight, const
 
 
 	//If player and item collide
-	if (collide == true )
+	if (collide == true)
 	{
-		
+
 		return true;
 	}
 	else {
@@ -164,48 +292,53 @@ void input_handle()
 	{
 	case (RACING):
 		/*----------------------------------------------------------------------------------
- player 1 movement controls
+		 player 1 movement controls
 
- W -> jump
- A -> move left
- D -> move right
------------------------------------------------------------------------------------*/
+		 W -> jump
+		 A -> move left
+		 D -> move right
+		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size) {
-			if (player1.pOnGround && !player1.pJumping) {
+			if (player1.pOnSurface && !player1.pJumping) {
 				player1.pJumping = true;
-				player1.pOnGround = false;
-				AEAudioPlay(jump.audio, jump.aGroup, 0.75, 1, 0);
+				player1.pOnSurface = false;
 			}
 		}
 
 		//jumping mechanism
 		if (player1.pJumping) {
-			player1.pCoord.y += GRAVITY * player1.pAcceleration * g_dt;
+			player1.pVel.y = PLAYER_JUMP;
 		}
 
 		else {
-			player1.pCoord.y -= GRAVITY * player1.pAcceleration * g_dt;
+			player1.pVel.y = GRAVITY;
 		}
 
 		//adding jump limits
 		if (player1.pCoord.y <= player1.pGround) {//lower limit
 			player1.pCoord.y = player1.pGround;
-			player1.pOnGround = true;
+			player1.pOnSurface = true;
 		}
 
 
-		if (player1.pCoord.y >= player1.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
 			player1.pJumping = false;
 		}
 
 
 		if (AEInputCheckCurr(AEVK_A) && ((player1.pCoord.x - player1.size / 2.0f)) >= AEGfxGetWinMinX()) { //left limit = MinX
-			player1.pCoord.x -= 3.0f * player1.pAcceleration * g_dt;
+			player1.pVel.x = -PLAYER_MOVE;
 		}
 
 		else if (AEInputCheckCurr(AEVK_D) && (player1.pCoord.x + player1.size / 2.0f) <= 0) { //right limit = 0 - size
-			player1.pCoord.x += 3.0f * player1.pAcceleration * g_dt;
+			player1.pVel.x = PLAYER_MOVE;
 		}
+
+		else
+		{
+			player1.pVel.x = 0.0f;
+		}
+
 
 		/*----------------------------------------------------------------------------------
 		 player 2 movement controls
@@ -215,38 +348,43 @@ void input_handle()
 		 right -> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size) {
-			if (player2.pOnGround && !player2.pJumping) {
+			if (player2.pOnSurface && !player2.pJumping) {
 				player2.pJumping = true;
-				player2.pOnGround = false;
+				player2.pOnSurface = false;
 			}
 		}
 
 		//jumping mechanism
 		if (player2.pJumping) {
-			player2.pCoord.y += GRAVITY * player2.pAcceleration * g_dt;
+			player2.pVel.y = PLAYER_JUMP;
 		}
 
 		else {
-			player2.pCoord.y -= GRAVITY * player2.pAcceleration * g_dt;
+			player2.pVel.y = GRAVITY;
 		}
 
 		//adding jump limits
 		if (player2.pCoord.y <= player2.pGround) {//lower limit
 			player2.pCoord.y = player2.pGround;
-			player2.pOnGround = true;
+			player2.pOnSurface = true;
 		}
 
 
-		if (player2.pCoord.y >= player2.pPrevGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
 			player2.pJumping = false;
 		}
 
+		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.0f)) >= 0) {//left limit = MinX
+			player2.pVel.x = -PLAYER_MOVE;
+		}
 
-		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.0f)) >= 0) //left limit = MinX
-			player2.pCoord.x -= 3.0f * player2.pAcceleration * g_dt;
+		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.0f) <= AEGfxGetWinMaxX()) {//right limit = 0 - size
+			player2.pVel.x = PLAYER_MOVE;
+		}
 
-		else if (AEInputCheckCurr(AEVK_RIGHT) && (player2.pCoord.x + player2.size / 2.0f) <= AEGfxGetWinMaxX()) //right limit = 0 - size
-			player2.pCoord.x += 3.0f * player2.pAcceleration * g_dt;
+		else {
+			player2.pVel.x = 0.0f;
+		}
 
 		/*------------------------------------------------------------
 		END OF RACING

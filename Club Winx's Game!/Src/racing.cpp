@@ -42,7 +42,6 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void racing_load()
 {
-	std::cout << "racing:Load\n";
 
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
@@ -103,7 +102,6 @@ void racing_load()
 
 void racing_init()
 {
-	std::cout << "racing:Initialize\n";
 
 	/*------------------------------------------------------------
 	// INIT PLAYERS
@@ -173,7 +171,6 @@ void racing_init()
 
 void racing_update()
 {
-	std::cout << "racing:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -202,115 +199,75 @@ void racing_update()
 	AEAudioUpdate();
 
 
+	//update player bounding box
+	player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
+	player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
+	player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
+	player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
+
+	player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
+	player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
+	player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
+	player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
+
+
 	//checking for player-platform collision
 	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
 	{
+		//update platform bounding box
+		platformA[i].platBoundingBox.min.x = platformA[i].platVect.x - platformA[i].length / 2.0f;
+		platformA[i].platBoundingBox.min.y = platformA[i].platVect.y - platformA[i].height / 2.0f;
+		platformA[i].platBoundingBox.max.x = platformA[i].platVect.x + platformA[i].length / 2.0f;
+		platformA[i].platBoundingBox.max.y = platformA[i].platVect.y + platformA[i].height / 2.0f;
+
+		platformB[i].platBoundingBox.min.x = platformB[i].platVect.x - platformB[i].length / 2.0f;
+		platformB[i].platBoundingBox.min.y = platformB[i].platVect.y - platformB[i].height / 2.0f;
+		platformB[i].platBoundingBox.max.x = platformB[i].platVect.x + platformB[i].length / 2.0f;
+		platformB[i].platBoundingBox.max.y = platformB[i].platVect.y + platformB[i].height / 2.0f;
+
+
+		bool player1_collide = CollisionIntersection_RectRect_usingVel(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
+		bool player2_collide = CollisionIntersection_RectRect_usingVel(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
+
 		//player 1
-		if (CollisionIntersection_RectRect(player1.pCoord, player1.size, player1.size,
-			platformA[i].platVect, platformA[i].length, platformA[i].height) == true) {
+		if (player1_collide)
+		{
+			COLLISION player1_flag = get_collision_flag(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
 
-			player1.pPrevGround = player1.pCurrGround;
-			player1.pCurrGround = platformA[i].platVect.y + platformA[i].height / 2.0f + player1.size / 2.0f;
-			player1.maxCurrHeight = platformA[i + 1].platVect.y - platformA[i + 1].height / 2.0f - player1.size / 2.0f + 10.0f;
-
-			player1.pCoord.y = player1.pCurrGround;
-
-			player1.pOnGround = true;
-			// AEAudioPlay(jump.audio, jump.aGroup, 20, 0, 1);
-
-			// if collision on last platform and other player hasn't won
-			if ((if_win != 2) && i == (MAX_NUM_PLATFORMS - 1))
+			if (player1_flag == COLLISION_BOTTOM)
 			{
-				if_win = 1;
-				Racing_Win(true, 1);
-				MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
+				player1.pCurrGround = platformA[i].platVect.y + platformA[i].height / 2.0f + player1.size / 2.0f;
+				player1.pCoord.y = player1.pCurrGround;
+				player1.pJumping = false;
+				player1.pOnSurface = true;
 			}
+		}
 
+		if (player1.pCoord.y == player1.pGround)
+		{
+			player1.pCurrGround = player1.pGround;
 		}
 
 
 		//player 2
-		if (CollisionIntersection_RectRect(player2.pCoord, player2.size, player2.size,
-			platformB[i].platVect, platformB[i].length, platformB[i].height) == true) {
+		if (player2_collide)
+		{
+			COLLISION player2_flag = get_collision_flag(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
 
-			player2.pPrevGround = player2.pCurrGround;
-			player2.pCurrGround = platformB[i].platVect.y + platformB[i].height / 2.0f + player2.size / 2.0f;
-			//player2.maxCurrHeight = platformB[i].platVect.y - platformB[i].height / 2.0f - player2.size / 2.0f;
-
-			player2.pCoord.y = player2.pCurrGround;
-
-			player2.pOnGround = true;
-
-			// if collision on last platform, and other player hasn't won
-			if ((if_win != 1) && i == (MAX_NUM_PLATFORMS - 1))
+			if (player2_flag == COLLISION_BOTTOM)
 			{
-				if_win = 2;
-				Racing_Win(true, 2);
-				MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
+				player2.pCurrGround = platformB[i].platVect.y + platformB[i].height / 2.0f + player2.size / 2.0f;
+				player2.pCoord.y = player2.pCurrGround;
+				player2.pJumping = false;
+				player2.pOnSurface = true;
 			}
+		}
 
+		if (player2.pCoord.y == player2.pGround)
+		{
+			player2.pCurrGround = player2.pGround;
 		}
 	}
-
-
-	/*for (int i = 0; i < platform_max; i++)
-	{
-		if (CollisionIntersection_RectRect(player1.pCoord, player1.size, player1.size, 
-											platformA[i].platVect, platformA[i].length, platformA[i].height) == true) {
-
-			//std::cout << "test test test" << std::endl;
-			platformA[i].stepped = true;
-			//player1.stepping = true;
-
-		}
-		else
-		{
-			platformA[i].stepped = false;
-			//player1.stepping = false;
-		}
-
-		if (platformA[i].stepped)
-		{
-			player1.pCoord.y	= platformA[i].platVect.y + platformA[i].height / 2.f + player1.size / 2.f;
-			player1.pCurrGround = platformA[i].platVect.y + platformA[i].height / 2.f + player1.size / 2.f;
-
-			player1.stepping= true;
-		}
-		else
-		{
-			//player1.stepping = false;
-			//player1.pCurrGround = player1.pGround;
-		}
-
-		/// PLAYER 2 PLATFORM COLLSIION 
-		if (CollisionIntersection_RectRect(player2.pCoord, player2.size, player2.size, 
-											platformB[i].platVect, platformB[i].length, platformB[i].height) == true) {
-
-			//std::cout << "test test test" << std::endl;
-			platformB[i].stepped = true;
-			//player1.stepping = true;
-
-		}
-		else
-		{
-			platformB[i].stepped = false;
-			//player1.stepping = false;
-		}
-
-		if (platformB[i].stepped)
-		{
-			player2.pCoord.y	= platformB[i].platVect.y + platformB[i].height / 2.f + player2.size / 2.f;
-			player2.pCurrGround = platformB[i].platVect.y + platformB[i].height / 2.f + player2.size / 2.f;
-
-			player2.stepping = true;
-		}
-		else
-		{
-			//player1.stepping = false;
-			//player1.pCurrGround = player1.pGround;
-		}
-
-	}*/
 
 	//checking for player-item collision
 	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
@@ -328,7 +285,12 @@ void racing_update()
 		
 	}
 
+	//update player positions
+	player1.pCoord.x += player1.pVel.x * player1.pAcceleration * g_dt;
+	player1.pCoord.y += player1.pVel.y * player1.pAcceleration * g_dt;
 
+	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
+	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
 
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
@@ -392,12 +354,14 @@ void racing_update()
 	}
 
 
-
+	///*------------------------------------------------------------
+	// UPDATE - Background Y
+	//------------------------------------------------------------*/
+	bgRacing.bgCoord.y = CamY;
 }
 
 void racing_draw()
 {
-	std::cout << "racing:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -478,7 +442,6 @@ void racing_draw()
 
 void racing_free()
 {
-	std::cout << "racing:Free\n";
 	CamX = 0.0f; 
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
@@ -486,7 +449,6 @@ void racing_free()
 
 void racing_unload()
 {
-	std::cout << "racing:Unload\n";
 
 	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture

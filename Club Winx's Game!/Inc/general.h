@@ -46,7 +46,25 @@ Defines
 extern int const	winWIDTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
-extern const int	JUMP_HEIGHT_MAX;
+extern const float	JUMP_HEIGHT_MAX;
+extern const float	GRAVITY;
+
+
+/*--------------------------------------------------------------------------
+Structs
+---------------------------------------------------------------------------*/
+struct AABB
+{
+	AEVec2 min;
+	AEVec2 max;
+};
+
+enum COLLISION
+{
+	COLLISION_TOP = 0,
+	COLLISION_BOTTOM,
+	COLLISION_INVALID
+};
 
 
 
@@ -70,6 +88,10 @@ struct BG {
 extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing;
 
 
+
+
+
+
 /*--------------------------------------------------------------------------
 AUDIO
 ---------------------------------------------------------------------------*/
@@ -80,38 +102,43 @@ struct Audio {
 extern Audio jump;
 
 
+
+
+
 /*--------------------------------------------------------------------------
 Players
 ---------------------------------------------------------------------------*/
 
+
 //struct for players 
 struct Player { // initialise in each game mode before use 
 	AEVec2				pCoord{ 0.0f, 0.0f };	// player x,y coordinates
-	AEGfxVertexList* pMesh{ nullptr };	// mesh 
-	AEGfxTexture* pTex{ nullptr };	// texture
-	f32					size{ 50.0f };		// player size
-	AEVec2				pVel{ 0.0f, 0.0f }; // velocity of player
-	f32					pAcceleration{ 80.0f };		// acceleration of player
+	AEGfxVertexList* pMesh{ nullptr };		// mesh 
+	AEGfxTexture* pTex{ nullptr };		// texture
+	f32					size{ 50.0f };			// player size
+	AEVec2				pVel{ 0.0f, 0.0f };		// velocity of player
+	f32					pAcceleration{ 40.0f };
+	AABB				boundingBox;
+	COLLISION			pFlag;
 
 
 	f32					pGround{ 0.0f };		// y-coord of the ground
-	f32					pCurrGround{ 0.0f };		// y-coord of the current ground/platform
-	f32					pPrevGround{ 0.0f };		// y-coord of the previous ground/platform
-	bool				pOnGround{ true };		// indicate if player stepping on ground/platform
+	f32					pCurrGround{ 0.0f };	// y-coord of the current ground/platform
+	bool				pOnSurface{ true };		// indicate if player stepping on ground/platform
 	bool				pJumping{ false };		// indicate if player is jumping
 	f32					maxCurrHeight{ 0.0f };
 
 	f32					startX{ 0.0f };		// left x limit
 	f32					endX{ 0.0f };		// right X limit
 
-	bool				collectedItem{ false };		// indicate if player has collected an item
+	bool				collectedItem{ false };	// indicate if player has collected an item
 	bool				usedItem{ false };		// indicate if item has been used
 
-	AEMtx33				transform{};				// transform matrix
+	AEMtx33				transform{};			// transform matrix
 
-	
-	f32					HP{ 100.f };						// player health
-	bool				alive{ true };					// player alive/dead
+
+	f32					HP{ 100.f };			// player health
+	bool				alive{ true };			// player alive/dead
 };
 extern Player player1, player2;
 
@@ -183,6 +210,8 @@ struct Platform {
 	AEVec2				platVect{ 0.0f, 0.0f };	// vector -> initialise platforms x & y coords, which will then be used for randomisation
 	AEGfxVertexList*	platMesh{ nullptr };	// mesh 
 	AEGfxTexture*		platTex{ nullptr };	// texture
+	AEVec2				platVel{ 0.0f, 0.0f };
+	AABB				platBoundingBox;
 
 	f32					length{ 145.0f };
 	f32					height{ 15.0f };
@@ -316,7 +345,8 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour);
 Check for collision
 ---------------------------------------------------------------------------*/
 bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
-
+bool CollisionIntersection_RectRect_usingVel(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
+COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
 bool CollisionIntersection_Item(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
 
 

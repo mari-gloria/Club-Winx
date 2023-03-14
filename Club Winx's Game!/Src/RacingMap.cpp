@@ -104,7 +104,7 @@ void racing_map_init(f32 start, f32 end, int player)
 
 	case 1: //draw map for player 1
 		platformA[0].platVect.x = player1.pCoord.x;
-		platformA[0].platVect.y = player1.pCoord.y + 75.0f;
+		platformA[0].platVect.y = player1.pCoord.y + 50.0f;
 
 		//in progress -kristy
 		//generate a list of random platform numbers 
@@ -142,7 +142,7 @@ void racing_map_init(f32 start, f32 end, int player)
 
 	case 2: //draw map for player 2
 		platformB[0].platVect.x = player2.pCoord.x;
-		platformB[0].platVect.y = player2.pCoord.y + 75.0f;
+		platformB[0].platVect.y = player2.pCoord.y + 50.0f;
 
 		for (int i = 1; i < MAX_NUM_PLATFORMS; i++) {
 			//x-coord: random x coord is generated within min and max limit
