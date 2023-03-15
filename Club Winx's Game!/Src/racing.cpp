@@ -192,6 +192,8 @@ void racing_update()
 	}
 
 
+
+
 	/*------------------------------------------------------------
 	// PLAYER MOVEMENT
 	------------------------------------------------------------*/
@@ -248,6 +250,15 @@ void racing_update()
 			player1.pCurrGround = player1.pGround;
 		}
 
+		// if collision on last platform and other player hasn't won
+		float platformA_last_y = platformA[MAX_NUM_PLATFORMS - 1].platVect.y + platformA[MAX_NUM_PLATFORMS - 1].height / 2.0f + player1.size / 2.0f;
+		if ((if_win == 0) && player1.pCurrGround == platformA_last_y)
+		{
+			if_win = 1;
+			Racing_Win(true, 1);
+			MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
+		}
+
 
 		//player 2
 		if (player2_collide)
@@ -266,6 +277,15 @@ void racing_update()
 		if (player2.pCoord.y == player2.pGround)
 		{
 			player2.pCurrGround = player2.pGround;
+		}
+
+		// if collision on last platform and other player hasn't won
+		float platformB_last_y = platformB[MAX_NUM_PLATFORMS - 1].platVect.y + platformB[MAX_NUM_PLATFORMS - 1].height / 2.0f + player2.size / 2.0f;
+		if ((if_win == 0) && player2.pCurrGround == platformB_last_y)
+		{
+			if_win = 2;
+			Racing_Win(true, 2);
+			MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 		}
 	}
 
