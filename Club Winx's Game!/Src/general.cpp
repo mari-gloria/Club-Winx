@@ -302,6 +302,7 @@ void input_handle()
 			if (player1.pOnSurface && !player1.pJumping) {
 				player1.pJumping = true;
 				player1.pOnSurface = false;
+				AEAudioPlay(jump.audio, jump.aGroup, 0.75, 1, 0);
 			}
 		}
 
@@ -351,6 +352,7 @@ void input_handle()
 			if (player2.pOnSurface && !player2.pJumping) {
 				player2.pJumping = true;
 				player2.pOnSurface = false;
+				AEAudioPlay(jump.audio, jump.aGroup, 0.75, 1, 0);
 			}
 		}
 
