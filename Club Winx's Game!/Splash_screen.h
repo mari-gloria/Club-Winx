@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef SPLASHSCREENS_H
 #define SPLASHSCREENS_H
 

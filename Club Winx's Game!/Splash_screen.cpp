@@ -3,13 +3,15 @@
 #include "../Main.h"
 #include "Splash_screen.h"
 
+#define WINDOW_W 800
+#define WINDOW_H 600
+
 
 AEGfxVertexList* pMesh1 = 0;
 AEGfxTexture* pTex1;
 f32 timer, counter;
 AEMtx33 scale;
 AEVec2 pos{ 0.0f, 0.0f };
-
 
 
 void Splash_Load()
@@ -58,7 +60,7 @@ void Splash_Draw()
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxTextureSet(pTex1, 0.0f, 0.0f);
 	AEGfxSetTransform(scale.m);
-	//slowly fade out
+	//fade out
 	AEGfxSetTransparency(counter / timer);
 	AEGfxMeshDraw(pMesh1, AE_GFX_MDM_TRIANGLES);
 }

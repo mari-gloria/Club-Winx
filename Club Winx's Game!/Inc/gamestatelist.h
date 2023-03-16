@@ -12,7 +12,6 @@
 
 enum GS_STATES
 {
-	
 	SPLASH = 0,
 	MENU,
 	RACING,
