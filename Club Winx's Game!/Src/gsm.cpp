@@ -50,6 +50,16 @@ void GSM_update()
 
 	switch (curr_state)
 	{
+	case SPLASH:
+		fpLoad = Splash_Load;
+		fpInit = Splash_Initialize;
+		fpUpdate = Splash_Update;
+		fpDraw = Splash_Draw;
+		fpFree = Splash_Free;
+		fpUnload = Splash_Unload;
+		break;
+
+
 	case MENU:
 		fpLoad = MainMenu_Load;
 		fpInit = MainMenu_Init;

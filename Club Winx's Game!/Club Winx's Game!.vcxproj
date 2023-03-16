@@ -98,6 +98,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Splash_screen.cpp" />
     <ClCompile Include="Src\Buttons.cpp" />
     <ClCompile Include="Src\MainMenu.cpp" />
     <ClCompile Include="Src\Boss.cpp" />
@@ -123,6 +124,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Inc\MainMenu.h" />
     <ClInclude Include="Inc\WinnerState.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Splash_screen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

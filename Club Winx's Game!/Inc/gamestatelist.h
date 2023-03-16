@@ -12,7 +12,9 @@
 
 enum GS_STATES
 {
-	MENU = 0,
+	
+	SPLASH = 0,
+	MENU,
 	RACING,
 	BOSS,
 	PUZZLE,
