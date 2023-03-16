@@ -26,9 +26,7 @@ void Splash_Load()
 	pMesh1 = AEGfxMeshEnd();
 	AE_ASSERT_MESG(pMesh1, "fail to create object!!");
 }
-// ----------------------------------------------------------------------------
-// This function initialises the variables for Splash Screen
-// ----------------------------------------------------------------------------
+
 void Splash_Initialize()
 {
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
@@ -60,6 +58,7 @@ void Splash_Draw()
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxTextureSet(pTex1, 0.0f, 0.0f);
 	AEGfxSetTransform(scale.m);
+	//slowly fade out
 	AEGfxSetTransparency(counter / timer);
 	AEGfxMeshDraw(pMesh1, AE_GFX_MDM_TRIANGLES);
 }

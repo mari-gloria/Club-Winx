@@ -16,11 +16,7 @@ void Splash_Free();
 
 void Splash_Unload();
 
-enum splash
-{
-	digipen = 0,
 
-};
 #endif 
 
 
