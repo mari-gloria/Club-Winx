@@ -40,7 +40,8 @@ enum MAPOBJ {
 #define GRID_COLS 36 
 #define GRID_ROWS 20 
 
-int binmap[GRID_ROWS][GRID_COLS]
+static int** mapdata;
+const int binmap[GRID_ROWS][GRID_COLS]
 {
 
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -136,9 +137,23 @@ void puzzle_init()
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { player1.pCoord.x + 100.f, player1.pCoord.y };
 
+	/*------------------------------------------------------------
+	INIT MAP DATA
+	------------------------------------------------------------*/
+	mapdata = new int* [GRID_ROWS];
+	for (int i = 0; i < GRID_ROWS; i++)
+	{
+		mapdata[i] = new int[GRID_COLS];
+	}
 
-
-
+	// COPY binmap to mapdata 
+	for (int i = 0; i < GRID_ROWS; i++)
+	{
+		for (int j = 0; j < GRID_COLS; j++)
+		{
+			mapdata[i][j] = binmap[i][j];
+		}
+	}
 
 }
 
@@ -275,22 +290,22 @@ void puzzle_draw()
 	------------------------------------------------------------*/
 	AEMtx33 trans, final, flip;
 	AEMtx33Scale(&flip, 1.0f, -1.0f); // create a matrix to flip vertically
-	for (int i = 0; i < GRID_COLS; i++)
+	for (int i = 0; i < GRID_ROWS; i++)
 	{
-		for (int j = 0; j < GRID_ROWS; j++)
+		for (int j = 0; j < GRID_COLS; j++)
 		{
-			AEMtx33Trans(&trans, (float)i + 0.5f, (float)j + 0.5f);
+			AEMtx33Trans(&trans, (float)j + 0.5f, (float)i + 0.5f);
 			AEMtx33Concat(&final, &map.MapTransform, &trans);
 			AEMtx33Concat(&final, &flip, &final);
 			AEGfxSetTransform(final.m);
 
-			if (binmap[j][i] == wall)
+			if (binmap[i][j] == wall)
 			{
 
 				AEGfxMeshDraw(map.pMesh1, AE_GFX_MDM_TRIANGLES);
 
 			}
-			if (binmap[j][i] == empty)
+			if (binmap[i][j] == empty)
 			{
 
 				AEGfxMeshDraw(map.pMesh0, AE_GFX_MDM_TRIANGLES);
@@ -313,6 +328,11 @@ void puzzle_free()
 
 	AEGfxMeshFree(map.pMesh0);
 	AEGfxMeshFree(map.pMesh1);
+
+	for (int i = 0; i < GRID_ROWS; i++)
+	{
+		delete[] mapdata[i];
+	}
 }
 
 void puzzle_unload()
