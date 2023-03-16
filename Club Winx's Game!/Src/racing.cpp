@@ -228,8 +228,8 @@ void racing_update()
 		platformB[i].platBoundingBox.max.y = platformB[i].platVect.y + platformB[i].height / 2.0f;
 
 
-		bool player1_collide = CollisionIntersection_RectRect_usingVel(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
-		bool player2_collide = CollisionIntersection_RectRect_usingVel(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
+		bool player1_collide = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
+		bool player2_collide = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
 
 		//player 1
 		if (player1_collide)
@@ -289,15 +289,25 @@ void racing_update()
 		}
 	}
 
+
+	//update item bounding box
+	for (int i = 0; i < MAX_NUM_ITEMS; i++)
+	{
+		racing_items[i].boundingBox.min.x = racing_items[i].pCoord.x - racing_items[i].size / 2.0f;
+		racing_items[i].boundingBox.min.y = racing_items[i].pCoord.y - racing_items[i].size / 2.0f;
+
+		racing_items[i].boundingBox.max.x = racing_items[i].pCoord.x + racing_items[i].size / 2.0f;
+		racing_items[i].boundingBox.max.y = racing_items[i].pCoord.y + racing_items[i].size / 2.0f;
+	}
+
+
 	//checking for player-item collision
 	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
 	{
 		//player 1
-		if (CollisionIntersection_RectRect( player1.pCoord, player1.size, player1.size,
-											racing_items[i].pCoord, racing_items[i].size, racing_items[i].size) == true) {
+		if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, racing_items[i].boundingBox, racing_items[i].pVel)) {
 
 			racing_items[i].collected = true;
-
 		}
 
 
@@ -305,7 +315,9 @@ void racing_update()
 		
 	}
 
-	//update player positions
+	/*------------------------------------------------------------
+	UPDATE PLAYER POSITIONS
+	------------------------------------------------------------*/
 	player1.pCoord.x += player1.pVel.x * player1.pAcceleration * g_dt;
 	player1.pCoord.y += player1.pVel.y * player1.pAcceleration * g_dt;
 
@@ -445,12 +457,12 @@ void racing_draw()
 	/*------------------------------------------------------------
 	// DRAWING Winner Texture
 	------------------------------------------------------------*/
-		AEGfxSetTransform(winRacing.transform.m);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(winRacing.bgTex, 0, 0);
-		AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(winRacing.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(winRacing.bgTex, 0, 0);
+	AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	 DRAWING - Camera Movement

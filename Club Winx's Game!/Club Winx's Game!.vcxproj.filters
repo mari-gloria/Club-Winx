@@ -41,7 +41,7 @@
     <ClCompile Include="Src\Buttons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\winner_State.cpp">
+    <ClCompile Include="Src\WinnerState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -76,7 +76,7 @@
     <ClInclude Include="Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inc\winner_State.h">
+    <ClInclude Include="Inc\WinnerState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

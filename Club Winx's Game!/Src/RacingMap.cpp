@@ -161,86 +161,6 @@ void racing_map_init(f32 start, f32 end, int player)
 		break;
 	}
 
-	//old code!
-	/*
-	if (player == 1)
-	{
-		// Initialise First Platforms
-		platformA[0].platX = { min_limit };
-		platformA[0].platY = { player1.pGround + 60.0f };
-		platformA[0].platVect = { platformA[0].platX , platformA[0].platY };
-		prevX = platformA[0].platX;
-		prevY = platformA[0].platY;
-		for (int i = 1; i < platform_max; i++)
-		{
-
-			if (is_reverse == false)
-			{
-				platformA[i].platX = { prevX + (main_platform.length / 4 * 3) };
-				backX = platformA[i].platX + main_platform.length;
-				platformA[i].platY = { prevY + 65.0f };
-				prevX = platformA[i].platX; 
-				prevY = platformA[i].platY;
-				platformA[i].platVect = { platformA[i].platX , platformA[i].platY };
-				if (backX > max_limit) { is_reverse = true; }
-	
-			}
-
-			else if (is_reverse == true)
-			{
-				platformA[i].platX = { prevX - (main_platform.length / 4 * 3) };
-				platformA[i].platY = { prevY + 65.0f };
-				prevX = platformA[i].platX;
-				prevY = platformA[i].platY;
-				platformA[i].platVect = { platformA[i].platX , platformA[i].platY };
-				if (platformA[i].platX < min_limit) { is_reverse = false; }
-			}
-
-		}
-
-	}
-	else if (player == 2)
-	{
-		// Initialise First Platforms
-		platformB[0].platX = { min_limit };
-		platformB[0].platY = { player2.pGround + 60.0f };
-		platformB[0].platVect = { platformB[0].platX , platformB[0].platY };
-		prevX = platformB[0].platX;
-		prevY = platformB[0].platY;
-		for (int i = 1; i < platform_max; i++)
-		{
-			if (is_reverse == false)
-			{
-				platformB[i].platX = { prevX + (main_platform.length / 4 * 3) };
-				backX = platformB[i].platX + main_platform.length;
-				platformB[i].platY = { prevY + 65.0f };
-				platformB[i].platVect = { platformB[i].platX , platformB[i].platY };
-				prevX = platformB[i].platX;
-				prevY = platformB[i].platY;
-				if (backX > max_limit) { is_reverse = true; }
-			}
-
-			else if (is_reverse == true)
-			{
-				platformB[i].platX = { prevX - (main_platform.length / 4 * 3) };
-				platformB[i].platY = { prevY + 65.0f };
-				platformB[i].platVect = { platformB[i].platX , platformB[i].platY };
-				prevX = platformB[i].platX;
-				prevY = platformB[i].platY;
-				if (platformB[i].platX < min_limit) { is_reverse = false; }
-			}
-
-		}
-	}
-	
-	// ==== revert back to these if not working ==== // 
-	//platform1.Pspawn = player1.pGround + 60.0f;
-	//platform2.Pspawn = player2.pGround + 60.0f;
-
-	//platform1.PCoord = { (AEGfxGetWinMinX() / 2) - 20.0f , platform1.Pspawn };
-	//platform2.PCoord = { (AEGfxGetWinMaxX() / 2) - 20.0f , platform2.Pspawn };
-	*/
-
 	return;
 }
 
@@ -293,22 +213,6 @@ void racing_map_draw()
 		}
 	}
 
-
-	// ==== revert back to these if not working ==== //
-	//// Drawing platform 1
-	//AEGfxSetPosition(platform1.PCoord.x, platform1.PCoord.y);
-	//// No texture
-	//AEGfxTextureSet(NULL, 0, 0);
-	//// Drawing the mesh (list of triangles)
-	//AEGfxMeshDraw(platform1.PMesh, AE_GFX_MDM_TRIANGLES);
-
-	//// Drawing platform 2
-	//AEGfxSetPosition(platform2.PCoord.x, platform2.PCoord.y);
-	//// No texture
-	//AEGfxTextureSet(NULL, 0, 0);
-	//// Drawing the mesh (list of triangles)
-	//AEGfxMeshDraw(platform2.PMesh, AE_GFX_MDM_TRIANGLES);
-
 	return;
 }
 
@@ -353,12 +257,8 @@ void splitscreen_load()
 // Purpose: initialise splitscreen position trhough vector
 void splitscreen_init()
 {
-	//f32 Y = AEGfxGetWinMinY();
-	//f32 X = - 9.0f;
 	f32 Y = 0.0f ;
 	f32 X = 0.0f ;
-	/*f32 Y = 10.0f;
-	f32 X = - 9.0f;*/
 	splitscreen.lVect = { X, Y };
 	return;
 }
@@ -371,8 +271,6 @@ void splitscreen_init()
 void splitscreen_draw()
 {
 	// Drawing object 1
-	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	//AEGfxSetPosition(splitscreen.lVect.x, splitscreen.lVect.y);
 	AEGfxSetTransform(splitscreen.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxTextureSet(NULL, 0, 0);

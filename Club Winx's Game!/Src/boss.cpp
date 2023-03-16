@@ -28,6 +28,8 @@ const f32 PLAYERDMG = 0.5f; //Player's hit
 const f32  BOSS_MAX_HP = 500.f;
 const f32 PLAYER_MAX_HP = 150.f;
 const f32 BOSSATTACK_1_DMG = 5.5f;
+
+
 /*------------------------------------------------------------
 PLAYER BULLETS
 ------------------------------------------------------------*/
@@ -37,12 +39,15 @@ struct Bullet {
 	AEMtx33 transform{};
 	f32 length{ 10.0f };
 	f32 height{ 5.0f };
+	AABB boundingBox;
+	AEVec2 bVel;
 };
 
 Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
 AEGfxVertexList* pBullet{ nullptr };
 f64 bulletTimeElapsed = 0.0;
 /*-----------------------------------------------------------*/
+
 /*------------------------------------------------------------
 HEALTH
 ------------------------------------------------------------*/
@@ -63,13 +68,14 @@ BOSS ATTACKS
 ------------------------------------------------------------*/
 const int MAXWAVE = { 40 };
 struct bosspew {
-	AEVec2 coords{}; // coords
+	AEVec2	coords{}; // coords
 	AEMtx33 transform{}; // transform 
 	AEVec2 velocity{}; // 
 	bool shot{ FALSE };
-	f32 direction{ 30.0f }; // 
+	f32 direction{ 30.0f };
 	f32 speed{ 100.f };
 	f32 size{ 25.f };
+	AABB boundingBox;
 };
 
 bosspew bossbullets1[MAXWAVE], bossbullets2[MAXWAVE];
@@ -85,15 +91,21 @@ Boss
 ---------------------------------------------------------------------------*/
 struct Boss { // initialise in each game mode before use 
 
-	AEGfxVertexList* pMesh1{ nullptr };			// mesh 
-	AEGfxTexture* pTex{ nullptr };			// texture
-	AEMtx33				transform{};						// transform mtx 
-	AEVec2				Bcoord{ 380.0f, -30.f };	// position of boss
+	AEGfxVertexList*	pMesh1{ nullptr };			// mesh 
+	AEGfxTexture*		pTex{ nullptr };			// texture
+	AEMtx33				transform{};				// transform mtx 
+
+	AEVec2				Bcoord	{ 380.0f, -30.f };	// position of boss
+	AEVec2				bossVel { 0.0f, 0.0f };
+	AABB				boundingBox;
+	
 	bool				alive{ true };
 	Health				Bhealth;
+
 	f32 length = 200.0f; //boss length 
 	f32 height = 150.f; // boss height
 	f32 HP{ BOSS_MAX_HP };
+	
 };
 //extern Boss boss;
 
@@ -270,7 +282,8 @@ void boss_update()
 
 			if (bullets1[i].shot)
 			{
-				bullets1[i].bCoord.x += BULLETSPEED; // bullet speed 
+				bullets1[i].bVel.x = BULLETSPEED; // bullet speed 
+				bullets1[i].bCoord.x += bullets1[i].bVel.x;
 				std::cout << "bullets 1 no. " << i << " launched \n";
 			}
 			else
@@ -292,7 +305,8 @@ void boss_update()
 			
 			if (bullets2[i].shot)
 			{
-				bullets2[i].bCoord.x += BULLETSPEED; // bullet speed 
+				bullets2[i].bVel.x = BULLETSPEED; // bullet speed 
+				bullets2[i].bCoord.x += bullets2[i].bVel.x;
 				std::cout << "bullets 2 no. " << i << " launched \n";
 			}
 			else 
@@ -370,11 +384,44 @@ void boss_update()
 	/*------------------------------------------------------------
 	COLLISION CHECKS 
 	------------------------------------------------------------*/
+
+	//update player bounding box
+	player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
+	player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
+	player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
+	player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
+
+	player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
+	player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
+	player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
+	player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
+
+
+	
+	//update boss bounding box
+	boss.boundingBox.min.x = boss.Bcoord.x - boss.length / 2.0f;
+	boss.boundingBox.min.y = boss.Bcoord.x - boss.height / 2.0f;
+	boss.boundingBox.max.x = boss.Bcoord.x + boss.length / 2.0f;
+	boss.boundingBox.max.y = boss.Bcoord.x + boss.height / 2.0f;
+
+
 	for (int i = 0; i < MAX_BULLETS; i++) // for bullet hit boss
 	{
+		//update bounding box
+		bullets1[i].boundingBox.min.x = bullets1[i].bCoord.x - bullets1[i].length / 2.0f;
+		bullets1[i].boundingBox.min.y = bullets1[i].bCoord.y - bullets1[i].height / 2.0f;
+		bullets1[i].boundingBox.max.x = bullets1[i].bCoord.x + bullets1[i].length / 2.0f;
+		bullets1[i].boundingBox.max.y = bullets1[i].bCoord.y + bullets1[i].height / 2.0f;
+
+		bullets2[i].boundingBox.min.x = bullets2[i].bCoord.x - bullets2[i].length / 2.0f;
+		bullets2[i].boundingBox.min.y = bullets2[i].bCoord.y - bullets2[i].height / 2.0f;
+		bullets2[i].boundingBox.max.x = bullets2[i].bCoord.x + bullets2[i].length / 2.0f;
+		bullets2[i].boundingBox.max.y = bullets2[i].bCoord.y + bullets2[i].height / 2.0f;
+
+
 		//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
-		if ((CollisionIntersection_RectRect(bullets1[i].bCoord,bullets1[i].length,bullets1[i].height,boss.Bcoord,boss.length,boss.height)
-			|| CollisionIntersection_RectRect(bullets2[i].bCoord, bullets2[i].length, bullets2[i].height, boss.Bcoord, boss.length, boss.height)) && boss.alive) //if player1 or player2 bullet collide with boss && boss is alive
+		if ((CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel)
+			|| CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel)) && boss.alive) //if player1 or player2 bullet collide with boss && boss is alive
 		{
 
 			boss.HP -= PLAYERDMG;	//decrease monster health
@@ -385,15 +432,35 @@ void boss_update()
 	}
 	for (int i = 0; i < MAXWAVE; i++) // for bullet hit players
 	{
-		if (CollisionIntersection_RectRect(bossbullets1[i].coords, bossbullets1[i].size, bossbullets1[i].size, player1.pCoord, player1.size, player1.size) && player1.alive)// if bullet hit player 1 && player alive
+		//update bounding box
+		bossbullets1[i].boundingBox.min.x = bossbullets1[i].coords.x - bossbullets1[i].size / 2.0f;
+		bossbullets1[i].boundingBox.min.y = bossbullets1[i].coords.y - bossbullets1[i].size / 2.0f;
+		bossbullets1[i].boundingBox.max.x = bossbullets1[i].coords.x + bossbullets1[i].size / 2.0f;
+		bossbullets1[i].boundingBox.max.y = bossbullets1[i].coords.y + bossbullets1[i].size / 2.0f;
+
+		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
 		{
 			player1.HP -= BOSSATTACK_1_DMG;
 		}
-		if (CollisionIntersection_RectRect(bossbullets1[i].coords, bossbullets1[i].size, bossbullets1[i].size, player2.pCoord, player2.size, player2.size) && player2.alive)// if bullet hit player 1 && player alive
+		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player2.alive)// if bullet hit player 1 && player alive
 		{
 			player2.HP -= BOSSATTACK_1_DMG;
 		}
 	}
+
+
+
+	/*------------------------------------------------------------
+	UPDATE PLAYER POSITIONS
+	------------------------------------------------------------*/
+	player1.pCoord.x += player1.pVel.x * player1.pAcceleration * g_dt;
+	player1.pCoord.y += player1.pVel.y * player1.pAcceleration * g_dt;
+
+	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
+	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
+
+
+
 	/*------------------------------------------------------------
 	MATRIX CALCULATION 
 	------------------------------------------------------------*/

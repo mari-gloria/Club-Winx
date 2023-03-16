@@ -239,6 +239,7 @@ void puzzle_update()
 
 */
 
+	/*
 	if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
 		puzzle.IVector, puzzle.length, puzzle.height) == true)
 	{
@@ -260,7 +261,7 @@ void puzzle_update()
 		itemdie = TRUE;
 
 	}
-
+	*/
 
 	if (turntransparent == TRUE) {
 

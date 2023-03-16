@@ -27,7 +27,7 @@
 #include "Racing.h"
 #include "RacingMap.h"
 #include "WinLose.h"
-#include "winner_State.h"
+#include "WinnerState.h"
 
 #include <iostream>
 #include <fstream>
@@ -182,6 +182,8 @@ struct RacingItems {
 	AEGfxVertexList*	pMesh{ nullptr };	// mesh 
 	AEGfxTexture*		pTex{ nullptr };	// texture
 	f32					size{ 20.0f };		// item size
+	AABB				boundingBox;
+	AEVec2				pVel{ 0.0f, 0.0f };
 
 	ItemType			itemType;
 
@@ -344,10 +346,8 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour);
 /*--------------------------------------------------------------------------
 Check for collision
 ---------------------------------------------------------------------------*/
-bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
-bool CollisionIntersection_RectRect_usingVel(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
+bool CollisionIntersection_RectRect(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
 COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
-bool CollisionIntersection_Item(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
 
 
 
