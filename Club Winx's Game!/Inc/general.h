@@ -99,7 +99,7 @@ struct Audio {
 	AEAudio			audio	{ nullptr };
 	AEAudioGroup	aGroup	{ nullptr };
 };
-extern Audio jump;
+extern Audio jump,collect;
 
 
 

@@ -31,7 +31,7 @@ double	 g_appTime;
 BG			bgRacing, bgPuzzle, bgBoss, bgWin;
 BG			winRacing;
 
-Audio		jump;
+Audio		jump,collect;
 
 Player		player1, player2;
 ScoreBoard	score_board;

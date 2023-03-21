@@ -27,7 +27,9 @@ const f32 BULLETSPEED = 10.0f;
 const f32 PLAYERDMG = 0.5f; //Player's hit
 const f32  BOSS_MAX_HP = 500.f;
 const f32 PLAYER_MAX_HP = 150.f;
+const f32 PLAYER2_MAX_HP = 150.f;
 const f32 BOSSATTACK_1_DMG = 5.5f;
+const f32 MOBSATTACK_DMG = 1.5f;
 
 
 /*------------------------------------------------------------
@@ -57,8 +59,16 @@ f32 hp_percentage;
 f32 DEFAULT_HP; //length of hp
 float newBar;
 
-//Player Health
-//float playerHP = 50.f;
+
+//PLAYER's health
+f32 player_hp_percentage;
+f32 player_default_hp; //length of default hp
+float playernewbar;
+
+f32 player2_hp_percentage;
+f32 player2_default_hp; //length of default hp
+float player2newbar;
+
 /*-----------------------------------------------------------*/
 
 
@@ -108,8 +118,51 @@ struct Boss { // initialise in each game mode before use
 
 };
 //extern Boss boss;
-
 Boss		boss;
+
+//Boss Potion
+struct Potion {
+
+	AEGfxVertexList* pMesh{ nullptr }; // mesh 
+	AEGfxTexture* pTex{ nullptr };			// texture
+	AEMtx33				PotionTransform{};
+	f32					size{ 50.0f };
+	f32					height{ 100.0f };
+	AEVec2				vector{ -700,50 };
+	AEVec2				pVelocity{ 0.0f, 0.0f }; //velocity for the item 
+	bool				collected; //when item is being collected
+	AABB				boundingBox; //collision
+
+
+}; Potion potion;
+int max_potion = 6; //number of max potion produce
+int timer;
+bool check = false;
+bool potion_stop = false;
+bool potion_produce = false;
+
+/*------------------------------------------------------------
+* MOBS
+------------------------------------------------------------*/
+struct Mobs {
+
+	AEGfxVertexList* pMesh{ nullptr }; // mesh 
+	AEGfxTexture* pTex{ nullptr };			// texture
+	AEMtx33				MobsTransform{};
+	f32					size{ 50.0f };
+	AEVec2				vector{ 700.0f,0 };//300,0
+	AEVec2				MobsVelocity{ 0.0f, 0.0f }; //velocity for the item 
+	AABB				boundingBox; //collision
+
+
+
+}; Mobs mobs;
+
+double radians_mob = 0;
+int max_mobs = 3; //number of max potion produce
+bool mobscheck = false;
+bool mobs_stop = false;
+bool mobs_spawn = false;
 
 /*------------------------------------------------------------
 FUNCTIONS
@@ -153,17 +206,31 @@ void boss_load()
 
 	// boss bullet mesh 
 	SquareMesh(&pbossbullet, 0x00FF0000);
+
+	//Creating Potion
+	SquareMesh(&potion.pMesh, 0x00FFFFFF);
+
+	//mobs mesh
+	SquareMesh(&mobs.pMesh, 0x003333FF);
+
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
 	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
 	boss.pTex = AEGfxTextureLoad("Assets/BOSS.png");
+	potion.pTex = AEGfxTextureLoad("Assets/potion.png");
+	mobs.pTex = AEGfxTextureLoad("Assets/mobs.png");
 
 	/*------------------------------------------------------------
 	CREATING FONTS
 	------------------------------------------------------------*/
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	collect.audio = AEAudioLoadSound("Assets/Audio/collect.wav");
+	collect.aGroup = AEAudioCreateGroup();
 
 }
 
@@ -174,11 +241,15 @@ void boss_init()
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
 
-	player1.HP = player2.HP = PLAYER_MAX_HP;
+	
 
 
 
-	DEFAULT_HP = (f32)AEGetWindowWidth();
+	DEFAULT_HP = (f32)AEGetWindowWidth() + 70.0f;
+	player_default_hp = player2.size; //default player's hp size
+	player2_default_hp = player1.size;
+	player1.HP = PLAYER_MAX_HP;
+	player2.HP = PLAYER2_MAX_HP; //initialise the first length of max_hp
 
 	//counters
 	bossTimeElapsed = 0.0;
@@ -216,6 +287,7 @@ void boss_update()
 	PLAYER UPDATE
 	------------------------------------------------------------*/
 	input_handle();
+	AEAudioUpdate();
 
 	if (player1.HP < 0)
 	{
@@ -404,6 +476,18 @@ void boss_update()
 	boss.boundingBox.max.x = boss.Bcoord.x + boss.length / 2.0f;
 	boss.boundingBox.max.y = boss.Bcoord.x + boss.height / 2.0f;
 
+	//update potion bounding box
+	potion.boundingBox.min.x = potion.vector.x - potion.size / 2.0f;
+	potion.boundingBox.min.y = potion.vector.y - potion.size / 2.0f;
+	potion.boundingBox.max.x = potion.vector.x + potion.size / 2.0f;
+	potion.boundingBox.max.y = potion.vector.y + potion.size / 2.0f;
+
+	//update mobs bounding box
+	mobs.boundingBox.min.x = mobs.vector.x - mobs.size / 2.0f;
+	mobs.boundingBox.min.y = mobs.vector.y - mobs.size / 2.0f;
+	mobs.boundingBox.max.x = mobs.vector.x + mobs.size / 2.0f;
+	mobs.boundingBox.max.y = mobs.vector.y + mobs.size / 2.0f;
+
 
 	for (int i = 0; i < MAX_BULLETS; i++) // for bullet hit boss
 	{
@@ -418,7 +502,7 @@ void boss_update()
 		bullets2[i].boundingBox.max.x = bullets2[i].bCoord.x + bullets2[i].length / 2.0f;
 		bullets2[i].boundingBox.max.y = bullets2[i].bCoord.y + bullets2[i].height / 2.0f;
 
-
+		//Shoot BOSS
 		//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
 		if ((CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel)
 			|| CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel)) && boss.alive) //if player1 or player2 bullet collide with boss && boss is alive
@@ -426,6 +510,18 @@ void boss_update()
 
 			boss.HP -= PLAYERDMG;	//decrease monster health
 			//std::cout << " monster lives:  " << boss.HP	 << " \n";
+
+		}
+
+		//Shoot MOBS
+		if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)
+			|| CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+		{
+
+
+			mobs.vector = { -1000,-1000 };
+			max_mobs -= 1;
+
 
 		}
 
@@ -442,10 +538,75 @@ void boss_update()
 		{
 			player1.HP -= BOSSATTACK_1_DMG;
 		}
-		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player2.alive)// if bullet hit player 1 && player alive
+		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player2.boundingBox, player2.pVel) && player2.alive)// if bullet hit player 1 && player alive
 		{
 			player2.HP -= BOSSATTACK_1_DMG;
 		}
+	}
+
+	timer = timer + 1;
+	potion_position(potion.vector.x, potion.vector.y, potion_produce, check, potion_stop, timer);
+	mobs_position(mobs.vector.x, mobs.vector.y, mobs_spawn, mobscheck, mobs_stop, timer);
+
+
+	if (potion_stop != true) {
+
+		if (potion_produce == true) {
+
+			if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, potion.boundingBox, potion.pVelocity))
+			{
+				//std::cout << "COLLIDEEEEEEEEEEEEEEEE\n";
+				player2.HP = PLAYER2_MAX_HP; //refill to full hp bar
+
+				potion.vector = { -1000,-1000 }; 
+				max_potion -= 1;
+
+				AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
+
+
+			}
+			if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, potion.boundingBox, potion.pVelocity))
+			{
+				//std::cout << "COLLIDEEEEEEEEEEEEEEEE\n";
+				player1.HP = PLAYER_MAX_HP; //refill to full hp bar
+
+				potion.vector = { -1000,-1000 };
+				max_potion -= 1;
+
+				AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
+
+
+			}
+
+		}
+
+	}
+
+	if (max_potion == 0) {
+		potion_stop = true;
+	}
+
+	if (max_mobs == 0) {
+		mobs_stop = true;
+	}
+
+	if (mobs_stop != true) {
+
+		if (mobs_spawn == true) {
+
+			if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+				player2.HP -= MOBSATTACK_DMG;
+
+			}
+			if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+				player1.HP -= MOBSATTACK_DMG;
+
+			}
+
+
+
+		}
+
 	}
 
 
@@ -496,17 +657,20 @@ void boss_update()
 
 
 	//for player2's health bar
-	//p2health.plength = player2.HP;
-
+	player2_hp_percentage = player2.HP / PLAYER2_MAX_HP;
+	player2newbar = player2_hp_percentage * player2_default_hp;
+	p2health.plength = player2newbar;
 	p2health.Hcoord2 = { player2.pCoord.x, player2.pCoord.y + 35.0f };
-	p2health.plength = player2.HP / PLAYER_MAX_HP * player2.size;
+	//p2health.plength = player2.HP / PLAYER_MAX_HP * player2.size;
 	MatrixCalc(p2health.transform, p2health.plength, p2health.pheight, 0.f, p2health.Hcoord2);
 
 
 	//for player1's health bar
 	//p1health.plength = player1.HP;
+	player_hp_percentage = player1.HP / PLAYER_MAX_HP;
+	playernewbar = player_hp_percentage * player_default_hp;
+	p1health.plength = playernewbar;
 	p1health.Hcoord2 = { player1.pCoord.x, player1.pCoord.y + 35.0f };
-	p1health.plength = player1.HP / PLAYER_MAX_HP * player1.size;
 	MatrixCalc(p1health.transform, p1health.plength, p1health.pheight, 0.f, p1health.Hcoord2);
 
 
@@ -515,6 +679,13 @@ void boss_update()
 	{
 		MatrixCalc(bossbullets1[i].transform, bossbullets1[i].size, bossbullets1[i].size, bossbullets1[i].direction, bossbullets1[i].coords);
 	}
+
+	//health potion
+	MatrixCalc(potion.PotionTransform, potion.size, potion.size, 0.f, potion.vector);
+
+
+	//Mobs
+	MatrixCalc(mobs.MobsTransform, mobs.size, mobs.size, 0.f, mobs.vector);
 
 }
 
@@ -613,7 +784,19 @@ void boss_draw()
 	 Rendering of Boss Health System
 	------------------------------------------------------------*/
 
+	if (mobs_stop == false) {
 
+		//Render Mobs
+
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransform(mobs.MobsTransform.m);
+		AEGfxTextureSet(mobs.pTex, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
+		AEGfxMeshDraw(mobs.pMesh, AE_GFX_MDM_TRIANGLES);
+
+	}
 
 	if (boss.alive) {
 
@@ -632,6 +815,18 @@ void boss_draw()
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
 
+
+	}
+	if (potion_stop == false) {
+
+		// drawing potion
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransform(potion.PotionTransform.m);
+		AEGfxTextureSet(potion.pTex, 0, 0);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
+		AEGfxMeshDraw(potion.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	}
 
@@ -663,11 +858,85 @@ void boss_unload()
 	AEGfxMeshFree(p1health.pMesh);
 	AEGfxMeshFree(p2health.pMesh);
 	AEGfxMeshFree(pbossbullet);
+	AEGfxTextureUnload(mobs.pTex);
+	AEGfxTextureUnload(potion.pTex);
+	AEGfxMeshFree(mobs.pMesh);
+	AEGfxMeshFree(potion.pMesh);
 
 	AEGfxMeshFree(boss.pMesh1);
 	AEGfxTextureUnload(boss.pTex);
 	//for (int i = 0; i < MAX_BULLETS; i++) {
 	AEGfxMeshFree(pBullet);
 	//AEGfxMeshFree(pBullet);//}
+	AEAudioExit();
 
+}
+void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool& potion_stop, int& timer)
+{
+	if (potion_stop != true) {
+
+		if (timer % 100 == 0 && potion_produce != true) {
+			x = -370;
+			y = 0;
+			potion_produce = true;
+		}
+
+		if (timer % 900 == 0) {
+			potion_produce = false;
+		}
+
+		if (potion_produce == true) {
+			if ((y != 0) && (check == false)) {
+				y += 2;
+			}
+			else {
+				check = true;
+				y -= 2;
+			}
+
+			if (y == -150) {
+				check = false;
+			}
+
+			if (x >= -370.0f) {
+				x += 1;
+
+			}
+		}
+	}
+}
+
+void mobs_position(float& x, float& y, bool& mobs_spawn, bool& mobscheck, bool& mobs_stop, int& timer)
+{
+
+	if (mobs_stop != true) {
+
+		if (timer % 50 == 0 && mobs_spawn != true) {
+			x = 300.0f;
+			y = 0;
+			mobs_spawn = true;
+		}
+
+		if (timer % 100 == 0 && mobs_spawn != true) {
+			x = 300.0f;
+			y = 0;
+			mobs_spawn = true;
+		}
+
+		if (timer % 900 == 0) {
+			mobs_spawn = false;
+		}
+
+		if (mobs_spawn == true) {
+			if ((y != 0) && (mobscheck == false)) {
+				x -= (float)cos(radians_mob);
+			}
+			else {
+				mobscheck = true;
+				x -= (float)cos(radians_mob);
+			}
+
+
+		}
+	}
 }
