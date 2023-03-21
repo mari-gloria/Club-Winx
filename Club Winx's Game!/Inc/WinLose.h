@@ -3,26 +3,18 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* Primary Author: 
 * Secondary Authors:
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
-*
+*	
 ==================================================================================*/
 
+// variables
 
-enum GS_STATES
-{
-	SPLASH = 0,
-	MENU,
-	RACING,
-	BOSS,
-	PUZZLE,
-	//END_OF_ROUND,
-	WIN_PLAYERONE,
-	WIN_PLAYERTWO,
-	WIN_BOTHPLAYERS,
-	LOSE_BOTHPLAYERS,
-	ENDGAME,
-	RESTART,
-	QUIT,
-};
+enum end_condtion { NONE = 0, PLAYERONE, PLAYERTWO, RE_ROUND};
+
+// Functions for Racing //
+
+//bool Racing_win();
+//bool Racing_lose();
+//void Racing_win_lose_condition();
+void Racing_Win(bool win, int player);

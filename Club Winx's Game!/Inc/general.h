@@ -13,8 +13,27 @@
 
 // ---------------------------------------------------------------------------
 //includes
+#include "AEEngine.h"
 #include "AEVec2.h"
 #include "AEGraphics.h"
+#include "AEGameStateMgr.h"
+
+#include "Boss.h"
+#include "Buttons.h"
+#include "GameStateList.h"
+#include "GSM.h"
+#include "MainMenu.h"
+#include "Puzzle.h"
+#include "Racing.h"
+#include "RacingMap.h"
+#include "WinLose.h"
+#include "WinnerState.h"
+#include "../Splash_screen.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <chrono>
 // ---------------------------------------------------------------------------
 
 
@@ -27,7 +46,25 @@ Defines
 extern int const	winWIDTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
-extern const int	JUMP_HEIGHT_MAX;
+extern const float	JUMP_HEIGHT_MAX;
+extern const float	GRAVITY;
+
+
+/*--------------------------------------------------------------------------
+Structs
+---------------------------------------------------------------------------*/
+struct AABB
+{
+	AEVec2 min;
+	AEVec2 max;
+};
+
+enum COLLISION
+{
+	COLLISION_TOP = 0,
+	COLLISION_BOTTOM,
+	COLLISION_INVALID
+};
 
 
 
@@ -48,7 +85,21 @@ struct BG {
 	f32					height		{0.f}; // default height of BG (may need to change for racing)
 
 };
-extern BG bgRacing, bgPuzzle, bgBoss;
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing;
+
+
+
+
+
+
+/*--------------------------------------------------------------------------
+AUDIO
+---------------------------------------------------------------------------*/
+struct Audio {
+	AEAudio			audio	{ nullptr };
+	AEAudioGroup	aGroup	{ nullptr };
+};
+extern Audio jump;
 
 
 
@@ -58,30 +109,36 @@ extern BG bgRacing, bgPuzzle, bgBoss;
 Players
 ---------------------------------------------------------------------------*/
 
+
 //struct for players 
 struct Player { // initialise in each game mode before use 
 	AEVec2				pCoord{ 0.0f, 0.0f };	// player x,y coordinates
-	AEGfxVertexList* pMesh{ nullptr };	// mesh 
-	AEGfxTexture* pTex{ nullptr };	// texture
-	f32					size{ 50.0f };		// player size
-	AEVec2				pVel{ 0.0f, 0.0f }; // velocity of player
-	f32					pAcceleration{ 80.0f };		// acceleration of player
+	AEGfxVertexList* pMesh{ nullptr };		// mesh 
+	AEGfxTexture* pTex{ nullptr };		// texture
+	f32					size{ 50.0f };			// player size
+	AEVec2				pVel{ 0.0f, 0.0f };		// velocity of player
+	f32					pAcceleration{ 40.0f };
+	AABB				boundingBox;
+	COLLISION			pFlag;
 
 
 	f32					pGround{ 0.0f };		// y-coord of the ground
-	f32					pCurrGround{ 0.0f };		// y-coord of the current ground/platform
-	f32					pPrevGround{ 0.0f };		// y-coord of the previous ground/platform
-	bool				pOnGround{ true };		// indicate if player stepping on ground/platform
+	f32					pCurrGround{ 0.0f };	// y-coord of the current ground/platform
+	bool				pOnSurface{ true };		// indicate if player stepping on ground/platform
 	bool				pJumping{ false };		// indicate if player is jumping
 	f32					maxCurrHeight{ 0.0f };
 
 	f32					startX{ 0.0f };		// left x limit
 	f32					endX{ 0.0f };		// right X limit
 
-	bool				collectedItem{ false };		// indicate if player has collected an item
+	bool				collectedItem{ false };	// indicate if player has collected an item
 	bool				usedItem{ false };		// indicate if item has been used
 
-	AEMtx33				transform{};				// transform matrix
+	AEMtx33				transform{};			// transform matrix
+
+
+	f32					HP{ 100.f };			// player health
+	bool				alive{ true };			// player alive/dead
 };
 extern Player player1, player2;
 
@@ -110,27 +167,31 @@ extern ScoreBoard score_board;
 /*--------------------------------------------------------------------------
 Items for racing - boost/disadvantage for players
 ---------------------------------------------------------------------------*/
-#define MAX_NUM_ITEMS 10
+#define MAX_NUM_ITEMS 5
 
 //item types will be randomly generated
 enum ItemType {
-	BAD = 0,
+	NOTHING = 0,
+	BAD,
 	GOOD
 };
 
-//Generates a random item type - GOOD/BAD
-ItemType rand_item();
 
 struct RacingItems {
 	AEVec2				pCoord{ 0.0f, 0.0f };	// item x,y coordinates
-	AEGfxVertexList* pMesh{ nullptr };	// mesh 
-	AEGfxTexture* pTex{ nullptr };	// texture
+	AEGfxVertexList*	pMesh{ nullptr };	// mesh 
+	AEGfxTexture*		pTex{ nullptr };	// texture
 	f32					size{ 20.0f };		// item size
+	AABB				boundingBox;
+	AEVec2				pVel{ 0.0f, 0.0f };
 
-	ItemType			itemType{ rand_item() };
+	ItemType			itemType;
+
+	bool				collected;
 
 	AEMtx33				transform{};				// transform matrix
 };
+
 extern RacingItems racing_items[MAX_NUM_ITEMS];
 
 
@@ -142,13 +203,17 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-#define MAX_NUM_PLATFORMS 50
+//#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
+#define MAX_NUM_PLATFORMS 10 // testing
+
 
 // generic platform details such as length, height, colour
 struct Platform {
 	AEVec2				platVect{ 0.0f, 0.0f };	// vector -> initialise platforms x & y coords, which will then be used for randomisation
 	AEGfxVertexList*	platMesh{ nullptr };	// mesh 
 	AEGfxTexture*		platTex{ nullptr };	// texture
+	AEVec2				platVel{ 0.0f, 0.0f };
+	AABB				platBoundingBox;
 
 	f32					length{ 145.0f };
 	f32					height{ 15.0f };
@@ -183,37 +248,62 @@ struct Line {
 extern Line			splitscreen;
 
 
-
-
-
-/*--------------------------------------------------------------------------
-Boss
----------------------------------------------------------------------------*/
-struct Boss { // initialise in each game mode before use 
-
-	AEGfxVertexList*	pMesh1		{ nullptr };			// mesh 
-	AEGfxVertexList*	pMesh2		{ nullptr };			// mesh 
-	AEGfxTexture*		pTex		{ nullptr };			// texture
-	AEMtx33				transform	{};						// transform mtx 
-	AEVec2				Bcoord		{ 380.0f, -30.0f };	// position of boss
-	f32 length = 250.0f; //boss length 
-	f32 height = 450.f; // boss height
-};
-extern Boss boss;
-
 struct Health { // initialise in each game mode before use 
 
-	AEGfxVertexList*	pMesh		{ nullptr };			// mesh    
-	AEGfxTexture*		pTex		{ nullptr };			// texture
-	AEMtx33				transform	{};
-	AEVec2				Hcoord		{ -35.0f, 300.0f  };
-	AEVec2				Hcoord2		{};
-	f32					plength		{};
-	f32					pheight		{ 10.0f };
-	f32					length		{ 1200 }; 
-	f32					height		{ 30.0f };
+	AEGfxVertexList* pMesh{ nullptr };			// mesh    
+	AEGfxTexture* pTex{ nullptr };			// texture
+	AEMtx33				transform{};
+	AEVec2				Hcoord{ -35.0f, 300.0f };
+	AEVec2				Hcoord2{};
+	f32					plength{};
+	f32					pheight{ 10.0f };
+	f32					length{ 1200 };
+	f32					height{ 30.0f };
 };
-extern Health health, health2, p1health, p2health;
+extern Health health2, p1health, p2health;
+
+
+struct Puzzle { // initialise in each game mode before use 
+	AEGfxVertexList* pMesh{ nullptr };
+	AEGfxVertexList* pMesh2{ nullptr };
+	AEVec2				IVector{ 320.0f, 0.0f };
+	//AEVec2				IVector2{ 30.0f, 0.0f };
+
+	AEGfxVertexList* platMesh{ nullptr };	// mesh 
+	AEGfxTexture* platTex{ nullptr };	// texture
+	//bool				stepped{ false };
+	AEMtx33				transform{};
+	//AEMtx33				transform2{};
+
+
+
+	// transform matrix
+	f32					length{ 20.0f };
+	f32					height{ 20.0f };
+
+	AEVec2				pVel{ 0.0f, 0.0f };
+
+	//Map
+	AEGfxVertexList* pMeshwall{ nullptr };
+	AEGfxVertexList* pMeshwall2{ nullptr };
+	AEVec2           wallposition{};
+
+};
+extern Puzzle puzzle;
+
+//Puzzle binary map
+struct GameObj {
+	unsigned int type; //type of object for puzzle
+	AEGfxVertexList* pMeshwall{ nullptr };
+	AEGfxVertexList* pMeshwall2{ nullptr };
+
+};
+
+struct GameObjInst {
+	GameObj* pObject;
+	unsigned int flag;
+};
+
 
 
 
@@ -256,8 +346,8 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour);
 /*--------------------------------------------------------------------------
 Check for collision
 ---------------------------------------------------------------------------*/
-bool CollisionIntersection_RectRect(const AEVec2& A, f32 Alength, f32 Aheight, const AEVec2& B, f32 Blength, f32 Bheight);
-
+bool CollisionIntersection_RectRect(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
+COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2);
 
 
 

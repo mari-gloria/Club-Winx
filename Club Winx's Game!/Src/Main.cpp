@@ -12,13 +12,8 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "AEEngine.h"
-
 #include "general.h"
-#include "gsm.h"
-#include "gamestatelist.h"
-#include "racing.h"
-#include "boss.h"
+
 // ---------------------------------------------------------------------------
 
 /*------------------------------------------------------------
@@ -28,7 +23,7 @@ DECLARE GLOBAL VARIABLES
 //setting screen width and height
 int const winWIDTH{1080}, winHEIGHT{600};
 
-
+s8 fontID = 0;
 
 // main
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -60,6 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 
+	fontID = AEGfxCreateFont("Assets/Arial Italic.ttf", 24);
 
 
 
@@ -93,8 +89,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			AESysFrameEnd();
 
 			// check if forcing the application to quit
-			if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-				curr_state = QUIT;
+			if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
+				next_state = QUIT;
 
 			//app runtime, delta time
 			g_dt = (f32)AEFrameRateControllerGetFrameTime();
@@ -117,5 +113,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	/*------------------------------------------------------------
 	FREE SYSTEM
 	------------------------------------------------------------*/
+	AEGfxDestroyFont(fontID);
 	AESysExit();
 }
