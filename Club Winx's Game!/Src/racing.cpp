@@ -252,7 +252,7 @@ void racing_update()
 
 		// if collision on last platform and other player hasn't won
 		float platformA_last_y = platformA[MAX_NUM_PLATFORMS - 1].platVect.y + platformA[MAX_NUM_PLATFORMS - 1].height / 2.0f + player1.size / 2.0f;
-		if ((if_win == 0) && player1.pCurrGround == platformA_last_y)
+		if ((if_win != 2) && player1.pCurrGround == platformA_last_y)
 		{
 			if_win = 1;
 			Racing_Win(true, 1);
@@ -281,7 +281,7 @@ void racing_update()
 
 		// if collision on last platform and other player hasn't won
 		float platformB_last_y = platformB[MAX_NUM_PLATFORMS - 1].platVect.y + platformB[MAX_NUM_PLATFORMS - 1].height / 2.0f + player2.size / 2.0f;
-		if ((if_win == 0) && player2.pCurrGround == platformB_last_y)
+		if ((if_win != 1) && player2.pCurrGround == platformB_last_y)
 		{
 			if_win = 2;
 			Racing_Win(true, 2);
