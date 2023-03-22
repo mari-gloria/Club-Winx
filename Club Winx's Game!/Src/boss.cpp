@@ -250,6 +250,9 @@ void boss_init()
 {
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
+	player1.alive = true;
+	player2.alive = true;
+
 
 	DEFAULT_HP = (f32)AEGetWindowWidth() + 70.0f;
 	player_default_hp = player2.size; //default player's hp size
@@ -258,11 +261,18 @@ void boss_init()
 	player2.HP = PLAYER2_MAX_HP; //initialise the first length of max_hp
 
 	boss.HP = BOSS_MAX_HP;
-
+	boss.alive = true;
+	boss.Bcoord = { 380.0f, -30.f };
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
 	bossmovetime = 0.0;
+
+	for (int i = 0; i < MAX_BULLETS; i++)
+	{
+		bossbullets1[i].shot = false;
+		bossbullets1[i].shot = false;
+	}
 
 }
 
@@ -329,21 +339,7 @@ void boss_update()
 		boss.alive = FALSE; //Boss DIES	
 		//boss.Bhealth.length = bossHP;
 	}
-	/*f32 eyeye = 1.5f;
-	if (bossmovetime < 2.0)
-	{
-		boss.Bcoord.y -=eyeye;
-		//bossmovetime = 0.0;
-	}
-	else
-	{
-		boss.Bcoord.y += 2.f *eyeye;
-
-	}
-	if (bossmovetime > 4.0)
-	{
-		bossmovetime = 0;
-	}*/
+	
 
 	/*------------------------------------------------------------
 	BULLET MOVEMENT
@@ -352,14 +348,9 @@ void boss_update()
 	{
 		if (bulletTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
 		{
-			//bossbullets1[i].shot == FALSE && bossbullets2[i].shot == FALSE
 			bullets1[i].shot = TRUE;
-			//std::cout << " bullet1 no. " << i << "launched\n";
 			bullets2[i].shot = TRUE;
-			//std::cout << " bullet2 no. " << i << "launched\n";
-
-
-
+	
 			//bossTimeElapsed = 0.0;
 			bulletTimeElapsed = 0.0;
 		}
@@ -428,9 +419,6 @@ void boss_update()
 		if (bossTimeElapsed >= 0.5 && bossbullets1[i].shot == FALSE && bossbullets2[i].shot == FALSE) // every 2 secs
 		{
 			bossbullets1[i].shot = TRUE;
-			//std::cout << " bossbullet1 no. " << i << "launched\n";
-			//bossbullets2[i].shot = TRUE;
-			//std::cout << " bossbullet2 no. " << i << "launched\n";
 			bossTimeElapsed = 0.0;
 		}
 	}
@@ -439,34 +427,11 @@ void boss_update()
 	{
 		if (bossbullets1[i].shot && boss.alive)
 		{
-			//bossbullets1[i].coords.x -= 10.0f;
-			//bossbullets1[i].coords.y += 0.0005f * (bossbullets1[i].coords.x * bossbullets1[i].coords.x);
 			bossbullets1[i].direction = rand_num(-PI, PI); // base direction
-			//float curve = sinf(AEFrameRateControllerGetFrameTime()); // determines the strength of the curve
-			//bossbullets1[i].coords.x -= bossbullets1[i].velocity.x; // bullet speed
-			//bossbullets1[i].coords.y += bossbullets1[i].velocity.y; // bullet speed
-			//bossbullets1[i].direction += 1000.f;
-			//bossbullets1[i].direction += 50.f * sinf (0.1f * AEFrameRateControllerGetFrameTime());
-			//bossbullets1[i].direction = AEWrap(bossbullets1[i].direction, -PI, PI);
 			bossbullets1[i].velocity.x = 80.f * sinf((size_t)(i % 180) / PI) * 0.03f; // adds curve to x velocity
 			bossbullets1[i].velocity.y = 80.f * cosf((size_t)(i % 180) / PI) * 0.01f; // adds curve to y velocity
-			//bossbullets1[i].velocity =  { cosf(bossbullets1[i].direction)* 10.f, sinf(bossbullets1[i].direction) * 10.f + 50.f } ;
-			//bossbullets1[i].velocity *= 10 
-			//f32 curve = sinf(AEFrameRateControllerGetFrameTime() * 0.5f);
-			//bossbullets1[i].velocity.x += curve * 5.f;
-			//bossbullets1[i].velocity.y += curve * 5.0f;
-
-			//bossbullets1[i].velocity.y += -gravity * AEFrameRateControllerGetFrameTime();  // applies gravity
-
-			//AEVec2 added;
-			//AEVec2Set(&added, cosf(bossbullets1[i].direction), sinf(bossbullets1[i].direction));
-			//std::cout << bossbullets1[i].direction << " TEEHEE ";
-			//bossbullets1[i].coords.x -= added.x * bossbullets1[i].velocity.x;
-			//bossbullets1[i].coords.y += added.y * (bossbullets1[i].velocity.y + gravity);
-			//bossbullets1[i].velocity.y -= gravity;
 			bossbullets1[i].coords.x -= (f32)(bossbullets1[i].velocity.x * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
 			bossbullets1[i].coords.y += (f32)(bossbullets1[i].velocity.y * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
-			//bossbullets1[i].coords.x = AEWrap(bossbullets1[i].coords.x, AEGfxGetWinMinX(), boss.Bcoord.x + (boss.length / 2));
 		}
 		else if (!bossbullets1[i].shot || !boss.alive) {
 			bossbullets1[i].coords = { boss.Bcoord.x - (boss.length / 2.0f), boss.Bcoord.y };
@@ -875,7 +840,16 @@ void boss_draw()
 
 void boss_free()
 {
+	//counters
+	bossTimeElapsed = 0.0;
+	bulletTimeElapsed = 0.0;
+	bossmovetime = 0.0;
 
+	for (int i = 0; i < MAX_BULLETS; i++)
+	{
+		bossbullets1[i].shot = false;
+		bossbullets1[i].shot = false;
+	}
 }
 
 void boss_unload()
@@ -898,9 +872,7 @@ void boss_unload()
 
 	AEGfxMeshFree(boss.pMesh1);
 	AEGfxTextureUnload(boss.pTex);
-	//for (int i = 0; i < MAX_BULLETS; i++) {
 	AEGfxMeshFree(pBullet);
-	//AEGfxMeshFree(pBullet);//}
 	AEAudioExit();
 
 }
