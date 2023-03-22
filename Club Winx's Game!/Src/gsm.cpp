@@ -59,7 +59,6 @@ void GSM_update()
 		fpUnload = Splash_Unload;
 		break;
 
-
 	case TUT:
 		fpLoad = Tutorial_Load;
 		fpInit = Tutorial_Init;
@@ -68,7 +67,6 @@ void GSM_update()
 		fpFree = Tutorial_Free;
 		fpUnload = Tutorial_Unload;
 		break;
-
 
 	case MENU:
 		fpLoad = MainMenu_Load;
@@ -161,8 +159,10 @@ void GSM_update()
 
 	case RESTART:
 		break;
+
 	case QUIT:
 		break;
+
 	default:
 		AE_FATAL_ERROR("Invalid state!");
 	}

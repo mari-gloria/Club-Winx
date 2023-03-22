@@ -16,3 +16,5 @@ void boss_update();
 void boss_draw();
 void boss_free();
 void boss_unload();
+void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool& potion_stop, int& timer);
+void mobs_position(float& x, float& y, bool& mobs_spawn, bool& mobscheck, bool& mobs_stop, int& timer);

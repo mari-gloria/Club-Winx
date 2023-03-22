@@ -207,8 +207,8 @@ void WIN_BOTHPLAYERS_update()
 	------------------------------------------------------------*/
 
 	// if press space, go to the next game
-	if (AEInputCheckTriggered(AEVK_RETURN)) {
-		next_state = BOSS;
+	if (AEInputCheckTriggered(AEVK_SPACE)) {
+		next_state = MENU;
 	}
 
 	/*------------------------------------------------------------
@@ -285,7 +285,11 @@ void LOSE_BOTHPLAYERS_update()
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
 	// if press back, go replay
-	if (AEInputCheckCurr(AEVK_SPACE)) {
+	std::cout << "prev" << prev_state << std::endl;
+	std::cout << "curr" << curr_state << std::endl;
+	std::cout << "next" << next_state << std::endl;
+
+	if (AEInputCheckTriggered(AEVK_SPACE)) {
 		next_state = prev_state;
 	}
 

@@ -17,4 +17,4 @@ enum end_condtion { NONE = 0, PLAYERONE, PLAYERTWO, RE_ROUND};
 //bool Racing_win();
 //bool Racing_lose();
 //void Racing_win_lose_condition();
-void Racing_Win(bool win, int player);
+void Racing_Win(int player);

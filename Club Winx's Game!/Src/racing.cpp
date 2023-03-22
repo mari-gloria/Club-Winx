@@ -33,6 +33,22 @@ static bool			section_done{ false };
 ///
 static int			if_win{ 0 } ; // 0: None, 1: Player_one, 2: Player_two
 
+//players variables
+int player1_current_platform;
+int player2_current_platform;
+
+bool player1_boosted{ false };
+bool player2_boosted{ false };
+
+int player1_boost_counter{ 0 };
+int player1_use_boost_counter{ 0 };
+
+int player2_boost_counter{ 0 };
+int player2_use_boost_counter{ 0 };
+
+float const BOOST_JUMP_HEIGHT = 200.0f;
+float const BOOST_JUMP_VEL = 16.0f;
+
 
 
 /*------------------------------------------------------------
@@ -63,9 +79,6 @@ void racing_load()
 
 	// player 2 mesh
 	SquareMesh(&player2.pMesh,0xFFFF00FF);
-
-	// score board mesh
-	SquareMesh(&score_board.sMesh, 0xFF000000);
 
 	// loading in platform meshes in map
 	racing_map_load();
@@ -116,14 +129,6 @@ void racing_init()
 
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
-
-
-
-	/*------------------------------------------------------------
-	// INIT SCOREBOARD
-	------------------------------------------------------------*/
-	score_board.sCoord.x = 0.0f;
-	score_board.sCoord.y = 150.0f;
 
 
 
@@ -182,6 +187,18 @@ void racing_update()
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
+	// for winning texture
+	switch (if_win)
+	{
+	case 1:
+		Racing_Win(1);
+		break;
+	case 2:
+		Racing_Win(2);
+		break;
+	}
+
+	//for testing
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = PUZZLE;
 	}
@@ -202,7 +219,7 @@ void racing_update()
 
 
 	/*------------------------------------------------------------
-	// PLAYER MOVEMENT
+	// CHECK PLAYER-PLATFORM COLLISON
 	------------------------------------------------------------*/
 	input_handle();
 	AEAudioUpdate();
@@ -238,88 +255,214 @@ void racing_update()
 		bool player1_collide = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
 		bool player2_collide = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
 
-		//player 1
+		/*******************
+			player 1
+		*******************/
 		if (player1_collide)
 		{
-			COLLISION player1_flag = get_collision_flag(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
+			player1.pFlag = get_collision_flag(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
 
-			if (player1_flag == COLLISION_BOTTOM)
+			if (player1.pFlag == COLLISION_BOTTOM)
 			{
 				player1.pCurrGround = platformA[i].platVect.y + platformA[i].height / 2.0f + player1.size / 2.0f;
 				player1.pCoord.y = player1.pCurrGround;
+
 				player1.pJumping = false;
 				player1.pOnSurface = true;
+
+				player1_current_platform = i;
+				player1.pVel.y = 0;
 			}
 		}
 
-		if (player1.pCoord.y == player1.pGround)
+
+		//update pOnSurface
+		if (player1.pCoord.y == player1.pGround)//player on the ground
 		{
 			player1.pCurrGround = player1.pGround;
+			player1.pOnSurface = true;
+		}
+
+		else
+		{
+			if (player1.boundingBox.min.x > platformA[player1_current_platform].platVect.x + platformA[player1_current_platform].length / 2.0f ||
+				player1.boundingBox.max.x < platformA[player1_current_platform].platVect.x - platformA[player1_current_platform].length / 2.0f)
+			{
+				player1.pOnSurface = false;
+			}
 		}
 
 		// if collision on last platform and other player hasn't won
 		float platformA_last_y = platformA[MAX_NUM_PLATFORMS - 1].platVect.y + platformA[MAX_NUM_PLATFORMS - 1].height / 2.0f + player1.size / 2.0f;
-		if ((if_win != 2) && player1.pCurrGround == platformA_last_y)
+		if ((if_win == 0) && player1.pCurrGround == platformA_last_y)
 		{
 			if_win = 1;
-			Racing_Win(true, 1);
+			Racing_Win(1);
 			MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 		}
 
 
-		//player 2
+		/*******************
+			player 2
+		*******************/
 		if (player2_collide)
 		{
-			COLLISION player2_flag = get_collision_flag(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
+			player2.pFlag = get_collision_flag(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
 
-			if (player2_flag == COLLISION_BOTTOM)
+			if (player2.pFlag == COLLISION_BOTTOM)
 			{
 				player2.pCurrGround = platformB[i].platVect.y + platformB[i].height / 2.0f + player2.size / 2.0f;
 				player2.pCoord.y = player2.pCurrGround;
+
 				player2.pJumping = false;
 				player2.pOnSurface = true;
+
+				player2_current_platform = i;
+				player2.pVel.y = 0;
 			}
 		}
 
-		if (player2.pCoord.y == player2.pGround)
+		//update pOnSurface
+		if (player2.pCoord.y == player2.pGround)//player on the ground
 		{
 			player2.pCurrGround = player2.pGround;
+			player2.pOnSurface = true;
+		}
+
+		else
+		{
+			if (player2.boundingBox.min.x > platformB[player2_current_platform].platVect.x + platformB[player2_current_platform].length / 2.0f ||
+				player2.boundingBox.max.x < platformB[player2_current_platform].platVect.x - platformB[player2_current_platform].length / 2.0f)
+			{
+				player2.pOnSurface = false;
+			}
 		}
 
 		// if collision on last platform and other player hasn't won
 		float platformB_last_y = platformB[MAX_NUM_PLATFORMS - 1].platVect.y + platformB[MAX_NUM_PLATFORMS - 1].height / 2.0f + player2.size / 2.0f;
-		if ((if_win != 1) && player2.pCurrGround == platformB_last_y)
+		if ((if_win == 0) && player2.pCurrGround == platformB_last_y)
 		{
 			if_win = 2;
-			Racing_Win(true, 2);
+			Racing_Win(2);
 			MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 		}
 	}
 
 
-	//update item bounding box
+	/*------------------------------------------------------------
+	// CHECK FOR PLAYER-BOOST COLLISION
+	------------------------------------------------------------*/
 	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
-		racing_items[i].boundingBox.min.x = racing_items[i].pCoord.x - racing_items[i].size / 2.0f;
-		racing_items[i].boundingBox.min.y = racing_items[i].pCoord.y - racing_items[i].size / 2.0f;
+		racing_boostsA[i].boundingBox.min.x = racing_boostsA[i].pCoord.x - racing_boostsA[i].size / 2.0f;
+		racing_boostsA[i].boundingBox.min.y = racing_boostsA[i].pCoord.y - racing_boostsA[i].size / 2.0f;
+		racing_boostsA[i].boundingBox.max.x = racing_boostsA[i].pCoord.x + racing_boostsA[i].size / 2.0f;
+		racing_boostsA[i].boundingBox.max.y = racing_boostsA[i].pCoord.y + racing_boostsA[i].size / 2.0f;
 
-		racing_items[i].boundingBox.max.x = racing_items[i].pCoord.x + racing_items[i].size / 2.0f;
-		racing_items[i].boundingBox.max.y = racing_items[i].pCoord.y + racing_items[i].size / 2.0f;
+		racing_boostsB[i].boundingBox.min.x = racing_boostsB[i].pCoord.x - racing_boostsB[i].size / 2.0f;
+		racing_boostsB[i].boundingBox.min.y = racing_boostsB[i].pCoord.y - racing_boostsB[i].size / 2.0f;
+		racing_boostsB[i].boundingBox.max.x = racing_boostsB[i].pCoord.x + racing_boostsB[i].size / 2.0f;
+		racing_boostsB[i].boundingBox.max.y = racing_boostsB[i].pCoord.y + racing_boostsB[i].size / 2.0f;
+
 	}
 
 
-	//checking for player-item collision
-	for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
+	//checking for player-boost collision
+	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
-		//player 1
-		if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, racing_items[i].boundingBox, racing_items[i].pVel)) {
+		bool player1_collected_boost = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, racing_boostsA[i].boundingBox, racing_boostsA[i].pVel);
+		bool player2_collected_boost = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, racing_boostsB[i].boundingBox, racing_boostsB[i].pVel);
 
-			racing_items[i].collected = true;
+
+		/*******************
+			player 1
+		*******************/
+		if (player1_collected_boost && !racing_boostsA[i].collected)
+		{
+			racing_boostsA[i].collected = true;
+
+			//updated boost bool
+			player1_boosted = true;
+
+			//update boost counter
+			player1_boost_counter++;
+		}
+
+		//boosted jumping mechanism
+		if (player1.pJumping)
+		{
+			//boost > used = boost unused
+			if (player1_boosted)
+			{
+				//set new jump height
+				player1.pJumpHeightMax = BOOST_JUMP_HEIGHT;
+
+				//set new vel
+				player1.pVel.y = BOOST_JUMP_VEL;
+
+				player1_use_boost_counter = player1_boost_counter;
+			}
+
+			else
+			{
+				//reset player jump height max
+				player1.pJumpHeightMax = JUMP_HEIGHT_MAX;
+
+				//reset player vel
+				player1.pVel.y = PLAYER_JUMP;
+			}
+		}
+
+		if (player1_boost_counter == player1_use_boost_counter && player1_boosted && player1.pOnSurface)
+		{
+			player1_boosted = false;
 		}
 
 
-		//player 2
-		
+
+		/*******************
+			player 2
+		*******************/
+		if (player2_collected_boost && !racing_boostsB[i].collected)
+		{
+				racing_boostsB[i].collected = true;
+
+				//updated boost bool
+				player2_boosted = true;
+
+				//update boost counter
+				player2_boost_counter++;
+		}
+
+		//boosted jumping mechanism
+		if (player2.pJumping)
+		{
+			//boost > used = boost unused
+			if (player2_boosted)
+			{
+				//set new jump height
+				player2.pJumpHeightMax = BOOST_JUMP_HEIGHT;
+
+				//set new vel
+				player2.pVel.y = BOOST_JUMP_VEL;
+
+				player2_use_boost_counter = player2_boost_counter;
+			}
+
+			else
+			{
+				//reset player jump height max
+				player2.pJumpHeightMax = JUMP_HEIGHT_MAX;
+
+				//reset player vel
+				player2.pVel.y = PLAYER_JUMP;
+			}
+		}
+
+		if (player2_boost_counter == player2_use_boost_counter && player2_boosted && player2.pOnSurface)
+		{
+			player2_boosted = false;
+		}
 	}
 
 	/*------------------------------------------------------------
@@ -330,8 +473,6 @@ void racing_update()
 
 	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
 	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
-
-
 
 	/*------------------------------------------------------------
 	UPDATE WAVES MOVEMENT
@@ -382,7 +523,6 @@ void racing_update()
 	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
 	
 
-
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
@@ -393,8 +533,6 @@ void racing_update()
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
-	//for scoreboard
-	MatrixCalc(score_board.transform, score_board.length, score_board.height, 0.0f, score_board.sCoord);
 
 	//for platforms 
 	for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
@@ -402,9 +540,10 @@ void racing_update()
 		MatrixCalc(platformB[i].transform, platformB[i].length, platformB[i].height, 0.f, platformB[i].platVect);
 	}
 
-	//for items 
+	//for boosts
 	for (int i = 0; i < MAX_NUM_ITEMS; i++) {
-		MatrixCalc(racing_items[i].transform, racing_items[i].size, racing_items[i].size, 0.f, racing_items[i].pCoord);
+		MatrixCalc(racing_boostsA[i].transform, racing_boostsA[i].size, racing_boostsA[i].size, 0.f, racing_boostsA[i].pCoord);
+		MatrixCalc(racing_boostsB[i].transform, racing_boostsB[i].size, racing_boostsB[i].size, 0.f, racing_boostsB[i].pCoord);
 	}
 	
 	//for splitscreen
@@ -467,18 +606,6 @@ void racing_draw()
 	// DRAWING SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_draw();
-
-
-
-	/*------------------------------------------------------------
-	// DRAWING SCORE BOARD
-	------------------------------------------------------------*/
-	/*AEGfxSetTransform(score_board.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	// No texture for scoreboard
-	AEGfxTextureSet(NULL, 0, 0);
-	// Drawing the mesh (list of triangles)
-	AEGfxMeshDraw(score_board.sMesh, AE_GFX_MDM_TRIANGLES);*/
 
 
 	/*------------------------------------------------------------

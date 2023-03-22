@@ -28,15 +28,16 @@ double	 g_appTime;
 
 
 //declaring structs: BG, player, scoreboard, racingitems, platform, line, boss, health, puzzle
-BG			bgRacing, bgPuzzle, bgBoss, bgWin, bgTut;
-BG			winRacing, bgWaves;
 
-Audio		jump;
+BG			bgRacing, bgPuzzle, bgBoss, bgWin, bgTut;
+BG			winRacing, bgWaves, winPuzzle, winBoss;
+
+
+Audio		jump,collect;
 
 Player		player1, player2;
-ScoreBoard	score_board;
 
-RacingItems racing_items[MAX_NUM_ITEMS];
+RacingBoosts racing_boostsA[MAX_NUM_ITEMS], racing_boostsB[MAX_NUM_ITEMS];
 
 Platform	platformA[MAX_NUM_PLATFORMS], platformB[MAX_NUM_PLATFORMS];
 Line		splitscreen, startingline;
@@ -222,7 +223,6 @@ COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& 
 
 void input_handle()
 {
-	std::cout << "Input:Handle\n";
 	switch (curr_state)
 	{
 	case (RACING):
@@ -242,12 +242,19 @@ void input_handle()
 		}
 
 		//jumping mechanism
-		if (player1.pJumping) {
+		if (player1.pJumping)
+		{
 			player1.pVel.y = PLAYER_JUMP;
 		}
 
-		else {
+		else if (!player1.pJumping && !player1.pOnSurface)
+		{
 			player1.pVel.y = GRAVITY;
+		}
+
+		else
+		{
+			player1.pVel.y = 0;
 		}
 
 		//adding jump limits
@@ -257,8 +264,9 @@ void input_handle()
 		}
 
 
-		if (player1.pCoord.y >= player1.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player1.pCoord.y >= player1.pCurrGround + player1.pJumpHeightMax) {//upper limit
 			player1.pJumping = false;
+			player1.pOnSurface = false;
 		}
 
 
@@ -292,12 +300,19 @@ void input_handle()
 		}
 
 		//jumping mechanism
-		if (player2.pJumping) {
+		if (player2.pJumping)
+		{
 			player2.pVel.y = PLAYER_JUMP;
 		}
 
-		else {
+		else if (!player2.pJumping && !player2.pOnSurface)
+		{
 			player2.pVel.y = GRAVITY;
+		}
+
+		else
+		{
+			player2.pVel.y = 0;
 		}
 
 		//adding jump limits
@@ -307,8 +322,9 @@ void input_handle()
 		}
 
 
-		if (player2.pCoord.y >= player2.pCurrGround + JUMP_HEIGHT_MAX) {//upper limit
+		if (player2.pCoord.y >= player2.pCurrGround + player2.pJumpHeightMax) {//upper limit
 			player2.pJumping = false;
+			player2.pOnSurface = false;
 		}
 
 		if (AEInputCheckCurr(AEVK_LEFT) && ((player2.pCoord.x - player2.size / 2.0f)) >= 0) {//left limit = MinX
@@ -332,13 +348,13 @@ void input_handle()
 
 	case BOSS:
 		/*----------------------------------------------------------------------------------
- player 1 movement controls
+		 player 1 movement controls
 
- W -> move up
- S -> move down
- A -> move left
- D -> move right
------------------------------------------------------------------------------------*/
+		 W -> move up
+		 S -> move down
+		 A -> move left
+		 D -> move right
+		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size)
 			player1.pVel.y = PLAYER_MOVE;
 
@@ -486,8 +502,8 @@ void SquareMesh(AEGfxVertexList** pMesh, u32 colour)
 
 int rand_num(int min, int max)
 {
-	int r = (int)rand() / (int)RAND_MAX;
-	return min + r * (max - min);
+	float r = (float)rand() / (float)RAND_MAX;
+	return (int)(min + r * (max - min));
 }
 
 float rand_num(float min, float max)
@@ -495,4 +511,5 @@ float rand_num(float min, float max)
 	float r = (float)rand() / (float)RAND_MAX;
 	return min + r * (max - min);
 }
+
 
