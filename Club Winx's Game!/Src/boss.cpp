@@ -931,7 +931,7 @@ void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool
 				check = false; // amplitude of the graph
 			}
 
-			if (x >= -370.0f) {
+			if (x >= potion_start_positonX) {
 				x += width_potion; //period 
 
 			}
@@ -944,30 +944,22 @@ void mobs_position(float& x, float& y, bool& mobs_spawn, bool& mobscheck, bool& 
 
 	if (mobs_stop != true) {
 
-		if (timer % 50 == 0 && mobs_spawn != true) {
+		if (timer % 50 == 0 && mobs_spawn != true) { //start spawning
 			x = MOBS_start_positonX;
 			y = MOBS_start_positonY;
 			mobs_spawn = true;
 		}
 
-		if (timer % 100 == 0 && mobs_spawn != true) {
-			x = MOBS_start_positonX;
-			y = MOBS_start_positonY;
-			mobs_spawn = true;
-		}
 
-		if (timer % 900 == 0) {
+		if (timer % 900 == 0) { //stop spawning
 			mobs_spawn = false;
 		}
 
 		if (mobs_spawn == true) {
-			if ((y != MOBS_start_positonY) && (mobscheck == false)) {
+			if ((mobscheck == false)) {
 				x -= (float)cos(radians_mob);
 			}
-			else {
-				mobscheck = true;
-				x -= (float)cos(radians_mob);
-			}
+
 
 
 		}
