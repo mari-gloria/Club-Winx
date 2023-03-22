@@ -29,6 +29,7 @@
 #include "WinLose.h"
 #include "WinnerState.h"
 #include "../Splash_screen.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -48,6 +49,7 @@ extern float		g_dt;
 extern double		g_appTime;
 extern const float	JUMP_HEIGHT_MAX;
 extern const float	GRAVITY;
+extern const float	PLAYER_JUMP;
 
 
 /*--------------------------------------------------------------------------
@@ -113,8 +115,9 @@ Players
 //struct for players 
 struct Player { // initialise in each game mode before use 
 	AEVec2				pCoord{ 0.0f, 0.0f };	// player x,y coordinates
-	AEGfxVertexList* pMesh{ nullptr };		// mesh 
-	AEGfxTexture* pTex{ nullptr };		// texture
+	AEGfxVertexList*	pMesh{ nullptr };		// mesh 
+	AEGfxTexture*		pTex{ nullptr };		// texture
+
 	f32					size{ 50.0f };			// player size
 	AEVec2				pVel{ 0.0f, 0.0f };		// velocity of player
 	f32					pAcceleration{ 40.0f };
@@ -122,11 +125,11 @@ struct Player { // initialise in each game mode before use
 	COLLISION			pFlag;
 
 
-	f32					pGround{ 0.0f };		// y-coord of the ground
-	f32					pCurrGround{ 0.0f };	// y-coord of the current ground/platform
-	bool				pOnSurface{ true };		// indicate if player stepping on ground/platform
-	bool				pJumping{ false };		// indicate if player is jumping
-	f32					maxCurrHeight{ 0.0f };
+	f32					pGround{ 0.0f };			// y-coord of the ground
+	f32					pCurrGround{ 0.0f };		// y-coord of the current ground/platform
+	bool				pOnSurface{ true };			// indicate if player stepping on ground/platform
+	bool				pJumping{ false };			// indicate if player is jumping
+	f32					pJumpHeightMax{ 100.0f };	// current max jump height of player
 
 	f32					startX{ 0.0f };		// left x limit
 	f32					endX{ 0.0f };		// right X limit
@@ -169,31 +172,21 @@ Items for racing - boost/disadvantage for players
 ---------------------------------------------------------------------------*/
 #define MAX_NUM_ITEMS 5
 
-//item types will be randomly generated
-enum ItemType {
-	NOTHING = 0,
-	BAD,
-	GOOD
-};
-
-
-struct RacingItems {
+struct RacingBoosts {
 	AEVec2				pCoord{ 0.0f, 0.0f };	// item x,y coordinates
-	AEGfxVertexList*	pMesh{ nullptr };	// mesh 
-	AEGfxTexture*		pTex{ nullptr };	// texture
+	AEGfxVertexList*	pMesh{ nullptr };		// mesh 
+	AEGfxTexture*		pTex{ nullptr };		// texture
+
 	f32					size{ 20.0f };		// item size
 	AABB				boundingBox;
 	AEVec2				pVel{ 0.0f, 0.0f };
-
-	ItemType			itemType;
 
 	bool				collected;
 
 	AEMtx33				transform{};				// transform matrix
 };
 
-extern RacingItems racing_items[MAX_NUM_ITEMS];
-
+extern RacingBoosts racing_boostsA[MAX_NUM_ITEMS], racing_boostsB[MAX_NUM_ITEMS];
 
 
 
@@ -204,7 +197,7 @@ Platform
 
 // Global constant for array for platforms
 //#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
-#define MAX_NUM_PLATFORMS 10 // testing
+#define MAX_NUM_PLATFORMS 50 // testing
 
 
 // generic platform details such as length, height, colour
