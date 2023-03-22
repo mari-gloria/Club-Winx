@@ -85,7 +85,7 @@ struct BG {
 	f32					height		{0.f}; // default height of BG (may need to change for racing)
 
 };
-extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing;
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing, bgWaves;
 
 
 
@@ -203,8 +203,8 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-//#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
-#define MAX_NUM_PLATFORMS 10 // testing
+// #define MAX_NUM_PLATFORMS 50 // END POINT: plus one for last platform
+#define MAX_NUM_PLATFORMS 20 // testing
 
 
 // generic platform details such as length, height, colour
@@ -245,7 +245,7 @@ struct Line {
 
 	AEMtx33				transform{};				// transform mtx 
 }; 
-extern Line			splitscreen;
+extern Line			splitscreen, startingline;
 
 
 struct Health { // initialise in each game mode before use 
