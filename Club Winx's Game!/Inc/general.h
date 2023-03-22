@@ -44,9 +44,14 @@
 /*--------------------------------------------------------------------------
 Defines
 ---------------------------------------------------------------------------*/
+//from main.cpp
 extern int const	winWIDTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
+extern s8			fontID;
+
+
+//from general.cpp
 extern const float	JUMP_HEIGHT_MAX;
 extern const float	GRAVITY;
 extern const float	PLAYER_JUMP;
@@ -87,7 +92,7 @@ struct BG {
 	f32					height		{0.f}; // default height of BG (may need to change for racing)
 
 };
-extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing;
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, winBoss;
 
 
 
@@ -144,24 +149,6 @@ struct Player { // initialise in each game mode before use
 	bool				alive{ true };			// player alive/dead
 };
 extern Player player1, player2;
-
-struct ScoreBoard {
-	AEVec2				sCoord{ 0.0f, 0.0f };	// score x y (min)
-	AEGfxVertexList* sMesh{ nullptr };	// mesh 
-	AEGfxTexture* sTex{ nullptr };	// texture
-
-	f32					length{ (f32)winWIDTH };
-	f32					height{ 50.0f };
-
-	int					p1_score{ 0 };			// player1 score
-	int					p2_score{ 0 };			// player2 score
-
-	int					p1_lives{ 0 };			// player1 lives
-	int					p2_lives{ 0 };			// player2 lives
-
-	AEMtx33				transform{};				// transform matrix
-};
-extern ScoreBoard score_board;
 
 
 

@@ -82,9 +82,6 @@ void racing_load()
 	// player 2 mesh
 	SquareMesh(&player2.pMesh,0xFFFF00FF);
 
-	// score board mesh
-	SquareMesh(&score_board.sMesh, 0xFF000000);
-
 	// loading in platform meshes in map
 	racing_map_load();
 
@@ -129,14 +126,6 @@ void racing_init()
 
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
-
-
-
-	/*------------------------------------------------------------
-	// INIT SCOREBOARD
-	------------------------------------------------------------*/
-	score_board.sCoord.x = 0.0f;
-	score_board.sCoord.y = 150.0f;
 
 
 
@@ -191,6 +180,18 @@ void racing_update()
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
+	// for winning texture
+	switch (if_win)
+	{
+	case 1:
+		Racing_Win(1);
+		break;
+	case 2:
+		Racing_Win(2);
+		break;
+	}
+
+	//for testing
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = PUZZLE;
 	}
@@ -211,7 +212,7 @@ void racing_update()
 
 
 	/*------------------------------------------------------------
-	// PLAYER MOVEMENT
+	// CHECK PLAYER-PLATFORM COLLISON
 	------------------------------------------------------------*/
 	input_handle();
 	AEAudioUpdate();
@@ -289,7 +290,7 @@ void racing_update()
 		if ((if_win == 0) && player1.pCurrGround == platformA_last_y)
 		{
 			if_win = 1;
-			Racing_Win(true, 1);
+			Racing_Win(1);
 			MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 		}
 
@@ -335,13 +336,15 @@ void racing_update()
 		if ((if_win == 0) && player2.pCurrGround == platformB_last_y)
 		{
 			if_win = 2;
-			Racing_Win(true, 2);
+			Racing_Win(2);
 			MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 		}
 	}
 
 
-	//update boost bounding box
+	/*------------------------------------------------------------
+	// CHECK FOR PLAYER-BOOST COLLISION
+	------------------------------------------------------------*/
 	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
 		racing_boostsA[i].boundingBox.min.x = racing_boostsA[i].pCoord.x - racing_boostsA[i].size / 2.0f;
@@ -367,18 +370,15 @@ void racing_update()
 		/*******************
 			player 1
 		*******************/
-		if (player1_collected_boost)
+		if (player1_collected_boost && !racing_boostsA[i].collected)
 		{
-			if (!racing_boostsA[i].collected)
-			{
-				racing_boostsA[i].collected = true;
+			racing_boostsA[i].collected = true;
 
-				//updated boost bool
-				player1_boosted = true;
+			//updated boost bool
+			player1_boosted = true;
 
-				//update boost counter
-				player1_boost_counter++;
-			}
+			//update boost counter
+			player1_boost_counter++;
 		}
 
 		//boosted jumping mechanism
@@ -416,10 +416,8 @@ void racing_update()
 		/*******************
 			player 2
 		*******************/
-		if (player2_collected_boost)
+		if (player2_collected_boost && !racing_boostsB[i].collected)
 		{
-			if (!racing_boostsB[i].collected)
-			{
 				racing_boostsB[i].collected = true;
 
 				//updated boost bool
@@ -427,7 +425,6 @@ void racing_update()
 
 				//update boost counter
 				player2_boost_counter++;
-			}
 		}
 
 		//boosted jumping mechanism
@@ -470,6 +467,7 @@ void racing_update()
 	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
 	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
 
+
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
@@ -480,8 +478,6 @@ void racing_update()
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
-	//for scoreboard
-	MatrixCalc(score_board.transform, score_board.length, score_board.height, 0.0f, score_board.sCoord);
 
 	//for platforms 
 	for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
@@ -498,15 +494,6 @@ void racing_update()
 	//for splitscreen
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 
-	// for winning texture
-	//switch (if_win)
-	//{
-	//	case 1:
-	//		break;
-	//	case 2:
-	//		break;
-
-	//}
 
 
 
@@ -587,18 +574,6 @@ void racing_draw()
 	// DRAWING SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_draw();
-
-
-
-	/*------------------------------------------------------------
-	// DRAWING SCORE BOARD
-	------------------------------------------------------------*/
-	/*AEGfxSetTransform(score_board.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	// No texture for scoreboard
-	AEGfxTextureSet(NULL, 0, 0);
-	// Drawing the mesh (list of triangles)
-	AEGfxMeshDraw(score_board.sMesh, AE_GFX_MDM_TRIANGLES);*/
 
 
 	/*------------------------------------------------------------

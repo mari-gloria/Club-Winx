@@ -55,7 +55,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 
-	fontID = AEGfxCreateFont("Assets/Arial Italic.ttf", 24);
+	fontID = AEGfxCreateFont("Assets/Arial Italic.ttf", 100);
 
 
 

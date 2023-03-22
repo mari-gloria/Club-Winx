@@ -101,8 +101,8 @@ Boss
 ---------------------------------------------------------------------------*/
 struct Boss { // initialise in each game mode before use 
 
-	AEGfxVertexList* pMesh1{ nullptr };			// mesh 
-	AEGfxTexture* pTex{ nullptr };			// texture
+	AEGfxVertexList*	pMesh1{ nullptr };			// mesh 
+	AEGfxTexture*		pTex{ nullptr };			// texture
 	AEMtx33				transform{};				// transform mtx 
 
 	AEVec2				Bcoord{ 380.0f, -30.f };	// position of boss
@@ -114,7 +114,7 @@ struct Boss { // initialise in each game mode before use
 
 	f32 length = 200.0f; //boss length 
 	f32 height = 150.f; // boss height
-	f32 HP{ BOSS_MAX_HP };
+	f32 HP;
 
 };
 //extern Boss boss;
@@ -169,13 +169,11 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void boss_load()
 {
-	std::cout << "boss:Load\n";
-
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-	bgBoss.bgTex = AEGfxTextureLoad("Assets/Boss_BG.png");		// BG Texture
+	bgBoss.bgTex = AEGfxTextureLoad("Assets/Boss_BG.png");	// BG Texture
 	SquareMesh(&bgBoss.bgMesh, 0);							// BG Mesh
 	bgBoss.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgBoss.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
@@ -222,9 +220,6 @@ void boss_load()
 	potion.pTex = AEGfxTextureLoad("Assets/potion.png");
 	mobs.pTex = AEGfxTextureLoad("Assets/mobs.png");
 
-	/*------------------------------------------------------------
-	CREATING FONTS
-	------------------------------------------------------------*/
 
 	/*------------------------------------------------------------
 	LOAD SOUND EFFECTS/AUDIO
@@ -236,20 +231,16 @@ void boss_load()
 
 void boss_init()
 {
-	std::cout << "boss:Initialize\n";
-
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
-
-	
-
-
 
 	DEFAULT_HP = (f32)AEGetWindowWidth() + 70.0f;
 	player_default_hp = player2.size; //default player's hp size
 	player2_default_hp = player1.size;
 	player1.HP = PLAYER_MAX_HP;
 	player2.HP = PLAYER2_MAX_HP; //initialise the first length of max_hp
+
+	boss.HP = BOSS_MAX_HP;
 
 	//counters
 	bossTimeElapsed = 0.0;
@@ -260,8 +251,6 @@ void boss_init()
 
 void boss_update()
 {
-	std::cout << "boss:Update\n";
-
 	// TIME COUNTER 
 	bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
 	bossTimeElapsed += AEFrameRateControllerGetFrameTime();
@@ -270,6 +259,21 @@ void boss_update()
 	/*------------------------------------------------------------
 	CHANGE STATE CONDITION
 	------------------------------------------------------------*/
+	//NOT DONE!! still testing
+	//players win
+	if (!boss.alive)
+	{
+		next_state = WIN_BOTHPLAYERS;
+	}
+
+	//players lose
+	if (!player1.alive && !player2.alive)
+	{
+		next_state = RESTART;
+	}
+
+
+	//for testing
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = PUZZLE;
 	}
@@ -280,6 +284,7 @@ void boss_update()
 		next_state = QUIT;
 	}
 	if (AEInputCheckCurr(AEVK_ESCAPE)) {
+		curr_state = RESTART;
 		next_state = MENU;
 	}
 
@@ -322,6 +327,7 @@ void boss_update()
 	{
 		bossmovetime = 0;
 	}*/
+
 	/*------------------------------------------------------------
 	BULLET MOVEMENT
 	------------------------------------------------------------*/
@@ -606,8 +612,6 @@ void boss_update()
 
 			}
 
-
-
 		}
 
 	}
@@ -694,7 +698,6 @@ void boss_update()
 
 void boss_draw()
 {
-	std::cout << "boss:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -842,14 +845,11 @@ void boss_draw()
 
 void boss_free()
 {
-	std::cout << "boss:Free\n";
 
 }
 
 void boss_unload()
 {
-	std::cout << "boss:Unload\n";
-
 	AEGfxMeshFree(bgBoss.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgBoss.bgTex); // Unload Texture
 

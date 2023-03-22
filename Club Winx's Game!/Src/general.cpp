@@ -29,12 +29,11 @@ double	 g_appTime;
 
 //declaring structs: BG, player, scoreboard, racingitems, platform, line, boss, health, puzzle
 BG			bgRacing, bgPuzzle, bgBoss, bgWin;
-BG			winRacing;
+BG			winPuzzle, winRacing, winBoss;
 
 Audio		jump,collect;
 
 Player		player1, player2;
-ScoreBoard	score_board;
 
 RacingBoosts racing_boostsA[MAX_NUM_ITEMS], racing_boostsB[MAX_NUM_ITEMS];
 
