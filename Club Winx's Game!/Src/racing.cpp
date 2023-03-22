@@ -479,8 +479,8 @@ void racing_update()
 	//------------------------------------------------------------*/
 	Waves_boundingBox.min.x = bgWaves.bgCoord.x - bgWaves.length / 3.0f;
 	Waves_boundingBox.min.y = bgWaves.bgCoord.y - bgWaves.height / 3.0f;
-	Waves_boundingBox.max.x = bgWaves.bgCoord.x + bgWaves.length / 3.0f - 6.0f;
-	Waves_boundingBox.max.y = bgWaves.bgCoord.y + bgWaves.height / 3.0f - 6.0f;
+	Waves_boundingBox.max.x = bgWaves.bgCoord.x + bgWaves.length / 3.0f - 8.0f;
+	Waves_boundingBox.max.y = bgWaves.bgCoord.y + bgWaves.height / 3.0f - 8.0f;
 
 	bool player1_lose = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, Waves_boundingBox, Waves_vel);
 	bool player2_lose = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, Waves_boundingBox, Waves_vel);
@@ -491,17 +491,15 @@ void racing_update()
 	// if both players pass the 1st section
 	if (player1.boundingBox.min.y > platformA[section].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section].platBoundingBox.max.y)
 	{
-			if (section_done == false)	bgWaves.bgCoord.y = CamY - 2.8f * bgWaves.height;
+			if (section_done == false)	bgWaves.bgCoord.y = CamY - 2.6f * bgWaves.height;
 
 		// if players passes the halfway mark
 		if (player1.boundingBox.min.y > platformA[section * 5].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section * 5].platBoundingBox.max.y)
 		{
 			section_done = true;
-			if (section_done == true)	bgWaves.bgCoord.y = CamY - 2.4f * bgWaves.height;
+			if (section_done == true)	bgWaves.bgCoord.y = CamY - 2.3f * bgWaves.height;
 		}
 	}
-
-
 
 	// players lose mechanics
 
@@ -520,7 +518,7 @@ void racing_update()
 	/*------------------------------------------------------------
 	UPDATE CAMERA MOVEMENT
 	//------------------------------------------------------------*/
-	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 6;
 	
 
 	/*------------------------------------------------------------
