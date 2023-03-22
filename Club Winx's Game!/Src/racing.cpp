@@ -26,11 +26,9 @@ static f32			CamX{ 0.0f },
 CamY{ 0.0f };	// Camera's X & Y Positions
 
 //// 
-static f32			maxHeight		{ 0 };
-static int			count			{ 1 };
-static f32			maxHeight_copy	{ 0 };
-static const f32	H				{ 220.0f };
-static bool			firstround_over{ false };
+static AABB			Waves_boundingBox;
+static AEVec2		Waves_vel{ 0.f, 0.f };
+static bool			section_done{ false };
 
 ///
 static int			if_win{ 0 } ; // 0: None, 1: Player_one, 2: Player_two
@@ -91,13 +89,18 @@ void racing_load()
 	// loading win texture
 	SquareMesh(&winRacing.bgMesh, 0xFFFF00FF);
 
+	// loagin Waves texture
+	SquareMesh(&bgWaves.bgMesh, 0);
+
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
 	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
+
 	winRacing.bgTex = AEGfxTextureLoad("Assets/Racing_Winner.png");
+	bgWaves.bgTex = AEGfxTextureLoad("Assets/Waves.png"); // Waves Texture for rising water..
 
 	/*------------------------------------------------------------
 	CREATING FONTS
@@ -156,20 +159,24 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
-	CamX = 0.0f, CamY = 0.0f;
-	maxHeight = H;
-	maxHeight_copy = H;
-	count = 1;
-	firstround_over = false;
+	CamX = 0.0f;
+	CamY = 0.0f;
 
 
 	/*------------------------------------------------------------
 	// INIT - Racing Win Texture
 	------------------------------------------------------------*/
-	// winRacing.bgCoord = {player}
-	winRacing.length = 120.0f;
-	winRacing.height = 70.0f;
+	winRacing.length = 190.0f;
+	winRacing.height = 100.0f;
 	if_win = 0;
+
+	/*------------------------------------------------------------
+	// INIT SCOREBOARD
+	------------------------------------------------------------*/
+	bgWaves.height = bgRacing.height / 5.0f;
+	bgWaves.length = bgRacing.length;
+	bgWaves.bgCoord.y = AEGfxGetWinMinY() - 2*bgWaves.height;
+
 
 	return;
 }
@@ -467,6 +474,54 @@ void racing_update()
 	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
 	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
 
+	/*------------------------------------------------------------
+	UPDATE WAVES MOVEMENT
+	//------------------------------------------------------------*/
+	Waves_boundingBox.min.x = bgWaves.bgCoord.x - bgWaves.length / 3.0f;
+	Waves_boundingBox.min.y = bgWaves.bgCoord.y - bgWaves.height / 3.0f;
+	Waves_boundingBox.max.x = bgWaves.bgCoord.x + bgWaves.length / 3.0f - 6.0f;
+	Waves_boundingBox.max.y = bgWaves.bgCoord.y + bgWaves.height / 3.0f - 6.0f;
+
+	bool player1_lose = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, Waves_boundingBox, Waves_vel);
+	bool player2_lose = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, Waves_boundingBox, Waves_vel);
+
+	int section = int(MAX_NUM_PLATFORMS / 10); // divides the platforms to 10 sections
+
+
+	// if both players pass the 1st section
+	if (player1.boundingBox.min.y > platformA[section].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section].platBoundingBox.max.y)
+	{
+			if (section_done == false)	bgWaves.bgCoord.y = CamY - 2.8f * bgWaves.height;
+
+		// if players passes the halfway mark
+		if (player1.boundingBox.min.y > platformA[section * 5].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section * 5].platBoundingBox.max.y)
+		{
+			section_done = true;
+			if (section_done == true)	bgWaves.bgCoord.y = CamY - 2.4f * bgWaves.height;
+		}
+	}
+
+
+
+	// players lose mechanics
+
+	if (player1_lose || player2_lose) {
+
+		COLLISION lose1_flag = get_collision_flag(player1.boundingBox, player1.pVel, Waves_boundingBox, Waves_vel);
+		COLLISION lose2_flag = get_collision_flag(player2.boundingBox, player2.pVel, Waves_boundingBox, Waves_vel);
+
+		if (lose1_flag == COLLISION_BOTTOM || lose2_flag == COLLISION_BOTTOM)
+		{
+			next_state = LOSE_BOTHPLAYERS;
+		}
+	}
+
+
+	/*------------------------------------------------------------
+	UPDATE CAMERA MOVEMENT
+	//------------------------------------------------------------*/
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
+	
 
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
@@ -494,30 +549,8 @@ void racing_update()
 	//for splitscreen
 	MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 
-
-
-
-	///*------------------------------------------------------------
-	// UPDATE - Camera Movement
-	// if the player.y + size is over or at maxHeight, CamY will increase
-	//------------------------------------------------------------*/
-	//CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
-	
-	if ((player1.pCoord.y + player1.size) >= maxHeight || (player2.pCoord.y + player2.size) >= maxHeight)
-	{
-
-		CamY+=maxHeight_copy; // Calculate the target camera position to gradually move towards
-
-		// maxHeight Incrementing
-		maxHeight = (maxHeight_copy * ++count);
-		if (if_win != 0) firstround_over = true;
-	}
-	
-	// if both player falls off, restart the whole game
-	if (firstround_over == true && (player1.pCoord.y + player1.size < (maxHeight_copy * (count - 3))) && (player2.pCoord.y + player2.size < (maxHeight_copy * (count - 3))))
-	{
-		next_state = RESTART;
-	}
+	//for Waves
+	MatrixCalc(bgWaves.transform, bgWaves.length, bgWaves.height, 0.f, bgWaves.bgCoord);
 
 
 	///*------------------------------------------------------------
@@ -544,7 +577,6 @@ void racing_draw()
 	// DRAWING PLATFORMS - MAP
 	------------------------------------------------------------*/
 	racing_map_draw();
-
 
 
 	/*------------------------------------------------------------
@@ -587,6 +619,16 @@ void racing_draw()
 	AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
+	// DRAWING Waves BG
+	------------------------------------------------------------*/
+	AEGfxSetTransform(bgWaves.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(bgWaves.bgTex, 0, 0);
+	AEGfxMeshDraw(bgWaves.bgMesh, AE_GFX_MDM_TRIANGLES);
+
+	/*------------------------------------------------------------
 	 DRAWING - Camera Movement
 	------------------------------------------------------------*/
 	AEGfxSetCamPosition(CamX, CamY); // Set Camera's Position to values of CamX & CamY
@@ -603,11 +645,11 @@ void racing_free()
 
 void racing_unload()
 {
-
+	/*------------------------------------------------------------
+	// Unload Background Meshes & Texture
+	------------------------------------------------------------*/
 	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
-
-	AEAudioExit(); //exit the audio
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes
@@ -618,12 +660,10 @@ void racing_unload()
 	AEGfxTextureUnload(player1.pTex);
 	AEGfxTextureUnload(player2.pTex);
 
-
 	/*------------------------------------------------------------
 	// Unload Platform Meshes
 	------------------------------------------------------------*/
 	racing_map_unload();
-
 
 	/*------------------------------------------------------------
 	// Unload Split Screen Meshes
@@ -636,4 +676,8 @@ void racing_unload()
 	AEGfxMeshFree(winRacing.bgMesh);
 	AEGfxTextureUnload(winRacing.bgTex);
 
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioExit(); //exit the audio
 }

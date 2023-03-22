@@ -13,7 +13,6 @@ CamY{ 0.0f };	// Camera's X & Y Positions
 
 void WIN_PLAYERONE_load()
 {
-	std::cout << "WIN_PLAYERONE:Load\n";
 
 	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
@@ -30,14 +29,12 @@ void WIN_PLAYERONE_load()
 
 void WIN_PLAYERONE_init()
 {
-	std::cout << "WIN_PLAYERONE:Initialize\n";
 
 	return;
 }
 
 void WIN_PLAYERONE_update()
 {
-	std::cout << "WIN_PLAYERONE:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -61,7 +58,6 @@ void WIN_PLAYERONE_update()
 
 void WIN_PLAYERONE_draw()
 {
-	std::cout << "WIN_PLAYERONE:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -80,14 +76,12 @@ void WIN_PLAYERONE_draw()
 
 void WIN_PLAYERONE_free()
 {
-	std::cout << "WIN_PLAYERONE:Free\n";
 
 	return;
 }
 
 void WIN_PLAYERONE_unload()
 {
-	std::cout << "WIN_PLAYERONE:Unload\n";
 
 	// Unload Background
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
@@ -100,7 +94,6 @@ void WIN_PLAYERONE_unload()
 
 void WIN_PLAYERTWO_load()
 {
-	std::cout << "WIN_PLAYERTWO:Load\n";
 
 	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
@@ -117,14 +110,12 @@ void WIN_PLAYERTWO_load()
 
 void WIN_PLAYERTWO_init()
 {
-	std::cout << "WIN_PLAYERTWO:Initialize\n";
 
 	return;
 }
 
 void WIN_PLAYERTWO_update()
 {
-	std::cout << "WIN_PLAYERTWO:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -152,7 +143,6 @@ void WIN_PLAYERTWO_update()
 
 void WIN_PLAYERTWO_draw()
 {
-	std::cout << "WIN_PLAYERTWO:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -171,14 +161,12 @@ void WIN_PLAYERTWO_draw()
 
 void WIN_PLAYERTWO_free()
 {
-	std::cout << "WIN_PLAYERTWO:Free\n";
 
 	return;
 }
 
 void WIN_PLAYERTWO_unload()
 {
-	std::cout << "WIN_PLAYERTWO:Unload\n";
 
 	// Unload Background
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
@@ -191,7 +179,6 @@ void WIN_PLAYERTWO_unload()
 
 void WIN_BOTHPLAYERS_load()
 {
-	std::cout << "WIN_BOTHPLAYERS:Load\n";
 
 	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
@@ -208,14 +195,12 @@ void WIN_BOTHPLAYERS_load()
 
 void WIN_BOTHPLAYERS_init()
 {
-	std::cout << "WIN_BOTHPLAYERS:Initialize\n";
 
 	return;
 }
 
 void WIN_BOTHPLAYERS_update()
 {
-	std::cout << "WIN_BOTHPLAYERS:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -237,7 +222,6 @@ void WIN_BOTHPLAYERS_update()
 
 void WIN_BOTHPLAYERS_draw()
 {
-	std::cout << "WIN_BOTHPLAYERS:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -256,14 +240,12 @@ void WIN_BOTHPLAYERS_draw()
 
 void WIN_BOTHPLAYERS_free()
 {
-	std::cout << "WIN_BOTHPLAYERS:Free\n";
 
 	return;
 }
 
 void WIN_BOTHPLAYERS_unload()
 {
-	std::cout << "WIN_BOTHPLAYERS:Unload\n";
 
 	// Unload Background
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
@@ -276,7 +258,6 @@ void WIN_BOTHPLAYERS_unload()
 
 void LOSE_BOTHPLAYERS_load()
 {
-	std::cout << "LOSE_BOTHPLAYERS:Load\n";
 
 	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
@@ -293,14 +274,12 @@ void LOSE_BOTHPLAYERS_load()
 
 void LOSE_BOTHPLAYERS_init()
 {
-	std::cout << "LOSE_BOTHPLAYERS:Initialize\n";
 
 	return;
 }
 
 void LOSE_BOTHPLAYERS_update()
 {
-	std::cout << "LOSE_BOTHPLAYERS:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -325,7 +304,6 @@ void LOSE_BOTHPLAYERS_update()
 
 void LOSE_BOTHPLAYERS_draw()
 {
-	std::cout << "LOSE_BOTHPLAYERS:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -344,14 +322,12 @@ void LOSE_BOTHPLAYERS_draw()
 
 void LOSE_BOTHPLAYERS_free()
 {
-	std::cout << "LOSE_BOTHPLAYERS:Free\n";
 
 	return;
 }
 
 void LOSE_BOTHPLAYERS_unload()
 {
-	std::cout << "LOSE_BOTHPLAYERS:Unload\n";
 
 	// Unload Background
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
@@ -364,7 +340,6 @@ void LOSE_BOTHPLAYERS_unload()
 
 void ENDGAME_load()
 {
-	std::cout << "ENDGAME:Load\n";
 
 	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
@@ -381,14 +356,12 @@ void ENDGAME_load()
 
 void ENDGAME_init()
 {
-	std::cout << "ENDGAME:Initialize\n";
 
 	return;
 }
 
 void ENDGAME_update()
 {
-	std::cout << "ENDGAME:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -409,7 +382,6 @@ void ENDGAME_update()
 
 void ENDGAME_draw()
 {
-	std::cout << "ENDGAME:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -428,14 +400,12 @@ void ENDGAME_draw()
 
 void ENDGAME_free()
 {
-	std::cout << "ENDGAME:Free\n";
 
 	return;
 }
 
 void ENDGAME_unload()
 {
-	std::cout << "ENDGAME:Unload\n";
 
 	// Unload Background
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh

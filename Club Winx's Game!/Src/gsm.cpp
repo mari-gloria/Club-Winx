@@ -59,6 +59,15 @@ void GSM_update()
 		fpUnload = Splash_Unload;
 		break;
 
+	case TUT:
+		fpLoad = Tutorial_Load;
+		fpInit = Tutorial_Init;
+		fpUpdate = Tutorial_Update;
+		fpDraw = Tutorial_Draw;
+		fpFree = Tutorial_Free;
+		fpUnload = Tutorial_Unload;
+		break;
+
 	case MENU:
 		fpLoad = MainMenu_Load;
 		fpInit = MainMenu_Init;
@@ -77,6 +86,7 @@ void GSM_update()
 		fpUnload = racing_unload;
 		break;
 
+
 	case BOSS:
 		fpLoad = boss_load;
 		fpInit = boss_init;
@@ -85,6 +95,7 @@ void GSM_update()
 		fpFree = boss_free;
 		fpUnload = boss_unload;
 		break;
+
 
 	case PUZZLE:
 		fpLoad = puzzle_load;
@@ -95,6 +106,7 @@ void GSM_update()
 		fpUnload = puzzle_unload;
 		break;
 
+
 	case WIN_PLAYERONE:
 		fpLoad = WIN_PLAYERONE_load;
 		fpInit = WIN_PLAYERONE_init;
@@ -103,6 +115,7 @@ void GSM_update()
 		fpFree = WIN_PLAYERONE_free;
 		fpUnload = WIN_PLAYERONE_unload;
 		break;
+
 
 	case WIN_PLAYERTWO:
 		fpLoad = WIN_PLAYERTWO_load;
@@ -113,6 +126,7 @@ void GSM_update()
 		fpUnload = WIN_PLAYERTWO_unload;
 		break;
 
+
 	case WIN_BOTHPLAYERS:
 		fpLoad = WIN_BOTHPLAYERS_load;
 		fpInit = WIN_BOTHPLAYERS_init;
@@ -121,6 +135,7 @@ void GSM_update()
 		fpFree = WIN_BOTHPLAYERS_free;
 		fpUnload = WIN_BOTHPLAYERS_unload;
 		break;
+
 
 	case LOSE_BOTHPLAYERS:
 		fpLoad = LOSE_BOTHPLAYERS_load;
@@ -131,6 +146,7 @@ void GSM_update()
 		fpUnload = LOSE_BOTHPLAYERS_unload;
 		break;
 
+
 	case ENDGAME:
 		fpLoad = ENDGAME_load;
 		fpInit = ENDGAME_init;
@@ -139,6 +155,7 @@ void GSM_update()
 		fpFree = ENDGAME_free;
 		fpUnload = ENDGAME_unload;
 		break;
+
 
 	case RESTART:
 		break;

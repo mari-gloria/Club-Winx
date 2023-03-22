@@ -29,6 +29,9 @@
 #include "WinLose.h"
 #include "WinnerState.h"
 #include "../Splash_screen.h"
+#include "Tutorial.h"
+#include "../main.h"
+
 
 #include <iostream>
 #include <fstream>
@@ -92,7 +95,9 @@ struct BG {
 	f32					height		{0.f}; // default height of BG (may need to change for racing)
 
 };
-extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, winBoss;
+
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, bgWaves, bgTut, winBoss;
+
 
 
 
@@ -183,8 +188,10 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
+
 //#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
 #define MAX_NUM_PLATFORMS 50 // testing
+
 
 
 // generic platform details such as length, height, colour
@@ -225,7 +232,7 @@ struct Line {
 
 	AEMtx33				transform{};				// transform mtx 
 }; 
-extern Line			splitscreen;
+extern Line			splitscreen, startingline;
 
 
 struct Health { // initialise in each game mode before use 

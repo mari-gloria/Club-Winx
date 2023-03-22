@@ -8,12 +8,6 @@
 ==================================================================================*/
 
 // Functions for state change //
-void EOR_load();
-void EOR_init();
-void EOR_update();
-void EOR_draw();
-void EOR_free();
-void EOR_unload();
 
 void WIN_PLAYERONE_load();
 void WIN_PLAYERONE_init();
