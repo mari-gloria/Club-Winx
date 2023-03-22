@@ -472,9 +472,9 @@ void boss_update()
 
 	//update boss bounding box
 	boss.boundingBox.min.x = boss.Bcoord.x - boss.length / 2.0f;
-	boss.boundingBox.min.y = boss.Bcoord.x - boss.height / 2.0f;
+	boss.boundingBox.min.y = boss.Bcoord.y - boss.height / 2.0f;
 	boss.boundingBox.max.x = boss.Bcoord.x + boss.length / 2.0f;
-	boss.boundingBox.max.y = boss.Bcoord.x + boss.height / 2.0f;
+	boss.boundingBox.max.y = boss.Bcoord.y + boss.height / 2.0f;
 
 	//update potion bounding box
 	potion.boundingBox.min.x = potion.vector.x - potion.size / 2.0f;
@@ -507,8 +507,11 @@ void boss_update()
 		if ((CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel)
 			|| CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel)) && boss.alive) //if player1 or player2 bullet collide with boss && boss is alive
 		{
+			if (player1.alive || player2.alive) {
 
-			boss.HP -= PLAYERDMG;	//decrease monster health
+				boss.HP -= PLAYERDMG;
+			}
+				//decrease monster health
 			//std::cout << " monster lives:  " << boss.HP	 << " \n";
 
 		}
