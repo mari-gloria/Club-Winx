@@ -1,3 +1,13 @@
+/*==================================================================================
+* All content - 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+*
+* Course: CSD1451
+* Group Name: Club Winx
+* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
+* Secondary Authors:
+*
+==================================================================================*/
+
 
 // Include these Header files
 #include "General.h"
@@ -26,7 +36,8 @@ void Racing_Win(bool win, int player)
 				winRacing.bgCoord = { player1.pCoord.x + 60.0f, player1.pCoord.y + 60.0f };
 				// if press enter, goes to end of round
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					next_state = WIN_PLAYERONE;
+					//next_state = WIN_PLAYERONE;
+					next_state = WIN_BOTHPLAYERS;
 				}
 				break;
 
@@ -38,7 +49,9 @@ void Racing_Win(bool win, int player)
 				std::cout << "Won Player 2" << std::endl; 
 				winRacing.bgCoord = { player2.pCoord.x + 60.0f, player2.pCoord.y + 60.0f };
 				if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-					next_state = WIN_PLAYERTWO;
+					//next_state = WIN_PLAYERTWO;
+					next_state = WIN_BOTHPLAYERS;
+
 				}
 				break;
 		}

@@ -293,7 +293,10 @@ void MainMenu_Update()
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				tutorial_click = true;
-				toggle = TUTORIAL;
+				/*toggle = TUTORIAL;*/
+
+				// adding tutorial
+				next_state = TUT;
 			}
 		}
 		//Options button

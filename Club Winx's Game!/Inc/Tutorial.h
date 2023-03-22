@@ -3,26 +3,15 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
 * Secondary Authors:
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 *
 ==================================================================================*/
 
+void Tutorial_Load();
+void Tutorial_Init();
+void Tutorial_Update();
+void Tutorial_Draw();
+void Tutorial_Free();
+void Tutorial_Unload();
 
-enum GS_STATES
-{
-	SPLASH = 0,
-	MENU,
-	TUT,
-	RACING,
-	BOSS,
-	PUZZLE,
-	WIN_PLAYERONE,
-	WIN_PLAYERTWO,
-	WIN_BOTHPLAYERS,
-	LOSE_BOTHPLAYERS,
-	ENDGAME,
-	RESTART,
-	QUIT,
-};

@@ -29,6 +29,9 @@
 #include "WinLose.h"
 #include "WinnerState.h"
 #include "../Splash_screen.h"
+#include "Tutorial.h"
+#include "../main.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -85,7 +88,7 @@ struct BG {
 	f32					height		{0.f}; // default height of BG (may need to change for racing)
 
 };
-extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing, bgWaves;
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winRacing, bgWaves, bgTut;
 
 
 

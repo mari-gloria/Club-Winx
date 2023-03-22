@@ -28,7 +28,7 @@ double	 g_appTime;
 
 
 //declaring structs: BG, player, scoreboard, racingitems, platform, line, boss, health, puzzle
-BG			bgRacing, bgPuzzle, bgBoss, bgWin;
+BG			bgRacing, bgPuzzle, bgBoss, bgWin, bgTut;
 BG			winRacing, bgWaves;
 
 Audio		jump;

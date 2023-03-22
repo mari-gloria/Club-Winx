@@ -23,7 +23,8 @@ DECLARE GLOBAL VARIABLES
 //setting screen width and height
 int const winWIDTH{1080}, winHEIGHT{600};
 
-s8 fontID = 0;
+extern s8 fontID = 0;
+extern s8 text = 1;
 
 // main
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -56,8 +57,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysReset();
 
 	fontID = AEGfxCreateFont("Assets/Arial Italic.ttf", 24);
-
-
+	text = AEGfxCreateFont("Assets/PressStart2P.ttf", 30);
 
 
 	/*------------------------------------------------------------
@@ -114,5 +114,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	FREE SYSTEM
 	------------------------------------------------------------*/
 	AEGfxDestroyFont(fontID);
+	AEGfxDestroyFont(text);
+
 	AESysExit();
 }

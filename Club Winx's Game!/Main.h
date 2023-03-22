@@ -16,3 +16,4 @@ extern float		g_dt;
 extern double		g_appTime;
 
 extern s8 fontID;
+extern s8 text;
