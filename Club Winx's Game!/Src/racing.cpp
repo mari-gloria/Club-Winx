@@ -49,7 +49,7 @@ int player2_use_boost_counter{ 0 };
 float const BOOST_JUMP_HEIGHT = 200.0f;
 float const BOOST_JUMP_VEL = 16.0f;
 
-
+float bgspeed; 
 
 /*------------------------------------------------------------
 FUNCTIONS
@@ -179,6 +179,8 @@ void racing_init()
 	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
 	jump.aGroup = AEAudioCreateGroup();
 
+
+	bgspeed = 0;
 	return;
 }
 
@@ -558,6 +560,7 @@ void racing_update()
 	bgRacing.bgCoord.y = CamY;
 }
 
+float v = 0;
 void racing_draw()
 {
 
@@ -569,7 +572,13 @@ void racing_draw()
 	AEGfxSetTransform(bgRacing.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgRacing.bgTex, 0.f, 0.f);
+	
+	v += 0.05f * g_dt;
+	if (v >= 1 || if_win)
+	{
+		v = 0;
+	}
+	AEGfxTextureSet(bgRacing.bgTex, 0.f, v);
 	AEGfxMeshDraw(bgRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
