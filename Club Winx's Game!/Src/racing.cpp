@@ -684,6 +684,9 @@ void racing_unload()
 	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
 
+	AEGfxMeshFree(bgWaves.bgMesh);
+	AEGfxTextureUnload(bgWaves.bgTex);
+
 	/*------------------------------------------------------------
 	// Unload Player Meshes
 	------------------------------------------------------------*/
