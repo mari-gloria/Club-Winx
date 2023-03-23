@@ -180,7 +180,7 @@ void racing_init()
 	jump.aGroup = AEAudioCreateGroup();
 
 
-	bgspeed = 0;
+	bgspeed = 0.05f;
 	return;
 }
 
@@ -561,6 +561,7 @@ void racing_update()
 }
 
 float v = 0;
+float w = 0;
 void racing_draw()
 {
 
@@ -573,7 +574,7 @@ void racing_draw()
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	
-	v += 0.05f * g_dt;
+	v += bgspeed * g_dt;
 	if (v >= 1 || if_win)
 	{
 		v = 0;
@@ -633,7 +634,12 @@ void racing_draw()
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(bgWaves.bgTex, 0, 0);
+	w += bgspeed * g_dt;
+	if (w >= 1)
+	{
+		w = 0;
+	}
+	AEGfxTextureSet(bgWaves.bgTex, w, 0);
 	AEGfxMeshDraw(bgWaves.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
