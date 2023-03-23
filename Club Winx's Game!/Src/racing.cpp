@@ -51,6 +51,10 @@ float const BOOST_JUMP_VEL = 16.0f;
 
 float bgspeed; 
 
+AEMtx33 flipTransform1, flipTransform2;
+//AEMtx33Scale(&flipTransform, -1.0f, 1.0f); // horizontal scale
+//(&player1.transform, &player1.transform, &flipTransform);
+
 /*------------------------------------------------------------
 FUNCTIONS
 ------------------------------------------------------------*/
@@ -126,8 +130,8 @@ void racing_init()
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
 
-
-
+	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
+	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
 	/*------------------------------------------------------------
 	// INIT PLATFORM - MAP
 	------------------------------------------------------------*/
@@ -201,6 +205,8 @@ void racing_update()
 		break;
 	}
 
+
+	
 	//for testing
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = PUZZLE;
@@ -217,9 +223,20 @@ void racing_update()
 	if (AEInputCheckCurr(AEVK_ESCAPE)) {
 		next_state = MENU;
 	}
+	if (AEInputCheckTriggered(AEVK_A)) {
+		AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 
+	
+	}
+	if (AEInputCheckTriggered(AEVK_D)) {
+		AEMtx33Scale(&flipTransform1, 1.0f, 1.0f); // player 1 normal 
+	}
+	if (AEInputCheckTriggered(AEVK_LEFT)) {
+		AEMtx33Scale(&flipTransform2, -1.0f, 1.0f); // player 2 flip 
 
-
-
+	}
+	if (AEInputCheckTriggered(AEVK_RIGHT)) {
+		AEMtx33Scale(&flipTransform2, 1.0f, 1.0f); // player 1 normal
+	}
 
 	/*------------------------------------------------------------
 	// CHECK PLAYER-PLATFORM COLLISON
@@ -593,6 +610,7 @@ void racing_draw()
 	------------------------------------------------------------*/
 	// Drawing player 1
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEMtx33Concat(&player1.transform, &player1.transform, &flipTransform1);
 	AEGfxSetTransform(player1.transform.m);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
@@ -602,6 +620,7 @@ void racing_draw()
 
 	// drawing player 2
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEMtx33Concat(&player2.transform, &player2.transform, &flipTransform2);
 	AEGfxSetTransform(player2.transform.m);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
