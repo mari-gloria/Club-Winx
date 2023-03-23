@@ -25,7 +25,7 @@ CONSTANTS
 int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
 const f32 BULLETSPEED = 10.0f;
 const f32 PLAYERDMG = 0.5f; //Player's hit
-const f32  BOSS_MAX_HP = 500.f;
+const f32 BOSS_MAX_HP = 500.f;
 const f32 PLAYER_MAX_HP = 150.f;
 const f32 PLAYER2_MAX_HP = 150.f;
 const f32 BOSSATTACK_1_DMG = 5.5f;
@@ -290,13 +290,13 @@ void boss_update()
 	//players win
 	if (!boss.alive)
 	{
-		next_state = WIN_BOTHPLAYERS;
+		next_state = ENDGAME;
 	}
 
 	//players lose
 	if (!player1.alive && !player2.alive)
 	{
-		next_state = RESTART;
+		next_state = LOSE_BOTHPLAYERS;
 	}
 
 

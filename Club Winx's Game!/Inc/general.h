@@ -188,9 +188,7 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-
-//#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
-#define MAX_NUM_PLATFORMS 50 // testing
+#define MAX_NUM_PLATFORMS 50
 
 
 

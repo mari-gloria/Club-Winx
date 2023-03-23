@@ -107,11 +107,7 @@ void racing_load()
 	------------------------------------------------------------*/
 
 
-	/*------------------------------------------------------------
-	LOAD SOUND EFFECTS/AUDIO
-	------------------------------------------------------------*/
-	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
-	jump.aGroup = AEAudioCreateGroup();
+	
 
 	return;
 }
@@ -177,6 +173,11 @@ void racing_init()
 	bgWaves.length = bgRacing.length;
 	bgWaves.bgCoord.y = AEGfxGetWinMinY() - 2*bgWaves.height;
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
+	jump.aGroup = AEAudioCreateGroup();
 
 	return;
 }
