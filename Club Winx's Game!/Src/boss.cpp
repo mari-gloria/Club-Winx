@@ -24,7 +24,7 @@ CONSTANTS
 ------------------------------------------------------------*/
 int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
 const f32 BULLETSPEED = 10.0f;
-const f32 PLAYERDMG = 0.5f; //Player's hit
+const f32 PLAYERDMG = 10.5f; //Player's hit
 const f32 BOSS_MAX_HP = 500.f;
 const f32 PLAYER_MAX_HP = 150.f;
 const f32 PLAYER2_MAX_HP = 150.f;
@@ -492,18 +492,28 @@ void boss_update()
 
 		//Shoot BOSS
 		//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
-		if ((CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel)
-			|| CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel)) && boss.alive) //if player1 or player2 bullet collide with boss && boss is alive
+		if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && boss.alive) //if player1 or player2 bullet collide with boss && boss is alive
 		{
-			if (player1.alive || player2.alive) {
+			if (player1.alive ) {
 
 				boss.HP -= PLAYERDMG; //decrease monster health
+				bullets1[i].shot = false;
 			}
 				
 			
 
 		}
+		if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && boss.alive)
+		{
+			if (player2.alive) {
 
+				boss.HP -= PLAYERDMG; //decrease monster health
+				bullets2[i].shot = false;
+			}
+
+
+
+		}
 		//Shoot MOBS
 		if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)
 			|| CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
@@ -527,10 +537,12 @@ void boss_update()
 		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
 		{
 			player1.HP -= BOSSATTACK_1_DMG;
+			bossbullets1[i].shot = false;
 		}
 		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player2.boundingBox, player2.pVel) && player2.alive)// if bullet hit player 1 && player alive
 		{
 			player2.HP -= BOSSATTACK_1_DMG;
+			bossbullets1[i].shot = false;
 		}
 	}
 
