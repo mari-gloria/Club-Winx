@@ -130,7 +130,7 @@ struct Potion {
 	AEMtx33				PotionTransform{};
 	f32					size{ 60.0f };
 	f32					height{ 100.0f };
-	AEVec2				vector{ -700,50 };
+	AEVec2				vector{ -800,50 };
 	AEVec2				pVelocity{ 0.0f, 0.0f }; //velocity for the item 
 	bool				collected; //when item is being collected
 	AABB				boundingBox; //collision
@@ -143,8 +143,8 @@ struct Potion {
 ------------------------------------------------------------*/
 #define ht_potion_jump -250
 #define width_potion 1 
-#define y_change_direction 2
-#define potion_start_positonX -370
+#define y_change_direction 1
+#define potion_start_positonX -560
 #define potion_start_positonY  0
 
 int max_potion = 6; //number of max potion produce
@@ -173,7 +173,7 @@ struct Mobs {
 /*------------------------------------------------------------
 * MOBS MOVEMENT
 ------------------------------------------------------------*/
-#define MOBS_start_positonX 300
+#define MOBS_start_positonX 400
 #define MOBS_start_positonY  0 //center of window
 double radians_mob = 0;
 int max_mobs = 3; //number of max potion produce
@@ -273,6 +273,11 @@ void boss_init()
 		bossbullets1[i].shot = false;
 		bossbullets1[i].shot = false;
 	}
+	timer = 0;
+	mobs_stop = false;
+	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
+	potion_stop = false;
+    potion.vector = { potion_start_positonX, potion_start_positonY};
 
 }
 
@@ -913,7 +918,7 @@ void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool
 			potion_produce = true;
 		}
 
-		if (timer % 900 == 0) {
+		if (timer % 1000 == 0) {
 			potion_produce = false;
 		}
 
@@ -950,7 +955,7 @@ void mobs_position(float& x, float& y, bool& mobs_spawn, bool& mobscheck, bool& 
 		}
 
 
-		if (timer % 900 == 0) { //stop spawning
+		if (timer % 1000 == 0) { //stop spawning
 			mobs_spawn = false;
 		}
 
