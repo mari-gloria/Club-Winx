@@ -577,8 +577,8 @@ void racing_update()
 	bgRacing.bgCoord.y = CamY;
 }
 
-float v = 0;
-float w = 0;
+static float v = 0;
+static float w = 0;
 void racing_draw()
 {
 

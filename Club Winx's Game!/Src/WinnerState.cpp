@@ -208,7 +208,8 @@ void WIN_BOTHPLAYERS_update()
 
 	// if press space, go to the next game
 	if (AEInputCheckTriggered(AEVK_SPACE)) {
-		next_state = MENU;
+		
+		next_state = prev_state == RACING? BOSS : (PUZZLE ? RACING : MENU);
 	}
 
 	/*------------------------------------------------------------

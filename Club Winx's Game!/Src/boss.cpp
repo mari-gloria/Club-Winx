@@ -30,7 +30,7 @@ const f32 PLAYER_MAX_HP = 150.f;
 const f32 PLAYER2_MAX_HP = 150.f;
 const f32 BOSSATTACK_1_DMG = 5.5f;
 const f32 MOBSATTACK_DMG = 1.5f;
-
+const f32 bgspeed = 0.05F;
 
 /*------------------------------------------------------------
 PLAYER BULLETS
@@ -518,13 +518,20 @@ void boss_update()
 			}
 		}
 		//Shoot MOBS
-		if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)
-			|| CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+		if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
 		{
 
 			mobs.vector = { -1000,-1000 };
 			max_mobs -= 1; //decrease mobs spawn
+			bullets1[i].shot = false;
 
+		}
+		if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+		{
+
+			mobs.vector = { -1000,-1000 };
+			max_mobs -= 1; //decrease mobs spawn
+			bullets2[i].shot = false;
 
 		}
 
@@ -702,7 +709,7 @@ void boss_update()
 	MatrixCalc(mobs.MobsTransform, mobs.size, mobs.size, 0.f, mobs.vector);
 
 }
-
+float w = 0;
 void boss_draw()
 {
 
@@ -714,7 +721,12 @@ void boss_draw()
 	AEGfxSetTransform(bgBoss.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgBoss.bgTex, 0.f, 0.f);
+	w += bgspeed * g_dt;
+	if (w >= 1)
+	{
+		w = 0;
+	}
+	AEGfxTextureSet(bgBoss.bgTex, w, 0.f);
 	AEGfxMeshDraw(bgBoss.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
