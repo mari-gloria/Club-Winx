@@ -369,7 +369,8 @@ void ENDGAME_update()
 	------------------------------------------------------------*/
 	// if press space, go back to mainmenu
 	if (AEInputCheckTriggered(AEVK_SPACE)) {
-		next_state = MAINMENU;
+
+		next_state = MENU;
 	}
 
 	/*------------------------------------------------------------
