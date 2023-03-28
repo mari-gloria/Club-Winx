@@ -252,7 +252,8 @@ void boss_init()
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
 	player1.alive = true;
 	player2.alive = true;
-
+	player1.size = 50.0f;
+	player2.size = 50.0f;
 
 	DEFAULT_HP = (f32)AEGetWindowWidth() + 70.0f;
 	player_default_hp = player2.size; //default player's hp size

@@ -180,7 +180,6 @@ bool CollisionIntersection_RectRect(const AABB& aabb1, const AEVec2& vel1,
 
 
 
-
 COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2)
 {
 
@@ -415,19 +414,19 @@ void input_handle()
 		 D -> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size)
-			player1.pVel.y = PLAYER_MOVE;
+			player1.pVel.y = 0.5;
 
 		else if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY())
-			player1.pVel.y = -PLAYER_MOVE;
+			player1.pVel.y = -0.5;
 
 		else
 			player1.pVel.y = 0;
 
 		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX())
-			player1.pVel.x = -PLAYER_MOVE;
+			player1.pVel.x = -0.5;
 
 		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= AEGfxGetWinMaxX() - player1.size)
-			player1.pVel.x = PLAYER_MOVE;
+			player1.pVel.x = 0.5;
 
 		else
 			player1.pVel.x = 0;
@@ -441,19 +440,19 @@ void input_handle()
 		 right	-> move right
 		-----------------------------------------------------------------------------------*/
 		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size)
-			player2.pVel.y = PLAYER_MOVE;
+			player2.pVel.y = 0.5;
 
 		else if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY())
-			player2.pVel.y = -PLAYER_MOVE;
+			player2.pVel.y = -0.5;
 
 		else
 			player2.pVel.y = 0;
 
 		if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= AEGfxGetWinMinX())
-			player2.pVel.x = -PLAYER_MOVE;
+			player2.pVel.x = -0.5;
 
 		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size)
-			player2.pVel.x = PLAYER_MOVE;
+			player2.pVel.x = 0.5;
 
 		else
 			player2.pVel.x = 0;

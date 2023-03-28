@@ -12,8 +12,10 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "General.h"
+//#include "General.h"
+#include "PuzzleUtil.h"
 
+int** mapdata;
 // ---------------------------------------------------------------------------
 
 // ----- TEXTURE DECLARATIONS ----- //
@@ -31,53 +33,14 @@ CONSTANTS
 ------------------------------------------------------------*/
 
 
-enum MAPOBJ {
-	empty = 0,
-	wall,
-	p1,
-	p2
-};
 
-#define GRID_COLS 36 
-#define GRID_ROWS 20 
-
-
-const float PLAYERSIZE =1.0;
-
-
-static int** mapdata;
-const int binmap[GRID_ROWS][GRID_COLS]
-{
-
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-
-};
 
 /* ------------------------------------------------------------
 GLOABLS
 ------------------------------------------------------------*/
 struct Map {
-	AEGfxVertexList* pMesh0{ nullptr }; // mesh 
-	AEGfxVertexList* pMesh1{ nullptr };
+	AEGfxVertexList* pMesh0{ nullptr }; // mesh of empty
+	AEGfxVertexList* pMesh1{ nullptr }; // mesh of wall
 	AEGfxTexture* pTex{ nullptr };			// texture
 	AEMtx33				MapTransform{};		// transform mtx 
 };
@@ -141,39 +104,17 @@ void puzzle_init()
 	/*------------------------------------------------------------
 	INIT PLAYERS
 	------------------------------------------------------------*/
-	player1.pCoord = { 1,1 };
-	//player2.pCoord = { player1.pCord.x + 100.f, player1.pCoord.y };
-	
+	player1.pCoord = { 1.5,1.5 };
+	player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+	player1.size = 1.0F;
+	player2.size = 1.0F;
 	/*------------------------------------------------------------
 	INIT MAP DATA
 	------------------------------------------------------------*/
-	mapdata = new int* [GRID_ROWS];
-	for (int i = 0; i < GRID_ROWS; i++)
+	if (!InitMapData("Assets/Data/puzzlemap.txt"))
 	{
-		mapdata[i] = new int[GRID_COLS];
-	}
-
-	// COPY binmap to mapdata 
-	for (int i = 0; i < GRID_ROWS; i++)
-	{
-		for (int j = 0; j < GRID_COLS; j++)
-		{
-			mapdata[i][j] = binmap[i][j];
-		}
-	}
-
-
-	for (int i = 0; i < GRID_ROWS; i++)
-	{
-		for (int j = 0; j < GRID_COLS; j++)
-		{
-			AEVec2 Pos{ (float)i  , (float)j };
-			if (mapdata[i][j] == p1)
-			{
-				//player1.pCoord.x = (int)Pos.x;
-				//player1.pCoord.y = (int)Pos.y;
-			}
-		}
+		std::cout << "unable to open map data";
+		next_state = QUIT;
 	}
 }
 
@@ -203,7 +144,7 @@ void puzzle_update()
 	input_handle();
 
 	/*------------------------------------------------------------
-	COLLISION CHECKS
+	UPDATE PLAYER BOUNDING BOX
 	------------------------------------------------------------*/
 
 	//update player bounding box
@@ -225,26 +166,21 @@ void puzzle_update()
 
 	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
 	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
-
+	
+	/*------------------------------------------------------------
+	COLLISION CHECKS
+	------------------------------------------------------------*/
+	Map_Player_CollisionUpdate(player1);
+	Map_Player_CollisionUpdate(player2);
+	std::cout << player1.pFlag << '\n';
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
 	// for background
 	MatrixCalc(bgPuzzle.transform, bgPuzzle.length, bgPuzzle.height, 0.0f, bgPuzzle.bgCoord);
 
-	// for players 
-	//AEMtx33 trans{}, rot{}, scale{};
-	// // Compute the scaling matrix
-	//AEMtx33Scale(&scale, 1, 1);
-	// Compute the rotation matrix 
-	//AEMtx33Rot(&rot, 0);
-	// Compute the translation matrix
-	//AEMtx33Trans(&trans, player1.pCoord.x, player1.pCoord.y);
-	// Concatenate the 3 matrix in the correct order in the object instance's "transform" matrix
-	//AEMtx33Concat(&player1.transform, &rot, &scale);
-	//AEMtx33Concat(&player1.transform, &trans, &player1.transform);
-	MatrixCalc(player1.transform, PLAYERSIZE, PLAYERSIZE, 0.f, player1.pCoord);
-	MatrixCalc(player2.transform, PLAYERSIZE, PLAYERSIZE, 0.f, player2.pCoord);
+	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
+	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
 	MatrixCalc(puzzle.transform, puzzle.length, puzzle.height, 0.f, puzzle.IVector);
 
@@ -270,7 +206,6 @@ void puzzle_update()
 
 	}*/
 
-	std::cout << "player 1 x " << player1.pCoord.x << "\n";
 
 	if (turntransparent == TRUE) {
 
@@ -339,14 +274,14 @@ void puzzle_draw()
 			AEMtx33Concat(&final, &map.MapTransform, &trans);
 			AEMtx33Concat(&final, &flip, &final);
 			AEGfxSetTransform(final.m);
-
-			if (binmap[i][j] == wall)
+			
+			if (mapdata[i][j] == WALL)
 			{
 
 				AEGfxMeshDraw(map.pMesh1, AE_GFX_MDM_TRIANGLES);
 
 			}
-			if (binmap[i][j] == empty)
+			if (mapdata[i][j] == EMPTY)
 			{
 
 				AEGfxMeshDraw(map.pMesh0, AE_GFX_MDM_TRIANGLES);
@@ -402,16 +337,5 @@ void puzzle_unload()
 	AEGfxTextureUnload(Key);
 	AEGfxTextureUnload(Spiderweb);
 
-}
-
-/******************************************************************************/
-/*!
-	This function converts coordinates into center of grid cells
-*/
-/******************************************************************************/
-void SnapToCell(float* Coordinate)
-{
-	*Coordinate = static_cast<int>(*Coordinate); // cast to int 
-	*Coordinate += 0.5f;  // snap to center
 }
 

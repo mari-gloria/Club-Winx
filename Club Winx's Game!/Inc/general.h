@@ -72,11 +72,13 @@ struct AABB
 
 enum COLLISION
 {
-	COLLISION_TOP = 0,
-	COLLISION_BOTTOM,
-	COLLISION_INVALID
+	COLLISION_INVALID,
+	COLLISION_LEFT = 0x00000001,
+	COLLISION_RIGHT = 0x00000002,
+	COLLISION_TOP = 0x00000004,
+	COLLISION_BOTTOM = 0x00000008
+	
 };
-
 
 
 
@@ -133,7 +135,7 @@ struct Player { // initialise in each game mode before use
 	AEVec2				pVel{ 0.0f, 0.0f };		// velocity of player
 	f32					pAcceleration{ 40.0f };
 	AABB				boundingBox;
-	COLLISION			pFlag;
+	int					pFlag;
 
 
 	f32					pGround{ 0.0f };			// y-coord of the ground

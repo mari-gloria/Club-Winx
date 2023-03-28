@@ -130,6 +130,8 @@ void racing_init()
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
 
+	player1.size = 50.0f;
+	player2.size = 50.0f;
 	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
 	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
 	/*------------------------------------------------------------

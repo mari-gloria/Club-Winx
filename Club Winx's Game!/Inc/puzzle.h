@@ -15,5 +15,3 @@ void puzzle_update();
 void puzzle_draw();
 void puzzle_free();
 void puzzle_unload();
-
-void SnapToCell(float* Coordinate);
