@@ -638,11 +638,11 @@ void boss_update()
 	/*------------------------------------------------------------
 	UPDATE PLAYER POSITIONS
 	------------------------------------------------------------*/
-	player1.pCoord.x += player1.pVel.x * player1.pAcceleration * g_dt;
-	player1.pCoord.y += player1.pVel.y * player1.pAcceleration * g_dt;
+	player1.pCoord.x += player1.pVel.x * g_dt;
+	player1.pCoord.y += player1.pVel.y * g_dt;
 
-	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
-	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
+	player2.pCoord.x += player2.pVel.x * g_dt;
+	player2.pCoord.y += player2.pVel.y * g_dt;
 
 
 

@@ -98,7 +98,6 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Splash_screen.cpp" />
     <ClCompile Include="Src\Buttons.cpp" />
     <ClCompile Include="Src\MainMenu.cpp" />
     <ClCompile Include="Src\Boss.cpp" />
@@ -109,6 +108,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Src\PuzzleUtil.cpp" />
     <ClCompile Include="Src\Racing.cpp" />
     <ClCompile Include="Src\RacingMap.cpp" />
+    <ClCompile Include="Src\Splash_screen.cpp" />
     <ClCompile Include="Src\Tutorial.cpp" />
     <ClCompile Include="Src\WinLose.cpp" />
     <ClCompile Include="Src\WinnerState.cpp" />
@@ -123,11 +123,11 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Inc\PuzzleUtil.h" />
     <ClInclude Include="Inc\Racing.h" />
     <ClInclude Include="Inc\RacingMap.h" />
+    <ClInclude Include="Inc\Splash_screen.h" />
     <ClInclude Include="Inc\Tutorial.h" />
     <ClInclude Include="Inc\WinLose.h" />
     <ClInclude Include="Inc\MainMenu.h" />
     <ClInclude Include="Inc\WinnerState.h" />
-    <ClInclude Include="Splash_screen.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\Data\puzzlemap.txt" />

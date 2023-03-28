@@ -44,13 +44,13 @@
     <ClCompile Include="Src\WinnerState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Splash_screen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Tutorial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\PuzzleUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Splash_screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,13 +88,13 @@
     <ClInclude Include="Splash_screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Splash_screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Inc\Tutorial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inc\PuzzleUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Splash_screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
