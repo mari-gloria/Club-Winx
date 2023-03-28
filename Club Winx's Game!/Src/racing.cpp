@@ -67,8 +67,8 @@ void racing_load()
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png");		// BG Texture
 	SquareMesh(&bgRacing.bgMesh, 0);							// BG Mesh
-	bgRacing.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
-	bgRacing.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+	bgRacing.length = winWIDTH;
+	bgRacing.height = winHEIGHT;
 
 
 
@@ -96,6 +96,9 @@ void racing_load()
 	// loagin Waves texture
 	SquareMesh(&bgWaves.bgMesh, 0);
 
+	//loading ground texture
+	SquareMesh(&bgRacingGround.bgMesh, 0);
+
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -105,13 +108,7 @@ void racing_load()
 
 	winRacing.bgTex = AEGfxTextureLoad("Assets/Racing_Winner.png");
 	bgWaves.bgTex = AEGfxTextureLoad("Assets/Waves.png"); // Waves Texture for rising water..
-
-	/*------------------------------------------------------------
-	CREATING FONTS
-	------------------------------------------------------------*/
-
-
-	
+	bgRacingGround.bgTex = AEGfxTextureLoad("Assets/RacingGround.png"); //texture for ground
 
 	return;
 }
@@ -134,6 +131,7 @@ void racing_init()
 	player2.size = 50.0f;
 	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
 	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
+
 	/*------------------------------------------------------------
 	// INIT PLATFORM - MAP
 	------------------------------------------------------------*/
@@ -173,11 +171,18 @@ void racing_init()
 	if_win = 0;
 
 	/*------------------------------------------------------------
-	// INIT SCOREBOARD
+	// INIT WAVES
 	------------------------------------------------------------*/
 	bgWaves.height = bgRacing.height / 5.0f;
 	bgWaves.length = bgRacing.length;
 	bgWaves.bgCoord.y = AEGfxGetWinMinY() - 2*bgWaves.height;
+
+	/*------------------------------------------------------------
+	// INIT GROUND
+	------------------------------------------------------------*/
+	bgRacingGround.height = winHEIGHT / 3.f;
+	bgRacingGround.length = bgRacing.length;
+	bgRacingGround.bgCoord.y = AEGfxGetWinMinY() - winHEIGHT / 6.f;
 
 	/*------------------------------------------------------------
 	LOAD SOUND EFFECTS/AUDIO
@@ -572,6 +577,10 @@ void racing_update()
 	//for Waves
 	MatrixCalc(bgWaves.transform, bgWaves.length, bgWaves.height, 0.f, bgWaves.bgCoord);
 
+	//for ground
+
+	MatrixCalc(bgRacingGround.transform, bgRacingGround.length, bgRacingGround.height, 0.f, bgRacingGround.bgCoord);
+
 
 	///*------------------------------------------------------------
 	// UPDATE - Background Y
@@ -630,7 +639,15 @@ void racing_draw()
 	AEGfxTextureSet(player2.pTex, 0, 0);
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
-
+	/*------------------------------------------------------------
+	// DRAWING GROUND
+	------------------------------------------------------------*/
+	AEGfxSetTransform(bgRacingGround.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(bgRacingGround.bgTex, 0, 0);
+	AEGfxMeshDraw(bgRacingGround.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	// DRAWING SPLITSCREEN
@@ -663,6 +680,8 @@ void racing_draw()
 	AEGfxTextureSet(bgWaves.bgTex, w, 0);
 	AEGfxMeshDraw(bgWaves.bgMesh, AE_GFX_MDM_TRIANGLES);
 
+	
+
 	/*------------------------------------------------------------
 	 DRAWING - Camera Movement
 	------------------------------------------------------------*/
@@ -688,6 +707,9 @@ void racing_unload()
 
 	AEGfxMeshFree(bgWaves.bgMesh);
 	AEGfxTextureUnload(bgWaves.bgTex);
+
+	AEGfxMeshFree(bgRacingGround.bgMesh);
+	AEGfxTextureUnload(bgRacingGround.bgTex);
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes

@@ -98,7 +98,7 @@ struct BG {
 
 };
 
-extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, bgWaves, bgTut, winBoss;
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, bgWaves, bgTut, winBoss, bgRacingGround;
 
 
 
@@ -145,9 +145,6 @@ struct Player { // initialise in each game mode before use
 
 	f32					startX{ 0.0f };		// left x limit
 	f32					endX{ 0.0f };		// right X limit
-
-	bool				collectedItem{ false };	// indicate if player has collected an item
-	bool				usedItem{ false };		// indicate if item has been used
 
 	AEMtx33				transform{};			// transform matrix
 
@@ -223,8 +220,8 @@ Split Screen
 ---------------------------------------------------------------------------*/
 struct Line {
 	AEVec2				lVect{ 0.0f, 0.0f };	// X & Y points of bottom left
-	AEGfxVertexList* lMesh{ nullptr };	// mesh 
-	AEGfxTexture* lTex{ nullptr };	// texture
+	AEGfxVertexList*	lMesh{ nullptr };	// mesh 
+	AEGfxTexture*		lTex{ nullptr };	// texture
 
 	f32					length{ 10.0f };		// length of line - cons
 	f32					height{ 0.0f };		// height of line - cons
@@ -237,8 +234,8 @@ extern Line			splitscreen, startingline;
 
 struct Health { // initialise in each game mode before use 
 
-	AEGfxVertexList* pMesh{ nullptr };			// mesh    
-	AEGfxTexture* pTex{ nullptr };			// texture
+	AEGfxVertexList*	pMesh{ nullptr };			// mesh    
+	AEGfxTexture*		pTex{ nullptr };			// texture
 	AEMtx33				transform{};
 	AEVec2				Hcoord{ 0.0f, 300.0f };
 	AEVec2				Hcoord2{};
@@ -251,13 +248,13 @@ extern Health health2, p1health, p2health;
 
 
 struct Puzzle { // initialise in each game mode before use 
-	AEGfxVertexList* pMesh{ nullptr };
-	AEGfxVertexList* pMesh2{ nullptr };
+	AEGfxVertexList*	pMesh{ nullptr };
+	AEGfxVertexList*	pMesh2{ nullptr };
 	AEVec2				IVector{ 320.0f, 0.0f };
 	//AEVec2				IVector2{ 30.0f, 0.0f };
 
-	AEGfxVertexList* platMesh{ nullptr };	// mesh 
-	AEGfxTexture* platTex{ nullptr };	// texture
+	AEGfxVertexList*	platMesh{ nullptr };	// mesh 
+	AEGfxTexture*		platTex{ nullptr };	// texture
 	//bool				stepped{ false };
 	AEMtx33				transform{};
 	//AEMtx33				transform2{};
