@@ -60,7 +60,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	text = AEGfxCreateFont("Assets/PressStart2P.ttf", 30);
 	fontID = AEGfxCreateFont("Assets/Arial Italic.ttf", 100);
 
-
+	GSM_init(SPLASH);
 
 	/*------------------------------------------------------------
 	GAME LOOP
@@ -81,15 +81,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// Initalize current game state
-		(*fpInit)();
+		if (prev_state != PAUSE || curr_state == MENU) {
+			fpInit();
+		}                                                                            
 
 		while (next_state == curr_state) {
 			AESysFrameStart();
 			AEInputUpdate();
-			(*fpUpdate)();
-			(*fpDraw)();
-			AESysFrameEnd();
-
 			// check if forcing the application to quit
 			if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
 				next_state = QUIT;
@@ -97,15 +95,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AEInputCheckTriggered(AEVK_SPACE) && curr_state != MENU)
 				next_state = PAUSE;
 
+			//if (prev_state != PAUSE || curr_state == MENU) {
+				fpUpdate();
+				fpDraw();
+			//}
+		
+			AESysFrameEnd();
+
 			//app runtime, delta time
 			g_dt = (f32)AEFrameRateControllerGetFrameTime();
 			g_appTime += g_dt;
 		}
 
-		(*fpFree)();
-
+		//if (next_state != PAUSE) {			
+			fpFree();
+		//}
 		if (next_state != RESTART) {
-			(*fpUnload)();
+			fpUnload();
 		}
 
 

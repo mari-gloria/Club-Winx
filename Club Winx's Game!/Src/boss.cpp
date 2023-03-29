@@ -186,6 +186,7 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void boss_load()
 {
+	std::cout << "boss:Load\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
@@ -248,6 +249,7 @@ void boss_load()
 
 void boss_init()
 {
+	std::cout << "boss:Initialize\n";
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
 	player1.alive = true;
@@ -269,11 +271,13 @@ void boss_init()
 	bulletTimeElapsed = 0.0;
 	bossmovetime = 0.0;
 
-	for (int i = 0; i < MAX_BULLETS; i++)
+	for (int i = 0; i < MAXWAVE; i++)
 	{
 		bossbullets1[i].shot = false;
-		bossbullets1[i].shot = false;
+		bossbullets1[i].coords = { boss.Bcoord.x - (boss.length / 2.0f), boss.Bcoord.y };
+		
 	}
+	
 	timer = 0;
 	mobs_stop = false;
 	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
@@ -284,6 +288,7 @@ void boss_init()
 
 void boss_update()
 {
+	std::cout << "boss:Update\n";
 	// TIME COUNTER 
 	bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
 	bossTimeElapsed += AEFrameRateControllerGetFrameTime();
@@ -436,16 +441,17 @@ void boss_update()
 			bossbullets1[i].direction = rand_num(-PI, PI); // base direction
 			bossbullets1[i].velocity.x = 80.f * sinf((size_t)(i % 180) / PI) * 0.03f; // adds curve to x velocity
 			bossbullets1[i].velocity.y = 80.f * cosf((size_t)(i % 180) / PI) * 0.01f; // adds curve to y velocity
-			bossbullets1[i].coords.x -= (f32)(bossbullets1[i].velocity.x * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
-			bossbullets1[i].coords.y += (f32)(bossbullets1[i].velocity.y * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
 		}
-		else if (!bossbullets1[i].shot || !boss.alive) {
+		if (!bossbullets1[i].shot || !boss.alive) {
 			bossbullets1[i].coords = { boss.Bcoord.x - (boss.length / 2.0f), boss.Bcoord.y };
 		}
 		if (bossbullets1[i].coords.x <= AEGfxGetWinMinX() || bossbullets1[i].coords.y <= AEGfxGetWinMinY() || bossbullets1[i].coords.x >= AEGfxGetWinMaxX() || bossbullets1[i].coords.y >= AEGfxGetWinMaxY()) // if exit map
 		{
 			bossbullets1[i].shot = FALSE;
 		}
+
+		bossbullets1[i].coords.x -= (f32)(bossbullets1[i].velocity.x * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
+		bossbullets1[i].coords.y += (f32)(bossbullets1[i].velocity.y * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
 	}
 	/*------------------------------------------------------------
 	COLLISION CHECKS
@@ -718,7 +724,7 @@ void boss_update()
 float w = 0;
 void boss_draw()
 {
-
+	std::cout << "boss:Draw\n";
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
@@ -873,6 +879,7 @@ void boss_draw()
 
 void boss_free()
 {
+	std::cout << "boss:Free\n";
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
@@ -880,13 +887,14 @@ void boss_free()
 
 	for (int i = 0; i < MAX_BULLETS; i++)
 	{
-		bossbullets1[i].shot = false;
-		bossbullets1[i].shot = false;
+		//bossbullets1[i].shot = false;
+		//bossbullets1[i].shot = false;
 	}
 }
 
 void boss_unload()
 {
+	std::cout << "boss:Unload\n";
 	AEGfxMeshFree(bgBoss.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgBoss.bgTex); // Unload Texture
 

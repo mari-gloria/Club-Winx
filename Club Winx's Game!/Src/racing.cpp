@@ -60,7 +60,7 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void racing_load()
 {
-
+	std::cout << "racing:LOAD\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
@@ -115,7 +115,7 @@ void racing_load()
 
 void racing_init()
 {
-
+	std::cout << "racing:Initialize\n";
 	/*------------------------------------------------------------
 	// INIT PLAYERS
 	------------------------------------------------------------*/
@@ -197,7 +197,7 @@ void racing_init()
 
 void racing_update()
 {
-
+	std::cout << "racing:Update\n";
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
@@ -597,7 +597,7 @@ static float v = 0;
 static float w = 0;
 void racing_draw()
 {
-
+	std::cout << "racing:Draw\n";
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
@@ -697,6 +697,7 @@ void racing_draw()
 
 void racing_free()
 {
+	std::cout << "racing:Free\n";
 	CamX = 0.0f; 
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
@@ -704,6 +705,7 @@ void racing_free()
 
 void racing_unload()
 {
+	std::cout << "racing:Unload\n";
 	/*------------------------------------------------------------
 	// Unload Background Meshes & Texture
 	------------------------------------------------------------*/
