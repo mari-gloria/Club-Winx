@@ -94,6 +94,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
 				next_state = QUIT;
 
+			if (AEInputCheckTriggered(AEVK_SPACE) && curr_state != MENU)
+				next_state = PAUSE;
+
 			//app runtime, delta time
 			g_dt = (f32)AEFrameRateControllerGetFrameTime();
 			g_appTime += g_dt;

@@ -230,9 +230,17 @@ void racing_update()
 	if (AEInputCheckCurr(AEVK_ESCAPE)) {
 		next_state = MENU;
 	}
+	
+
+	/*------------------------------------------------------------
+	// INPUT HANDLING
+	------------------------------------------------------------*/
+	input_handle();
+	AEAudioUpdate();
+
 	if (AEInputCheckTriggered(AEVK_A)) {
 		AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 
-	
+
 	}
 	if (AEInputCheckTriggered(AEVK_D)) {
 		AEMtx33Scale(&flipTransform1, 1.0f, 1.0f); // player 1 normal 
@@ -245,13 +253,10 @@ void racing_update()
 		AEMtx33Scale(&flipTransform2, 1.0f, 1.0f); // player 1 normal
 	}
 
+
 	/*------------------------------------------------------------
 	// CHECK PLAYER-PLATFORM COLLISON
 	------------------------------------------------------------*/
-	input_handle();
-	AEAudioUpdate();
-
-
 	//update player bounding box
 	player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
 	player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;

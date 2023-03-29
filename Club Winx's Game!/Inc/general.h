@@ -23,14 +23,14 @@
 #include "GameStateList.h"
 #include "GSM.h"
 #include "MainMenu.h"
+#include "Pause.h"
 #include "Puzzle.h"
 #include "Racing.h"
 #include "RacingMap.h"
-#include "WinLose.h"
-#include "WinnerState.h"
 #include "Splash_screen.h"
 #include "Tutorial.h"
-
+#include "WinLose.h"
+#include "WinnerState.h"
 
 #include <iostream>
 #include <fstream>

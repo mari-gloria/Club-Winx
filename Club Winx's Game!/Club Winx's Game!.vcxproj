@@ -104,6 +104,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClCompile Include="Src\General.cpp" />
     <ClCompile Include="Src\GSM.cpp" />
     <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\Pause.cpp" />
     <ClCompile Include="Src\Puzzle.cpp" />
     <ClCompile Include="Src\PuzzleUtil.cpp" />
     <ClCompile Include="Src\Racing.cpp" />
@@ -119,6 +120,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine_V3.08\lib\fmod.dll" "$(OutDir)" /s /r /y
     <ClInclude Include="Inc\GameStateList.h" />
     <ClInclude Include="Inc\General.h" />
     <ClInclude Include="Inc\GSM.h" />
+    <ClInclude Include="Inc\Pause.h" />
     <ClInclude Include="Inc\Puzzle.h" />
     <ClInclude Include="Inc\PuzzleUtil.h" />
     <ClInclude Include="Inc\Racing.h" />
