@@ -12,7 +12,7 @@
 #include "PuzzleUtil.h"
 
 //GLOBAL CONSTANTS
-const float GAP = 0.01;
+const double GAP = 0.00000;
 
 int InitMapData(const char* FileName)
 {
@@ -46,30 +46,30 @@ int InitMapData(const char* FileName)
 	return 1;
 }
 
-void Map_Player_CollisionUpdate(Player & player)
+void Map_Player_CollisionUpdate(Player * player)
 {
-	player.pFlag = Map_Object_Collision(player.pCoord.x, player.pCoord.y, player.size, player.size);
-	if ((player.pFlag & COLLISION_BOTTOM)) //if collide bottom 
+	player->pFlag = Map_Object_Collision(player->pCoord.x, player->pCoord.y, player->size, player->size);
+	if ((player->pFlag & COLLISION_BOTTOM)) //if collide bottom 
 	{
 
-		SnapToCell(&player.pCoord.y);
-		player.pVel.y = 0.0f;
+		SnapToCell(&player->pCoord.y);
+		player->pVel.y = 0.0f;
 
 	}
-	if ((player.pFlag & COLLISION_TOP)) //if collide top 
+	if ((player->pFlag & COLLISION_TOP)) //if collide top 
 	{
-		SnapToCell(&player.pCoord.y);
-		player.pVel.y = 0.0f;
+		SnapToCell(&player->pCoord.y);
+		player->pVel.y = 0.0f;
 	}
-	if ((player.pFlag & COLLISION_LEFT)) //if collide LEFT 
+	if ((player->pFlag & COLLISION_LEFT)) //if collide LEFT 
 	{
-		SnapToCell(&player.pCoord.x);
-		player.pVel.x = 0;
+		SnapToCell(&player->pCoord.x);
+		player->pVel.x = 0;
 	}
-	if ((player.pFlag & COLLISION_RIGHT)) //if collide RIGHT 
+	if ((player->pFlag & COLLISION_RIGHT)) //if collide RIGHT 
 	{
-		SnapToCell(&player.pCoord.x);
-		player.pVel.x = 0;
+		SnapToCell(&player->pCoord.x);
+		player->pVel.x = 0;
 	}
 }
 
@@ -88,7 +88,7 @@ int GetCellValue(int X, int Y)
 {
 	if (X >= 0 && X < GRID_COLS && Y >= 0 && Y < GRID_ROWS) // if in bounds
 	{
-		int flipped_Y = GRID_ROWS - Y - 1; // get the vertically flipped Y coordinate
+		int flipped_Y = GRID_ROWS - 1 - Y ; // get the vertically flipped Y coordinate
 		return mapdata[flipped_Y][X]; // return the value at the flipped coordinate
 	}
 	return 0;

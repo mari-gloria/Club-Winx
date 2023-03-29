@@ -170,8 +170,8 @@ void puzzle_update()
 	/*------------------------------------------------------------
 	COLLISION CHECKS
 	------------------------------------------------------------*/
-	Map_Player_CollisionUpdate(player1);
-	Map_Player_CollisionUpdate(player2);
+	Map_Player_CollisionUpdate(&player1);
+	Map_Player_CollisionUpdate(&player2);
 	std::cout << player1.pFlag << '\n';
 	/*------------------------------------------------------------
 	MATRIX CALCULATION

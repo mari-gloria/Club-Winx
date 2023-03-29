@@ -29,5 +29,5 @@ extern int ** mapdata;
 void SnapToCell(float* Coordinate);
 int Map_Object_Collision(float x, float y, float scalex, float scaley);
 int GetCellValue(int x, int y);
-void Map_Player_CollisionUpdate(Player &player);
+void Map_Player_CollisionUpdate(Player * player);
 int InitMapData(const char* FileName);
