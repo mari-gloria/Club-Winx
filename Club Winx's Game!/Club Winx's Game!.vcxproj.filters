@@ -44,14 +44,18 @@
     <ClCompile Include="Src\WinnerState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Splash_screen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-
     <ClCompile Include="Src\Tutorial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-
+    <ClCompile Include="Src\PuzzleUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Splash_screen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\GSM.h">
@@ -84,13 +88,16 @@
     <ClInclude Include="Inc\WinnerState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Splash_screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Splash_screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Inc\Tutorial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\PuzzleUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Splash_screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Pause.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,5 +105,8 @@
     <ClInclude Include="Inc\WinLose.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Assets\Data\puzzlemap.txt" />
   </ItemGroup>
 </Project>

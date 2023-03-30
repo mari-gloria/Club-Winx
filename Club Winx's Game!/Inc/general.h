@@ -23,15 +23,14 @@
 #include "GameStateList.h"
 #include "GSM.h"
 #include "MainMenu.h"
+#include "Pause.h"
 #include "Puzzle.h"
 #include "Racing.h"
 #include "RacingMap.h"
+#include "Splash_screen.h"
+#include "Tutorial.h"
 #include "WinLose.h"
 #include "WinnerState.h"
-#include "../Splash_screen.h"
-#include "Tutorial.h"
-#include "../main.h"
-
 
 #include <iostream>
 #include <fstream>
@@ -51,13 +50,14 @@ Defines
 extern int const	winWIDTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
-extern s8			fontID;
+extern s8			fontID, text;
 
 
 //from general.cpp
 extern const float	JUMP_HEIGHT_MAX;
 extern const float	GRAVITY;
 extern const float	PLAYER_JUMP;
+
 
 
 /*--------------------------------------------------------------------------
@@ -71,11 +71,13 @@ struct AABB
 
 enum COLLISION
 {
-	COLLISION_TOP = 0,
-	COLLISION_BOTTOM,
-	COLLISION_INVALID
+	COLLISION_INVALID,
+	COLLISION_LEFT = 0x00000001,
+	COLLISION_RIGHT = 0x00000002,
+	COLLISION_TOP = 0x00000004,
+	COLLISION_BOTTOM = 0x00000008
+	
 };
-
 
 
 
@@ -96,7 +98,7 @@ struct BG {
 
 };
 
-extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, bgWaves, bgTut, winBoss;
+extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, bgWaves, bgTut, winBoss, bgRacingGround;
 
 
 
@@ -132,7 +134,7 @@ struct Player { // initialise in each game mode before use
 	AEVec2				pVel{ 0.0f, 0.0f };		// velocity of player
 	f32					pAcceleration{ 40.0f };
 	AABB				boundingBox;
-	COLLISION			pFlag;
+	int					pFlag;
 
 
 	f32					pGround{ 0.0f };			// y-coord of the ground
@@ -143,9 +145,6 @@ struct Player { // initialise in each game mode before use
 
 	f32					startX{ 0.0f };		// left x limit
 	f32					endX{ 0.0f };		// right X limit
-
-	bool				collectedItem{ false };	// indicate if player has collected an item
-	bool				usedItem{ false };		// indicate if item has been used
 
 	AEMtx33				transform{};			// transform matrix
 
@@ -188,9 +187,7 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-
-//#define MAX_NUM_PLATFORMS 51 // END POINT: plus one for last platform
-#define MAX_NUM_PLATFORMS 50 // testing
+#define MAX_NUM_PLATFORMS 50
 
 
 
@@ -223,8 +220,8 @@ Split Screen
 ---------------------------------------------------------------------------*/
 struct Line {
 	AEVec2				lVect{ 0.0f, 0.0f };	// X & Y points of bottom left
-	AEGfxVertexList* lMesh{ nullptr };	// mesh 
-	AEGfxTexture* lTex{ nullptr };	// texture
+	AEGfxVertexList*	lMesh{ nullptr };	// mesh 
+	AEGfxTexture*		lTex{ nullptr };	// texture
 
 	f32					length{ 10.0f };		// length of line - cons
 	f32					height{ 0.0f };		// height of line - cons
@@ -237,8 +234,8 @@ extern Line			splitscreen, startingline;
 
 struct Health { // initialise in each game mode before use 
 
-	AEGfxVertexList* pMesh{ nullptr };			// mesh    
-	AEGfxTexture* pTex{ nullptr };			// texture
+	AEGfxVertexList*	pMesh{ nullptr };			// mesh    
+	AEGfxTexture*		pTex{ nullptr };			// texture
 	AEMtx33				transform{};
 	AEVec2				Hcoord{ 0.0f, 300.0f };
 	AEVec2				Hcoord2{};
@@ -251,13 +248,13 @@ extern Health health2, p1health, p2health;
 
 
 struct Puzzle { // initialise in each game mode before use 
-	AEGfxVertexList* pMesh{ nullptr };
-	AEGfxVertexList* pMesh2{ nullptr };
+	AEGfxVertexList*	pMesh{ nullptr };
+	AEGfxVertexList*	pMesh2{ nullptr };
 	AEVec2				IVector{ 320.0f, 0.0f };
 	//AEVec2				IVector2{ 30.0f, 0.0f };
 
-	AEGfxVertexList* platMesh{ nullptr };	// mesh 
-	AEGfxTexture* platTex{ nullptr };	// texture
+	AEGfxVertexList*	platMesh{ nullptr };	// mesh 
+	AEGfxTexture*		platTex{ nullptr };	// texture
 	//bool				stepped{ false };
 	AEMtx33				transform{};
 	//AEMtx33				transform2{};

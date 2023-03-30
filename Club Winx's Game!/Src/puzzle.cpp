@@ -12,8 +12,10 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "General.h"
+//#include "General.h"
+#include "PuzzleUtil.h"
 
+int** mapdata;
 // ---------------------------------------------------------------------------
 
 // ----- TEXTURE DECLARATIONS ----- //
@@ -29,49 +31,16 @@ bool itemdie = { FALSE };
 /* ------------------------------------------------------------
 CONSTANTS
 ------------------------------------------------------------*/
-enum MAPOBJ {
-	empty = 0,
-	wall,
-	p1,
-	p2
-};
 
-#define GRID_COLS 36 
-#define GRID_ROWS 20 
 
-static int** mapdata;
-const int binmap[GRID_ROWS][GRID_COLS]
-{
 
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 ,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-
-};
 
 /* ------------------------------------------------------------
 GLOABLS
 ------------------------------------------------------------*/
 struct Map {
-	AEGfxVertexList* pMesh0{ nullptr }; // mesh 
-	AEGfxVertexList* pMesh1{ nullptr };
+	AEGfxVertexList* pMesh0{ nullptr }; // mesh of empty
+	AEGfxVertexList* pMesh1{ nullptr }; // mesh of wall
 	AEGfxTexture* pTex{ nullptr };			// texture
 	AEMtx33				MapTransform{};		// transform mtx 
 };
@@ -119,10 +88,12 @@ void puzzle_load()
 
 
 	//Compute the matrix of the binary map
-	AEMtx33 scale, trans;
+	AEMtx33 scale, trans;// , flip;
+	//AEMtx33Scale(&flip, 1.0f, -1.0f);
 	AEMtx33Trans(&trans, (-(float)GRID_COLS / 2), (-(float)GRID_ROWS / 2));
 	AEMtx33Scale(&scale, (float)AEGetWindowWidth() / (float)GRID_COLS, (float)AEGetWindowHeight() / (float)GRID_ROWS);
 	AEMtx33Concat(&map.MapTransform, &scale, &trans);
+	//AEMtx33Concat(&map.MapTransform, &flip, &map.MapTransform);
 
 }
 
@@ -133,27 +104,18 @@ void puzzle_init()
 	/*------------------------------------------------------------
 	INIT PLAYERS
 	------------------------------------------------------------*/
-	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
-	player2.pCoord = { player1.pCoord.x + 100.f, player1.pCoord.y };
-
+	player1.pCoord = { 1.5,1.5 };
+	player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+	player1.size = 1.0F;
+	player2.size = 1.0F;
 	/*------------------------------------------------------------
 	INIT MAP DATA
 	------------------------------------------------------------*/
-	mapdata = new int* [GRID_ROWS];
-	for (int i = 0; i < GRID_ROWS; i++)
+	if (!InitMapData("Assets/Data/puzzlemap.txt"))
 	{
-		mapdata[i] = new int[GRID_COLS];
+		std::cout << "unable to open map data";
+		next_state = QUIT;
 	}
-
-	// COPY binmap to mapdata 
-	for (int i = 0; i < GRID_ROWS; i++)
-	{
-		for (int j = 0; j < GRID_COLS; j++)
-		{
-			mapdata[i][j] = binmap[i][j];
-		}
-	}
-
 }
 
 void puzzle_update()
@@ -182,12 +144,41 @@ void puzzle_update()
 	input_handle();
 
 	/*------------------------------------------------------------
+	UPDATE PLAYER BOUNDING BOX
+	------------------------------------------------------------*/
+
+	//update player bounding box
+	player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
+	player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
+	player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
+	player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
+
+	player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
+	player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
+	player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
+	player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
+
+	/*------------------------------------------------------------
+	UPDATE PLAYER POSITIONS
+	------------------------------------------------------------*/
+	player1.pCoord.x += player1.pVel.x * player1.pAcceleration * g_dt;
+	player1.pCoord.y += player1.pVel.y * player1.pAcceleration * g_dt;
+
+	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
+	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
+	
+	/*------------------------------------------------------------
+	COLLISION CHECKS
+	------------------------------------------------------------*/
+	Map_Player_CollisionUpdate(&player1);
+	Map_Player_CollisionUpdate(&player2);
+	std::cout << player1.pFlag << '\n';
+	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
 	// for background
 	MatrixCalc(bgPuzzle.transform, bgPuzzle.length, bgPuzzle.height, 0.0f, bgPuzzle.bgCoord);
 
-	// for players 
 	MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
@@ -241,20 +232,6 @@ void puzzle_draw()
 	/*------------------------------------------------------------
 	DRAWING PLAYERS
 	------------------------------------------------------------*/
-	// Drawing player 1
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxSetTransform(player1.transform.m);
-	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
-
-
-
-	// drawing player 2
-	AEGfxSetTransform(player2.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxTextureSet(NULL, 0, 0);
-	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 	//Item Collecteed
 	if (itemdie == TRUE) {
@@ -287,7 +264,7 @@ void puzzle_draw()
 	/*------------------------------------------------------------
 	DRAWING TILE MAP
 	------------------------------------------------------------*/
-	AEMtx33 trans, final, flip;
+	AEMtx33 trans, final , flip;
 	AEMtx33Scale(&flip, 1.0f, -1.0f); // create a matrix to flip vertically
 	for (int i = 0; i < GRID_ROWS; i++)
 	{
@@ -297,21 +274,39 @@ void puzzle_draw()
 			AEMtx33Concat(&final, &map.MapTransform, &trans);
 			AEMtx33Concat(&final, &flip, &final);
 			AEGfxSetTransform(final.m);
-
-			if (binmap[i][j] == wall)
+			
+			if (mapdata[i][j] == WALL)
 			{
 
 				AEGfxMeshDraw(map.pMesh1, AE_GFX_MDM_TRIANGLES);
 
 			}
-			if (binmap[i][j] == empty)
+			if (mapdata[i][j] == EMPTY)
 			{
 
 				AEGfxMeshDraw(map.pMesh0, AE_GFX_MDM_TRIANGLES);
 
 			}
+
 		}
 	}
+
+	// Drawing player 1
+	AEMtx33Concat(&player1.transform, &map.MapTransform, &player1.transform);
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxSetTransform(player1.transform.m);
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
+
+
+	// drawing player 2
+	AEMtx33Concat(&player2.transform, &map.MapTransform, &player2.transform);
+	AEGfxSetTransform(player2.transform.m);
+	//AEGfxSetBlendMode(AE_GFX_BM_NONE);
+	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
+	
 }
 
 

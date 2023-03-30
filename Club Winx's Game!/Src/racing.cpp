@@ -49,22 +49,26 @@ int player2_use_boost_counter{ 0 };
 float const BOOST_JUMP_HEIGHT = 200.0f;
 float const BOOST_JUMP_VEL = 16.0f;
 
+float bgspeed; 
 
+AEMtx33 flipTransform1, flipTransform2;
+//AEMtx33Scale(&flipTransform, -1.0f, 1.0f); // horizontal scale
+//(&player1.transform, &player1.transform, &flipTransform);
 
 /*------------------------------------------------------------
 FUNCTIONS
 ------------------------------------------------------------*/
 void racing_load()
 {
-
+	std::cout << "racing:LOAD\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png");		// BG Texture
 	SquareMesh(&bgRacing.bgMesh, 0);							// BG Mesh
-	bgRacing.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
-	bgRacing.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+	bgRacing.length = winWIDTH;
+	bgRacing.height = winHEIGHT;
 
 
 
@@ -92,6 +96,9 @@ void racing_load()
 	// loagin Waves texture
 	SquareMesh(&bgWaves.bgMesh, 0);
 
+	//loading ground texture
+	SquareMesh(&bgRacingGround.bgMesh, 0);
+
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -101,24 +108,14 @@ void racing_load()
 
 	winRacing.bgTex = AEGfxTextureLoad("Assets/Racing_Winner.png");
 	bgWaves.bgTex = AEGfxTextureLoad("Assets/Waves.png"); // Waves Texture for rising water..
-
-	/*------------------------------------------------------------
-	CREATING FONTS
-	------------------------------------------------------------*/
-
-
-	/*------------------------------------------------------------
-	LOAD SOUND EFFECTS/AUDIO
-	------------------------------------------------------------*/
-	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
-	jump.aGroup = AEAudioCreateGroup();
+	bgRacingGround.bgTex = AEGfxTextureLoad("Assets/RacingGround.png"); //texture for ground
 
 	return;
 }
 
 void racing_init()
 {
-
+	std::cout << "racing:Initialize\n";
 	/*------------------------------------------------------------
 	// INIT PLAYERS
 	------------------------------------------------------------*/
@@ -130,7 +127,10 @@ void racing_init()
 	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
 	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
 
-
+	player1.size = 50.0f;
+	player2.size = 50.0f;
+	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
+	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
 
 	/*------------------------------------------------------------
 	// INIT PLATFORM - MAP
@@ -171,19 +171,33 @@ void racing_init()
 	if_win = 0;
 
 	/*------------------------------------------------------------
-	// INIT SCOREBOARD
+	// INIT WAVES
 	------------------------------------------------------------*/
 	bgWaves.height = bgRacing.height / 5.0f;
 	bgWaves.length = bgRacing.length;
 	bgWaves.bgCoord.y = AEGfxGetWinMinY() - 2*bgWaves.height;
 
+	/*------------------------------------------------------------
+	// INIT GROUND
+	------------------------------------------------------------*/
+	bgRacingGround.height = winHEIGHT / 3.f;
+	bgRacingGround.length = bgRacing.length;
+	bgRacingGround.bgCoord.y = AEGfxGetWinMinY() - winHEIGHT / 6.f;
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
+	jump.aGroup = AEAudioCreateGroup();
+
+
+	bgspeed = 0.05f;
 	return;
 }
 
 void racing_update()
 {
-
+	std::cout << "racing:Update\n";
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
@@ -198,6 +212,8 @@ void racing_update()
 		break;
 	}
 
+
+	
 	//for testing
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = PUZZLE;
@@ -214,17 +230,33 @@ void racing_update()
 	if (AEInputCheckCurr(AEVK_ESCAPE)) {
 		next_state = MENU;
 	}
+	
 
+	/*------------------------------------------------------------
+	// INPUT HANDLING
+	------------------------------------------------------------*/
+	input_handle();
+	AEAudioUpdate();
 
+	if (AEInputCheckTriggered(AEVK_A)) {
+		AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 
+
+	}
+	if (AEInputCheckTriggered(AEVK_D)) {
+		AEMtx33Scale(&flipTransform1, 1.0f, 1.0f); // player 1 normal 
+	}
+	if (AEInputCheckTriggered(AEVK_LEFT)) {
+		AEMtx33Scale(&flipTransform2, -1.0f, 1.0f); // player 2 flip 
+
+	}
+	if (AEInputCheckTriggered(AEVK_RIGHT)) {
+		AEMtx33Scale(&flipTransform2, 1.0f, 1.0f); // player 1 normal
+	}
 
 
 	/*------------------------------------------------------------
 	// CHECK PLAYER-PLATFORM COLLISON
 	------------------------------------------------------------*/
-	input_handle();
-	AEAudioUpdate();
-
-
 	//update player bounding box
 	player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
 	player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
@@ -479,8 +511,8 @@ void racing_update()
 	//------------------------------------------------------------*/
 	Waves_boundingBox.min.x = bgWaves.bgCoord.x - bgWaves.length / 3.0f;
 	Waves_boundingBox.min.y = bgWaves.bgCoord.y - bgWaves.height / 3.0f;
-	Waves_boundingBox.max.x = bgWaves.bgCoord.x + bgWaves.length / 3.0f - 6.0f;
-	Waves_boundingBox.max.y = bgWaves.bgCoord.y + bgWaves.height / 3.0f - 6.0f;
+	Waves_boundingBox.max.x = bgWaves.bgCoord.x + bgWaves.length / 3.0f - 8.0f;
+	Waves_boundingBox.max.y = bgWaves.bgCoord.y + bgWaves.height / 3.0f - 8.0f;
 
 	bool player1_lose = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, Waves_boundingBox, Waves_vel);
 	bool player2_lose = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, Waves_boundingBox, Waves_vel);
@@ -491,17 +523,15 @@ void racing_update()
 	// if both players pass the 1st section
 	if (player1.boundingBox.min.y > platformA[section].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section].platBoundingBox.max.y)
 	{
-			if (section_done == false)	bgWaves.bgCoord.y = CamY - 2.8f * bgWaves.height;
+			if (section_done == false)	bgWaves.bgCoord.y = CamY - 2.6f * bgWaves.height;
 
 		// if players passes the halfway mark
 		if (player1.boundingBox.min.y > platformA[section * 5].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section * 5].platBoundingBox.max.y)
 		{
 			section_done = true;
-			if (section_done == true)	bgWaves.bgCoord.y = CamY - 2.4f * bgWaves.height;
+			if (section_done == true)	bgWaves.bgCoord.y = CamY - 2.3f * bgWaves.height;
 		}
 	}
-
-
 
 	// players lose mechanics
 
@@ -520,7 +550,7 @@ void racing_update()
 	/*------------------------------------------------------------
 	UPDATE CAMERA MOVEMENT
 	//------------------------------------------------------------*/
-	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 4;
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 6;
 	
 
 	/*------------------------------------------------------------
@@ -552,6 +582,10 @@ void racing_update()
 	//for Waves
 	MatrixCalc(bgWaves.transform, bgWaves.length, bgWaves.height, 0.f, bgWaves.bgCoord);
 
+	//for ground
+
+	MatrixCalc(bgRacingGround.transform, bgRacingGround.length, bgRacingGround.height, 0.f, bgRacingGround.bgCoord);
+
 
 	///*------------------------------------------------------------
 	// UPDATE - Background Y
@@ -559,9 +593,11 @@ void racing_update()
 	bgRacing.bgCoord.y = CamY;
 }
 
+static float v = 0;
+static float w = 0;
 void racing_draw()
 {
-
+	std::cout << "racing:Draw\n";
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
@@ -570,7 +606,13 @@ void racing_draw()
 	AEGfxSetTransform(bgRacing.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgRacing.bgTex, 0.f, 0.f);
+	
+	v += bgspeed * g_dt;
+	if (v >= 1 || if_win)
+	{
+		v = 0;
+	}
+	AEGfxTextureSet(bgRacing.bgTex, 0.f, v);
 	AEGfxMeshDraw(bgRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
@@ -584,6 +626,7 @@ void racing_draw()
 	------------------------------------------------------------*/
 	// Drawing player 1
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEMtx33Concat(&player1.transform, &player1.transform, &flipTransform1);
 	AEGfxSetTransform(player1.transform.m);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
@@ -593,6 +636,7 @@ void racing_draw()
 
 	// drawing player 2
 	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEMtx33Concat(&player2.transform, &player2.transform, &flipTransform2);
 	AEGfxSetTransform(player2.transform.m);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
@@ -600,7 +644,15 @@ void racing_draw()
 	AEGfxTextureSet(player2.pTex, 0, 0);
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
-
+	/*------------------------------------------------------------
+	// DRAWING GROUND
+	------------------------------------------------------------*/
+	AEGfxSetTransform(bgRacingGround.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(bgRacingGround.bgTex, 0, 0);
+	AEGfxMeshDraw(bgRacingGround.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	// DRAWING SPLITSCREEN
@@ -625,8 +677,15 @@ void racing_draw()
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(bgWaves.bgTex, 0, 0);
+	w += bgspeed * g_dt;
+	if (w >= 1)
+	{
+		w = 0;
+	}
+	AEGfxTextureSet(bgWaves.bgTex, w, 0);
 	AEGfxMeshDraw(bgWaves.bgMesh, AE_GFX_MDM_TRIANGLES);
+
+	
 
 	/*------------------------------------------------------------
 	 DRAWING - Camera Movement
@@ -638,6 +697,7 @@ void racing_draw()
 
 void racing_free()
 {
+	std::cout << "racing:Free\n";
 	CamX = 0.0f; 
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
@@ -645,11 +705,18 @@ void racing_free()
 
 void racing_unload()
 {
+	std::cout << "racing:Unload\n";
 	/*------------------------------------------------------------
 	// Unload Background Meshes & Texture
 	------------------------------------------------------------*/
 	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
+
+	AEGfxMeshFree(bgWaves.bgMesh);
+	AEGfxTextureUnload(bgWaves.bgTex);
+
+	AEGfxMeshFree(bgRacingGround.bgMesh);
+	AEGfxTextureUnload(bgRacingGround.bgTex);
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes

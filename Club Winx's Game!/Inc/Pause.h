@@ -3,15 +3,16 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* Primary Author: Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 * Secondary Authors:
+*
 *
 ==================================================================================*/
 
 
-void puzzle_load();
-void puzzle_init();
-void puzzle_update();
-void puzzle_draw();
-void puzzle_free();
-void puzzle_unload();
+void pause_load();
+void pause_init();
+void pause_update();
+void pause_draw();
+void pause_free();
+void pause_unload();
