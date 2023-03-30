@@ -204,8 +204,7 @@ void racing_init()
 void racing_update()
 {
 	if (game_paused)
-	{
-		//std::cout << "PAUSED" << std::endl;		
+	{	
 		pause_update();
 	}
 
@@ -723,7 +722,6 @@ void racing_free()
 	CamX = 0.0f;
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
-
 
 	pause_free();
 }
