@@ -110,6 +110,12 @@ void racing_load()
 	bgWaves.bgTex = AEGfxTextureLoad("Assets/Waves.png"); // Waves Texture for rising water..
 	bgRacingGround.bgTex = AEGfxTextureLoad("Assets/RacingGround.png"); //texture for ground
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
+	jump.aGroup = AEAudioCreateGroup();
+
 	return;
 }
 
@@ -160,7 +166,8 @@ void racing_init()
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
 	CamX = 0.0f;
-	CamY = 0.0f;
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 6;
+
 
 
 	/*------------------------------------------------------------
@@ -183,12 +190,6 @@ void racing_init()
 	bgRacingGround.height = winHEIGHT / 3.f;
 	bgRacingGround.length = bgRacing.length;
 	bgRacingGround.bgCoord.y = AEGfxGetWinMinY() - winHEIGHT / 6.f;
-
-	/*------------------------------------------------------------
-	LOAD SOUND EFFECTS/AUDIO
-	------------------------------------------------------------*/
-	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
-	jump.aGroup = AEAudioCreateGroup();
 
 
 	bgspeed = 0.05f;
@@ -698,9 +699,13 @@ void racing_draw()
 void racing_free()
 {
 	std::cout << "racing:Free\n";
-	CamX = 0.0f; 
+	/*------------------------------------------------------------
+	// Resetting Camera
+	------------------------------------------------------------*/
+	CamX = 0.0f;
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
+
 }
 
 void racing_unload()
@@ -746,5 +751,5 @@ void racing_unload()
 	/*------------------------------------------------------------
 	// Exit Audio
 	------------------------------------------------------------*/
-	AEAudioExit(); //exit the audio
+	AEAudioStopGroup(jump.aGroup);
 }

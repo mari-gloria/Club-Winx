@@ -9,6 +9,14 @@
 static f32			CamX{ 0.0f },
 CamY{ 0.0f };	// Camera's X & Y Positions
 
+// Background movement
+static float v = 0, w = 0, bgspeed = 0.05;
+
+// Text
+static AEVec2 state = {-0.25f, 0.2f}, instruction = {-0.45f, -0.2f};
+
+
+
 // ============================ PLAYERONE WIN ============================ //
 
 void WIN_PLAYERONE_load()
@@ -19,7 +27,7 @@ void WIN_PLAYERONE_load()
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/player1_bg.png");
+	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
@@ -40,12 +48,9 @@ void WIN_PLAYERONE_update()
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
 	// if press SPACE, go to the next game
-	if (AEInputCheckTriggered(AEVK_SPACE) && prev_state == RACING) {
+	if (AEInputCheckReleased(AEVK_SPACE) && prev_state == RACING) {
 		next_state = BOSS;
 	}
-	//if (AEInputCheckTriggered(AEVK_SPACE) && prev_state == PUZZLE) {
-	//	next_state = BOSS;
-	//}
 
 	/*------------------------------------------------------------
 	// MATRIX CALCULATIONS
@@ -67,8 +72,27 @@ void WIN_PLAYERONE_draw()
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgWin.bgTex, 0.f, 0.f);
+
+	v += bgspeed * g_dt;
+	if (v >= 1)
+	{
+		v = 0;
+	}
+
+	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
 	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+
+	/*------------------------------------------------------------
+	DRAWING TEXT
+	------------------------------------------------------------*/
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	char strBuffer[300];
+
+	// general tutorial 
+	sprintf_s(strBuffer, "Player 1 Win's!");
+	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	sprintf_s(strBuffer, "Press space to continue");
+	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	return;
@@ -100,7 +124,7 @@ void WIN_PLAYERTWO_load()
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/player2_bg.png");
+	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
@@ -122,13 +146,13 @@ void WIN_PLAYERTWO_update()
 	------------------------------------------------------------*/
 
 	// if press SPACE, go to the next game
-	if (AEInputCheckTriggered(AEVK_SPACE) && prev_state == RACING) {
+	if (AEInputCheckReleased(AEVK_SPACE) && prev_state == RACING) {
 		next_state = BOSS;
 	}
 	//if (AEInputCheckTriggered(AEVK_SPACE) && prev_state == PUZZLE) {
 	//	next_state = BOSS;
 	//}
-	if (AEInputCheckTriggered(AEVK_SPACE) && prev_state == BOSS) {
+	if (AEInputCheckReleased(AEVK_SPACE) && prev_state == BOSS) {
 		next_state = ENDGAME;
 	}
 
@@ -152,8 +176,26 @@ void WIN_PLAYERTWO_draw()
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgWin.bgTex, 0.f, 0.f);
+	v += bgspeed * g_dt;
+	if (v >= 1)
+	{
+		v = 0;
+	}
+
+	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
 	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+
+	/*------------------------------------------------------------
+	DRAWING TEXT
+	------------------------------------------------------------*/
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	char strBuffer[300];
+
+	// general tutorial 
+	sprintf_s(strBuffer, "Player 2 Win's!");
+	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	sprintf_s(strBuffer, "Press space to continue");
+	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	return;
@@ -185,7 +227,7 @@ void WIN_BOTHPLAYERS_load()
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/bothwin_bg.png");
+	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
@@ -207,7 +249,7 @@ void WIN_BOTHPLAYERS_update()
 	------------------------------------------------------------*/
 
 	// if press space, go to the next game
-	if (AEInputCheckTriggered(AEVK_SPACE)) {
+	if (AEInputCheckReleased(AEVK_SPACE)) {
 		
 		next_state = prev_state == RACING? BOSS : (PUZZLE ? RACING : MENU);
 	}
@@ -232,8 +274,27 @@ void WIN_BOTHPLAYERS_draw()
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgWin.bgTex, 0.f, 0.f);
+	v += bgspeed * g_dt;
+	if (v >= 1)
+	{
+		v = 0;
+	}
+
+	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
 	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+
+	/*------------------------------------------------------------
+	DRAWING TEXT
+	------------------------------------------------------------*/
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	char strBuffer[300];
+
+	// general tutorial 
+	sprintf_s(strBuffer, "You Win!");
+	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	sprintf_s(strBuffer, "Press space to continue");
+	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
+
 
 
 	return;
@@ -265,7 +326,7 @@ void LOSE_BOTHPLAYERS_load()
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/bothlose_bg.png");
+	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
@@ -290,8 +351,18 @@ void LOSE_BOTHPLAYERS_update()
 	std::cout << "curr" << curr_state << std::endl;
 	std::cout << "next" << next_state << std::endl;
 
-	if (AEInputCheckTriggered(AEVK_SPACE)) {
-		next_state = prev_state;
+	if (AEInputCheckReleased(AEVK_SPACE)) {
+		switch (prev_state) {
+		case RACING:
+			next_state = RACING;
+			break;
+		case PUZZLE:
+			next_state = PUZZLE;
+			break;
+		case BOSS:
+			next_state = BOSS;
+		}
+
 	}
 
 	/*------------------------------------------------------------
@@ -314,9 +385,26 @@ void LOSE_BOTHPLAYERS_draw()
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgWin.bgTex, 0.f, 0.f);
+	v += bgspeed * g_dt;
+	if (v >= 1)
+	{
+		v = 0;
+	}
+
+	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
 	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
 
+	/*------------------------------------------------------------
+	DRAWING TEXT
+	------------------------------------------------------------*/
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	char strBuffer[300];
+	
+	// general tutorial 
+	sprintf_s(strBuffer, "You Lose!");
+	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	sprintf_s(strBuffer, "Press space to continue");
+	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	return;
 }
@@ -347,7 +435,7 @@ void ENDGAME_load()
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/win_bg.png");
+	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
@@ -393,8 +481,26 @@ void ENDGAME_draw()
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgWin.bgTex, 0.f, 0.f);
+	v += bgspeed * g_dt;
+	if (v >= 1)
+	{
+		v = 0;
+	}
+
+	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
 	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+	
+	/*------------------------------------------------------------
+	DRAWING TEXT
+	------------------------------------------------------------*/
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	char strBuffer[300];
+
+	// general tutorial 
+	sprintf_s(strBuffer, "You Escaped!");
+	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	sprintf_s(strBuffer, "Press space to go to menu");
+	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	return;

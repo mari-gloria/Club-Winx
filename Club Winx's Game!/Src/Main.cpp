@@ -92,7 +92,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
 				next_state = QUIT;
 
-			if (AEInputCheckTriggered(AEVK_SPACE) && curr_state != MENU)
+			if (AEInputCheckReleased(AEVK_SPACE) && curr_state != MENU && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != WIN_PLAYERONE && curr_state != WIN_PLAYERTWO && curr_state != ENDGAME)
 				next_state = PAUSE;
 
 			//if (prev_state != PAUSE || curr_state == MENU) {
