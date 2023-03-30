@@ -67,8 +67,8 @@ void racing_load()
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png");		// BG Texture
 	SquareMesh(&bgRacing.bgMesh, 0);							// BG Mesh
-	bgRacing.length = winWIDTH;
-	bgRacing.height = winHEIGHT;
+	bgRacing.length = (f32)winWIDTH;
+	bgRacing.height = (f32)winHEIGHT;
 
 
 

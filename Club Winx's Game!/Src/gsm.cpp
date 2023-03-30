@@ -106,27 +106,6 @@ void GSM_update()
 		fpUnload = puzzle_unload;
 		break;
 
-
-	case WIN_PLAYERONE:
-		fpLoad = WIN_PLAYERONE_load;
-		fpInit = WIN_PLAYERONE_init;
-		fpUpdate = WIN_PLAYERONE_update;
-		fpDraw = WIN_PLAYERONE_draw;
-		fpFree = WIN_PLAYERONE_free;
-		fpUnload = WIN_PLAYERONE_unload;
-		break;
-
-
-	case WIN_PLAYERTWO:
-		fpLoad = WIN_PLAYERTWO_load;
-		fpInit = WIN_PLAYERTWO_init;
-		fpUpdate = WIN_PLAYERTWO_update;
-		fpDraw = WIN_PLAYERTWO_draw;
-		fpFree = WIN_PLAYERTWO_free;
-		fpUnload = WIN_PLAYERTWO_unload;
-		break;
-
-
 	case WIN_BOTHPLAYERS:
 		fpLoad = WIN_BOTHPLAYERS_load;
 		fpInit = WIN_BOTHPLAYERS_init;

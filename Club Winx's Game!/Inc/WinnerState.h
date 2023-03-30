@@ -9,20 +9,6 @@
 
 // Functions for state change //
 
-void WIN_PLAYERONE_load();
-void WIN_PLAYERONE_init();
-void WIN_PLAYERONE_update();
-void WIN_PLAYERONE_draw();
-void WIN_PLAYERONE_free();
-void WIN_PLAYERONE_unload();
-
-void WIN_PLAYERTWO_load();
-void WIN_PLAYERTWO_init();
-void WIN_PLAYERTWO_update();
-void WIN_PLAYERTWO_draw();
-void WIN_PLAYERTWO_free();
-void WIN_PLAYERTWO_unload();
-
 void WIN_BOTHPLAYERS_load();
 void WIN_BOTHPLAYERS_init();
 void WIN_BOTHPLAYERS_update();
