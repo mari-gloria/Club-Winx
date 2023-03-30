@@ -132,7 +132,7 @@ void puzzle_init()
 	}
 
 	puzzleLight.length = puzzleLight.height = lightRadius;
-	puzzleLight.bgCoord = player1.pCoord;
+	puzzleLight.bgCoord = player2.pCoord;
 
 	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
 	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
@@ -203,7 +203,7 @@ void puzzle_update()
 	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
 	
 	// update light position 
-	puzzleLight.bgCoord = player1.pCoord;
+	puzzleLight.bgCoord = player2.pCoord;
 	/*------------------------------------------------------------
 	COLLISION CHECKS
 	------------------------------------------------------------*/
