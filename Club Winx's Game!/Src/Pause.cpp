@@ -12,7 +12,7 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "general.h"
+#include "General.h"
 
 // ---------------------------------------------------------------------------
 
@@ -78,10 +78,10 @@ void pause_init()
 {
 	std::cout << "pause:Initialize\n";
 	continue_button.coord.x = -125.0f;
-	continue_button.coord.y = 0.0f;
+	continue_button.coord.y = CamY;
 
 	back_button.coord.x = 125.0f;
-	back_button.coord.y = 0.0f;
+	back_button.coord.y = CamY;
 }
 
 void pause_update()
@@ -97,12 +97,12 @@ void pause_update()
 
 	if (checkHovering(mouse_x, mouse_y, continue_button.length, continue_button.height, continue_button.coord.x, continue_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
-		next_state = prev_state;
-		  
+		game_paused = (game_paused == true) ? false : true;
 	}
 
 	if (checkHovering(mouse_x, mouse_y, back_button.length, back_button.height, back_button.coord.x, back_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
+		game_paused = (game_paused == true) ? false : true;
 		next_state = MENU;
 	}
 	                  
