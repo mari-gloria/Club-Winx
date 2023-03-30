@@ -102,8 +102,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				game_paused = (game_paused == true) ? false : true;
 
 				//if (prev_state != PAUSE || curr_state == MENU) {
-				fpUpdate();
-				fpDraw();
+				//fpUpdate();
+				//fpDraw();
 				//}
 			}
 		
