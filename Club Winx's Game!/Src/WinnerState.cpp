@@ -231,18 +231,28 @@ void WIN_BOTHPLAYERS_load()
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	win.audio = AEAudioLoadSound("Assets/Audio/win.wav");
+	win.aGroup = AEAudioCreateGroup();
 
 	return;
 }
 
 void WIN_BOTHPLAYERS_init()
 {
+	/*------------------------------------------------------------
+	// PLAY AUDIO
+	------------------------------------------------------------*/
+	AEAudioPlay(win.audio, win.aGroup, 0.75f, 0.9f, 1);
 
 	return;
 }
 
 void WIN_BOTHPLAYERS_update()
 {
+	AEAudioUpdate();
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -309,9 +319,16 @@ void WIN_BOTHPLAYERS_free()
 void WIN_BOTHPLAYERS_unload()
 {
 
+	/*------------------------------------------------------------
 	// Unload Background
+	------------------------------------------------------------*/
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgWin.bgTex); // Unload Texture
+
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioStopGroup(win.aGroup);
 
 	return;
 }
@@ -330,19 +347,28 @@ void LOSE_BOTHPLAYERS_load()
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	lose.audio = AEAudioLoadSound("Assets/Audio/lose.wav");
+	lose.aGroup = AEAudioCreateGroup();
 
 	return;
 }
 
 void LOSE_BOTHPLAYERS_init()
 {
+	/*------------------------------------------------------------
+	// PLAY AUDIO
+	------------------------------------------------------------*/
+	AEAudioPlay(lose.audio, lose.aGroup, 0.75f, 0.9f, 1);
 
 	return;
 }
 
 void LOSE_BOTHPLAYERS_update()
 {
-
+	AEAudioUpdate();
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
@@ -352,17 +378,7 @@ void LOSE_BOTHPLAYERS_update()
 	std::cout << "next" << next_state << std::endl;
 
 	if (AEInputCheckReleased(AEVK_SPACE)) {
-		switch (prev_state) {
-		case RACING:
-			next_state = RACING;
-			break;
-		case PUZZLE:
-			next_state = PUZZLE;
-			break;
-		case BOSS:
-			next_state = BOSS;
-		}
-
+		next_state = prev_state;
 	}
 
 	/*------------------------------------------------------------
@@ -422,6 +438,12 @@ void LOSE_BOTHPLAYERS_unload()
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgWin.bgTex); // Unload Texture
 
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioStopGroup(lose.aGroup);
+
+
 	return;
 }
 
@@ -439,19 +461,28 @@ void ENDGAME_load()
 	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
+	/*------------------------------------------------------------
+	LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	win.audio = AEAudioLoadSound("Assets/Audio/win.wav");
+	win.aGroup = AEAudioCreateGroup();
 
 	return;
 }
 
 void ENDGAME_init()
 {
+	/*------------------------------------------------------------
+	// PLAY AUDIO
+	------------------------------------------------------------*/
+	AEAudioPlay(win.audio, win.aGroup, 0.75f, 0.9f, 1);
 
 	return;
 }
 
 void ENDGAME_update()
 {
-
+	AEAudioUpdate();
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
@@ -518,6 +549,11 @@ void ENDGAME_unload()
 	// Unload Background
 	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgWin.bgTex); // Unload Texture
+
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioStopGroup(win.aGroup);
 
 	return;
 }
