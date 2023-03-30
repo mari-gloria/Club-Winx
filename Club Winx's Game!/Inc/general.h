@@ -51,12 +51,16 @@ extern int const	winWIDTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
 extern s8			fontID, text;
+extern bool game_paused;
 
 
 //from general.cpp
 extern const float	JUMP_HEIGHT_MAX;
 extern const float	GRAVITY;
 extern const float	PLAYER_JUMP;
+
+//racing.cpp
+extern f32 CamY;
 
 
 

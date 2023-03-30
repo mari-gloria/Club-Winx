@@ -146,16 +146,6 @@ void GSM_update()
 		fpUnload = LOSE_BOTHPLAYERS_unload;
 		break;
 
-	case PAUSE:
-		fpLoad = pause_load;
-		fpInit = pause_init;
-		fpUpdate = pause_update;
-		fpDraw = pause_draw;
-		fpFree = pause_free;
-		fpUnload = pause_unload;
-		break;
-
-
 	case ENDGAME:
 		fpLoad = ENDGAME_load;
 		fpInit = ENDGAME_init;

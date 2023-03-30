@@ -245,6 +245,8 @@ void boss_load()
 	collect.audio = AEAudioLoadSound("Assets/Audio/collect.wav");
 	collect.aGroup = AEAudioCreateGroup();
 
+	//load pause
+	pause_load();
 }
 
 void boss_init()
@@ -284,597 +286,608 @@ void boss_init()
 	potion_stop = false;
     potion.vector = { potion_start_positonX, potion_start_positonY};
 
+	//pause init
+	pause_init();
 }
 
 void boss_update()
 {
-	std::cout << "boss:Update\n";
-	// TIME COUNTER 
-	bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
-	bossTimeElapsed += AEFrameRateControllerGetFrameTime();
-	bossmovetime += AEFrameRateControllerGetFrameTime();
-
-	/*------------------------------------------------------------
-	CHANGE STATE CONDITION
-	------------------------------------------------------------*/
-	//NOT DONE!! still testing
-	//players win
-	if (!boss.alive)
+	if (game_paused)
 	{
-		next_state = ENDGAME;
+		pause_update();
 	}
 
-	//players lose
-	if (!player1.alive && !player2.alive)
+	else
 	{
-		next_state = LOSE_BOTHPLAYERS;
-	}
+		std::cout << "boss:Update\n";
+		// TIME COUNTER 
+		bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
+		bossTimeElapsed += AEFrameRateControllerGetFrameTime();
+		bossmovetime += AEFrameRateControllerGetFrameTime();
 
-
-	//for testing
-	if (AEInputCheckCurr(AEVK_1)) {
-		next_state = PUZZLE;
-	}
-	if (AEInputCheckCurr(AEVK_2)) {
-		next_state = RACING;
-	}
-	if (AEInputCheckCurr(AEVK_Q)) {
-		next_state = QUIT;
-	}
-	if (AEInputCheckCurr(AEVK_ESCAPE)) {
-		curr_state = RESTART;
-		next_state = MENU;
-	}
-
-	/*------------------------------------------------------------
-	PLAYER UPDATE
-	------------------------------------------------------------*/
-	input_handle();
-	AEAudioUpdate();
-
-	if (player1.HP < 0)
-	{
-		player1.alive = false;
-	}
-	if (player2.HP < 0)
-	{
-		player2.alive = false;
-		//std::cout << "player 2 dead \n";
-	}
-	/*------------------------------------------------------------
-	BOSS UPDATE
-	------------------------------------------------------------*/
-	if (boss.HP < 0) {
-
-		//bossHPbar = FALSE;
-		boss.alive = FALSE; //Boss DIES	
-		//boss.Bhealth.length = bossHP;
-	}
-	
-
-	/*------------------------------------------------------------
-	BULLET MOVEMENT
-	------------------------------------------------------------*/
-	for (int i = 0; i < MAX_BULLETS; i++)
-	{
-		if (bulletTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
+		/*------------------------------------------------------------
+		CHANGE STATE CONDITION
+		------------------------------------------------------------*/
+		//NOT DONE!! still testing
+		//players win
+		if (!boss.alive)
 		{
-			bullets1[i].shot = TRUE;
-			bullets2[i].shot = TRUE;
-	
-			//bossTimeElapsed = 0.0;
-			bulletTimeElapsed = 0.0;
-		}
-		if (boss.alive == FALSE) { //bullets will stop shooting when monster dies
-
-			bullets1[i].shot = FALSE;
-			bullets2[i].shot = FALSE;
+			next_state = ENDGAME;
 		}
 
-	}
-	for (int i = 0; i < MAX_BULLETS; i++)
-	{
+		//players lose
+		if (!player1.alive && !player2.alive)
+		{
+			next_state = LOSE_BOTHPLAYERS;
+		}
 
-		if (player1.alive) {
 
+		//for testing
+		if (AEInputCheckCurr(AEVK_1)) {
+			next_state = PUZZLE;
+		}
+		if (AEInputCheckCurr(AEVK_2)) {
+			next_state = RACING;
+		}
+		if (AEInputCheckCurr(AEVK_Q)) {
+			next_state = QUIT;
+		}
+		if (AEInputCheckCurr(AEVK_ESCAPE)) {
+			curr_state = RESTART;
+			next_state = MENU;
+		}
+
+		/*------------------------------------------------------------
+		PLAYER UPDATE
+		------------------------------------------------------------*/
+		input_handle();
+		AEAudioUpdate();
+
+		if (player1.HP < 0)
+		{
+			player1.alive = false;
+		}
+		if (player2.HP < 0)
+		{
+			player2.alive = false;
+			//std::cout << "player 2 dead \n";
+		}
+		/*------------------------------------------------------------
+		BOSS UPDATE
+		------------------------------------------------------------*/
+		if (boss.HP < 0) {
+
+			//bossHPbar = FALSE;
+			boss.alive = FALSE; //Boss DIES	
+			//boss.Bhealth.length = bossHP;
+		}
+
+
+		/*------------------------------------------------------------
+		BULLET MOVEMENT
+		------------------------------------------------------------*/
+		for (int i = 0; i < MAX_BULLETS; i++)
+		{
+			if (bulletTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
+			{
+				bullets1[i].shot = TRUE;
+				bullets2[i].shot = TRUE;
+
+				//bossTimeElapsed = 0.0;
+				bulletTimeElapsed = 0.0;
+			}
+			if (boss.alive == FALSE) { //bullets will stop shooting when monster dies
+
+				bullets1[i].shot = FALSE;
+				bullets2[i].shot = FALSE;
+			}
+
+		}
+		for (int i = 0; i < MAX_BULLETS; i++)
+		{
+
+			if (player1.alive) {
+
+				if (bullets1[i].shot)
+				{
+					bullets1[i].bVel.x = BULLETSPEED; // bullet speed 
+					bullets1[i].bCoord.x += bullets1[i].bVel.x;
+					//std::cout << "bullets 1 no. " << i << " launched \n";
+				}
+				else
+				{
+					bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
+				}
+			}
+			else //if player ded
+			{
+				bullets1[i].shot = false;
+			}
+
+			if (bullets1[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
+			{
+				bullets1[i].shot = FALSE;
+			}
+
+			if (player2.alive) {
+
+				if (bullets2[i].shot)
+				{
+					bullets2[i].bVel.x = BULLETSPEED; // bullet speed 
+					bullets2[i].bCoord.x += bullets2[i].bVel.x;
+					//std::cout << "bullets 2 no. " << i << " launched \n";
+				}
+				else
+				{
+					bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
+				}
+			}
+			else //if player ded
+			{
+				bullets2[i].shot = false;
+			}
+			if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
+			{
+				bullets2[i].shot = FALSE;
+			}
+
+
+		}
+		/*------------------------------------------------------------
+		BOSS ATTACKS
+		------------------------------------------------------------*/
+		for (int i = 0; i < MAXWAVE; i++)
+		{
+			if (bossTimeElapsed >= 0.5 && bossbullets1[i].shot == FALSE && bossbullets2[i].shot == FALSE) // every 2 secs
+			{
+				bossbullets1[i].shot = TRUE;
+				bossTimeElapsed = 0.0;
+			}
+		}
+
+		for (int i = 0; i < MAXWAVE; i++)
+		{
+			if (bossbullets1[i].shot && boss.alive)
+			{
+				bossbullets1[i].direction = rand_num(-PI, PI); // base direction
+				bossbullets1[i].velocity.x = 80.f * sinf((size_t)(i % 180) / PI) * 0.03f; // adds curve to x velocity
+				bossbullets1[i].velocity.y = 80.f * cosf((size_t)(i % 180) / PI) * 0.01f; // adds curve to y velocity
+			}
+			if (!bossbullets1[i].shot || !boss.alive) {
+				bossbullets1[i].coords = { boss.Bcoord.x - (boss.length / 2.0f), boss.Bcoord.y };
+			}
+			if (bossbullets1[i].coords.x <= AEGfxGetWinMinX() || bossbullets1[i].coords.y <= AEGfxGetWinMinY() || bossbullets1[i].coords.x >= AEGfxGetWinMaxX() || bossbullets1[i].coords.y >= AEGfxGetWinMaxY()) // if exit map
+			{
+				bossbullets1[i].shot = FALSE;
+			}
+
+			bossbullets1[i].coords.x -= (f32)(bossbullets1[i].velocity.x * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
+			bossbullets1[i].coords.y += (f32)(bossbullets1[i].velocity.y * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
+		}
+		/*------------------------------------------------------------
+		COLLISION CHECKS
+		------------------------------------------------------------*/
+
+		//update player bounding box
+		player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
+		player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
+		player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
+		player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
+
+		player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
+		player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
+		player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
+		player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
+
+
+
+		//update boss bounding box
+		boss.boundingBox.min.x = boss.Bcoord.x - boss.length / 2.0f;
+		boss.boundingBox.min.y = boss.Bcoord.y - boss.height / 2.0f;
+		boss.boundingBox.max.x = boss.Bcoord.x + boss.length / 2.0f;
+		boss.boundingBox.max.y = boss.Bcoord.y + boss.height / 2.0f;
+
+		//update potion bounding box
+		potion.boundingBox.min.x = potion.vector.x - potion.size / 2.0f;
+		potion.boundingBox.min.y = potion.vector.y - potion.size / 2.0f;
+		potion.boundingBox.max.x = potion.vector.x + potion.size / 2.0f;
+		potion.boundingBox.max.y = potion.vector.y + potion.size / 2.0f;
+
+		//update mobs bounding box
+		mobs.boundingBox.min.x = mobs.vector.x - mobs.size / 2.0f;
+		mobs.boundingBox.min.y = mobs.vector.y - mobs.size / 2.0f;
+		mobs.boundingBox.max.x = mobs.vector.x + mobs.size / 2.0f;
+		mobs.boundingBox.max.y = mobs.vector.y + mobs.size / 2.0f;
+
+
+		for (int i = 0; i < MAX_BULLETS; i++) // for bullet hit boss
+		{
+			//update bounding box
+			bullets1[i].boundingBox.min.x = bullets1[i].bCoord.x - bullets1[i].length / 2.0f;
+			bullets1[i].boundingBox.min.y = bullets1[i].bCoord.y - bullets1[i].height / 2.0f;
+			bullets1[i].boundingBox.max.x = bullets1[i].bCoord.x + bullets1[i].length / 2.0f;
+			bullets1[i].boundingBox.max.y = bullets1[i].bCoord.y + bullets1[i].height / 2.0f;
+
+			bullets2[i].boundingBox.min.x = bullets2[i].bCoord.x - bullets2[i].length / 2.0f;
+			bullets2[i].boundingBox.min.y = bullets2[i].bCoord.y - bullets2[i].height / 2.0f;
+			bullets2[i].boundingBox.max.x = bullets2[i].bCoord.x + bullets2[i].length / 2.0f;
+			bullets2[i].boundingBox.max.y = bullets2[i].bCoord.y + bullets2[i].height / 2.0f;
+
+			//Shoot BOSS
+			//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
+			if (boss.alive)
+			{
+				if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
+				{
+					if (player1.alive) {
+
+						boss.HP -= PLAYERDMG; //decrease monster health
+						bullets1[i].shot = false;
+					}
+
+
+
+				}
+				if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && bullets2[i].shot)
+				{
+					if (player2.alive) {
+
+						boss.HP -= PLAYERDMG; //decrease monster health
+						bullets2[i].shot = false;
+					}
+
+
+
+				}
+			}
+			//Shoot MOBS
+			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+			{
+
+				mobs.vector = { -1000,-1000 };
+				max_mobs -= 1; //decrease mobs spawn
+				bullets1[i].shot = false;
+
+			}
+			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+			{
+
+				mobs.vector = { -1000,-1000 };
+				max_mobs -= 1; //decrease mobs spawn
+				bullets2[i].shot = false;
+
+			}
+
+		}
+		for (int i = 0; i < MAXWAVE; i++) // for bullet hit players
+		{
+			//update bounding box
+			bossbullets1[i].boundingBox.min.x = bossbullets1[i].coords.x - bossbullets1[i].size / 2.0f;
+			bossbullets1[i].boundingBox.min.y = bossbullets1[i].coords.y - bossbullets1[i].size / 2.0f;
+			bossbullets1[i].boundingBox.max.x = bossbullets1[i].coords.x + bossbullets1[i].size / 2.0f;
+			bossbullets1[i].boundingBox.max.y = bossbullets1[i].coords.y + bossbullets1[i].size / 2.0f;
+
+			if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
+			{
+				player1.HP -= BOSSATTACK_1_DMG;
+				bossbullets1[i].shot = false;
+			}
+			if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player2.boundingBox, player2.pVel) && player2.alive)// if bullet hit player 1 && player alive
+			{
+				player2.HP -= BOSSATTACK_1_DMG;
+				bossbullets1[i].shot = false;
+			}
+		}
+
+		/*------------------------------------------------------------
+		POTION COLLECTION
+		------------------------------------------------------------*/
+		timer = timer + 1;
+		potion_position(potion.vector.x, potion.vector.y, potion_produce, check, potion_stop, timer);
+
+
+
+		if (potion_stop != true) {
+
+			if (potion_produce == true) {
+
+				if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, potion.boundingBox, potion.pVelocity))
+				{
+
+					player2.HP = PLAYER2_MAX_HP; //refill to full hp bar
+					potion.vector = { -1000,-1000 };
+					max_potion -= 1;
+					AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
+
+
+				}
+				if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, potion.boundingBox, potion.pVelocity))
+				{
+
+					player1.HP = PLAYER_MAX_HP; //refill to full hp bar
+
+					potion.vector = { -1000,-1000 };
+					max_potion -= 1;
+
+					AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
+
+
+				}
+
+			}
+
+		}
+		//stop spawning potion
+		if (max_potion == 0) {
+			potion_stop = true;
+		}
+
+		/*------------------------------------------------------------
+		MOBS SPAWN
+		------------------------------------------------------------*/
+		mobs_position(mobs.vector.x, mobs.vector.y, mobs_spawn, mobscheck, mobs_stop, timer);
+
+
+
+		if (mobs_stop != true) {
+
+			if (mobs_spawn == true) {
+
+				if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+					player2.HP -= MOBSATTACK_DMG;
+
+				}
+				if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+					player1.HP -= MOBSATTACK_DMG;
+
+				}
+
+			}
+
+		}
+		//stop spawning mobs
+		if (max_mobs == 0) {
+			mobs_stop = true;
+		}
+
+
+
+		/*------------------------------------------------------------
+		UPDATE PLAYER POSITIONS
+		------------------------------------------------------------*/
+		player1.pCoord.x += player1.pVel.x * g_dt;
+		player1.pCoord.y += player1.pVel.y * g_dt;
+
+		player2.pCoord.x += player2.pVel.x * g_dt;
+		player2.pCoord.y += player2.pVel.y * g_dt;
+
+
+
+		/*------------------------------------------------------------
+		MATRIX CALCULATION
+		------------------------------------------------------------*/
+		// for background
+		MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.0f, bgBoss.bgCoord);
+
+		// for players 
+		MatrixCalc(player1.transform, player1.size, player1.size, 0.0f, player1.pCoord);
+		MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
+
+		// for bullet 
+		for (int i = 0; i < MAX_BULLETS; i++) {
 			if (bullets1[i].shot)
 			{
-				bullets1[i].bVel.x = BULLETSPEED; // bullet speed 
-				bullets1[i].bCoord.x += bullets1[i].bVel.x;
-				//std::cout << "bullets 1 no. " << i << " launched \n";
+				MatrixCalc(bullets1[i].transform, bullets1[i].length, bullets1[i].height, 0.f, bullets1[i].bCoord);
 			}
-			else
-			{
-				bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
-			}
-		}
-		else //if player ded
-		{
-			bullets1[i].shot = false;
-		}
-
-		if (bullets1[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
-		{
-			bullets1[i].shot = FALSE;
-		}
-
-		if (player2.alive) {
-
 			if (bullets2[i].shot)
 			{
-				bullets2[i].bVel.x = BULLETSPEED; // bullet speed 
-				bullets2[i].bCoord.x += bullets2[i].bVel.x;
-				//std::cout << "bullets 2 no. " << i << " launched \n";
-			}
-			else
-			{
-				bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
-			}
-		}
-		else //if player ded
-		{
-			bullets2[i].shot = false;
-		}
-		if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
-		{
-			bullets2[i].shot = FALSE;
-		}
-
-
-	}
-	/*------------------------------------------------------------
-	BOSS ATTACKS
-	------------------------------------------------------------*/
-	for (int i = 0; i < MAXWAVE; i++)
-	{
-		if (bossTimeElapsed >= 0.5 && bossbullets1[i].shot == FALSE && bossbullets2[i].shot == FALSE) // every 2 secs
-		{
-			bossbullets1[i].shot = TRUE;
-			bossTimeElapsed = 0.0;
-		}
-	}
-
-	for (int i = 0; i < MAXWAVE; i++)
-	{
-		if (bossbullets1[i].shot && boss.alive)
-		{
-			bossbullets1[i].direction = rand_num(-PI, PI); // base direction
-			bossbullets1[i].velocity.x = 80.f * sinf((size_t)(i % 180) / PI) * 0.03f; // adds curve to x velocity
-			bossbullets1[i].velocity.y = 80.f * cosf((size_t)(i % 180) / PI) * 0.01f; // adds curve to y velocity
-		}
-		if (!bossbullets1[i].shot || !boss.alive) {
-			bossbullets1[i].coords = { boss.Bcoord.x - (boss.length / 2.0f), boss.Bcoord.y };
-		}
-		if (bossbullets1[i].coords.x <= AEGfxGetWinMinX() || bossbullets1[i].coords.y <= AEGfxGetWinMinY() || bossbullets1[i].coords.x >= AEGfxGetWinMaxX() || bossbullets1[i].coords.y >= AEGfxGetWinMaxY()) // if exit map
-		{
-			bossbullets1[i].shot = FALSE;
-		}
-
-		bossbullets1[i].coords.x -= (f32)(bossbullets1[i].velocity.x * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
-		bossbullets1[i].coords.y += (f32)(bossbullets1[i].velocity.y * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
-	}
-	/*------------------------------------------------------------
-	COLLISION CHECKS
-	------------------------------------------------------------*/
-
-	//update player bounding box
-	player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
-	player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
-	player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
-	player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
-
-	player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
-	player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
-	player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
-	player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
-
-
-
-	//update boss bounding box
-	boss.boundingBox.min.x = boss.Bcoord.x - boss.length / 2.0f;
-	boss.boundingBox.min.y = boss.Bcoord.y - boss.height / 2.0f;
-	boss.boundingBox.max.x = boss.Bcoord.x + boss.length / 2.0f;
-	boss.boundingBox.max.y = boss.Bcoord.y + boss.height / 2.0f;
-
-	//update potion bounding box
-	potion.boundingBox.min.x = potion.vector.x - potion.size / 2.0f;
-	potion.boundingBox.min.y = potion.vector.y - potion.size / 2.0f;
-	potion.boundingBox.max.x = potion.vector.x + potion.size / 2.0f;
-	potion.boundingBox.max.y = potion.vector.y + potion.size / 2.0f;
-
-	//update mobs bounding box
-	mobs.boundingBox.min.x = mobs.vector.x - mobs.size / 2.0f;
-	mobs.boundingBox.min.y = mobs.vector.y - mobs.size / 2.0f;
-	mobs.boundingBox.max.x = mobs.vector.x + mobs.size / 2.0f;
-	mobs.boundingBox.max.y = mobs.vector.y + mobs.size / 2.0f;
-
-
-	for (int i = 0; i < MAX_BULLETS; i++) // for bullet hit boss
-	{
-		//update bounding box
-		bullets1[i].boundingBox.min.x = bullets1[i].bCoord.x - bullets1[i].length / 2.0f;
-		bullets1[i].boundingBox.min.y = bullets1[i].bCoord.y - bullets1[i].height / 2.0f;
-		bullets1[i].boundingBox.max.x = bullets1[i].bCoord.x + bullets1[i].length / 2.0f;
-		bullets1[i].boundingBox.max.y = bullets1[i].bCoord.y + bullets1[i].height / 2.0f;
-
-		bullets2[i].boundingBox.min.x = bullets2[i].bCoord.x - bullets2[i].length / 2.0f;
-		bullets2[i].boundingBox.min.y = bullets2[i].bCoord.y - bullets2[i].height / 2.0f;
-		bullets2[i].boundingBox.max.x = bullets2[i].bCoord.x + bullets2[i].length / 2.0f;
-		bullets2[i].boundingBox.max.y = bullets2[i].bCoord.y + bullets2[i].height / 2.0f;
-
-		//Shoot BOSS
-		//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
-		if (boss.alive)
-		{
-			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
-			{
-				if (player1.alive) {
-
-					boss.HP -= PLAYERDMG; //decrease monster health
-					bullets1[i].shot = false;
-				}
-
-
-
-			}
-			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && bullets2[i].shot)
-			{
-				if (player2.alive) {
-
-					boss.HP -= PLAYERDMG; //decrease monster health
-					bullets2[i].shot = false;
-				}
-
-
-
-			}
-		}
-		//Shoot MOBS
-		if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
-		{
-
-			mobs.vector = { -1000,-1000 };
-			max_mobs -= 1; //decrease mobs spawn
-			bullets1[i].shot = false;
-
-		}
-		if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
-		{
-
-			mobs.vector = { -1000,-1000 };
-			max_mobs -= 1; //decrease mobs spawn
-			bullets2[i].shot = false;
-
-		}
-
-	}
-	for (int i = 0; i < MAXWAVE; i++) // for bullet hit players
-	{
-		//update bounding box
-		bossbullets1[i].boundingBox.min.x = bossbullets1[i].coords.x - bossbullets1[i].size / 2.0f;
-		bossbullets1[i].boundingBox.min.y = bossbullets1[i].coords.y - bossbullets1[i].size / 2.0f;
-		bossbullets1[i].boundingBox.max.x = bossbullets1[i].coords.x + bossbullets1[i].size / 2.0f;
-		bossbullets1[i].boundingBox.max.y = bossbullets1[i].coords.y + bossbullets1[i].size / 2.0f;
-
-		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
-		{
-			player1.HP -= BOSSATTACK_1_DMG;
-			bossbullets1[i].shot = false;
-		}
-		if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player2.boundingBox, player2.pVel) && player2.alive)// if bullet hit player 1 && player alive
-		{
-			player2.HP -= BOSSATTACK_1_DMG;
-			bossbullets1[i].shot = false;
-		}
-	}
-
-	/*------------------------------------------------------------
-	POTION COLLECTION
-	------------------------------------------------------------*/
-	timer = timer + 1;
-	potion_position(potion.vector.x, potion.vector.y, potion_produce, check, potion_stop, timer);
-
-
-
-	if (potion_stop != true) {
-
-		if (potion_produce == true) {
-
-			if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, potion.boundingBox, potion.pVelocity))
-			{
-				
-				player2.HP = PLAYER2_MAX_HP; //refill to full hp bar
-				potion.vector = { -1000,-1000 }; 
-				max_potion -= 1;
-				AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
-
-
-			}
-			if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, potion.boundingBox, potion.pVelocity))
-			{
-				
-				player1.HP = PLAYER_MAX_HP; //refill to full hp bar
-
-				potion.vector = { -1000,-1000 };
-				max_potion -= 1;
-
-				AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
-
-
+				MatrixCalc(bullets2[i].transform, bullets2[i].length, bullets2[i].height, 0.f, bullets2[i].bCoord);
 			}
 
 		}
 
-	}
-	//stop spawning potion
-	if (max_potion == 0) {
-		potion_stop = true;
-	}
+		//for boss
+		MatrixCalc(boss.transform, boss.length, boss.height, 0.f, boss.Bcoord);
 
-	/*------------------------------------------------------------
-	MOBS SPAWN
-	------------------------------------------------------------*/
-	mobs_position(mobs.vector.x, mobs.vector.y, mobs_spawn, mobscheck, mobs_stop, timer);
+		/*------------------------------------------------------------
+		BOSS HEALTH
+		------------------------------------------------------------*/
+		//Update Boss's Current HP
+		hp_percentage = boss.HP / BOSS_MAX_HP;
+		newBar = hp_percentage * DEFAULT_HP;
+		boss.Bhealth.length = newBar;
+		MatrixCalc(boss.Bhealth.transform, boss.Bhealth.length, boss.Bhealth.height, 0.f, boss.Bhealth.Hcoord);
 
-
-
-	if (mobs_stop != true) {
-
-		if (mobs_spawn == true) {
-
-			if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
-				player2.HP -= MOBSATTACK_DMG;
-
-			}
-			if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
-				player1.HP -= MOBSATTACK_DMG;
-
-			}
-
-		}
-
-	}
-	//stop spawning mobs
-	if (max_mobs == 0) {
-		mobs_stop = true;
-	}
+		/*------------------------------------------------------------
+		PLAYERS' HEALTH
+		------------------------------------------------------------*/
+		//for player2's health bar
+		player2_hp_percentage = player2.HP / PLAYER2_MAX_HP;
+		player2newbar = player2_hp_percentage * player2_default_hp;
+		p2health.plength = player2newbar;
+		p2health.Hcoord2 = { player2.pCoord.x, player2.pCoord.y + 35.0f };
+		//p2health.plength = player2.HP / PLAYER_MAX_HP * player2.size;
+		MatrixCalc(p2health.transform, p2health.plength, p2health.pheight, 0.f, p2health.Hcoord2);
 
 
-
-	/*------------------------------------------------------------
-	UPDATE PLAYER POSITIONS
-	------------------------------------------------------------*/
-	player1.pCoord.x += player1.pVel.x * g_dt;
-	player1.pCoord.y += player1.pVel.y * g_dt;
-
-	player2.pCoord.x += player2.pVel.x * g_dt;
-	player2.pCoord.y += player2.pVel.y * g_dt;
+		//for player1's health bar
+		player_hp_percentage = player1.HP / PLAYER_MAX_HP;
+		playernewbar = player_hp_percentage * player_default_hp;
+		p1health.plength = playernewbar;
+		p1health.Hcoord2 = { player1.pCoord.x, player1.pCoord.y + 35.0f };
+		MatrixCalc(p1health.transform, p1health.plength, p1health.pheight, 0.f, p1health.Hcoord2);
 
 
-
-	/*------------------------------------------------------------
-	MATRIX CALCULATION
-	------------------------------------------------------------*/
-	// for background
-	MatrixCalc(bgBoss.transform, bgBoss.length, bgBoss.height, 0.0f, bgBoss.bgCoord);
-
-	// for players 
-	MatrixCalc(player1.transform, player1.size, player1.size, 0.0f, player1.pCoord);
-	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
-
-	// for bullet 
-	for (int i = 0; i < MAX_BULLETS; i++) {
-		if (bullets1[i].shot)
+		// for boss attacks
+		for (int i = 0; i < MAXWAVE; i++)
 		{
-			MatrixCalc(bullets1[i].transform, bullets1[i].length, bullets1[i].height, 0.f, bullets1[i].bCoord);
-		}
-		if (bullets2[i].shot)
-		{
-			MatrixCalc(bullets2[i].transform, bullets2[i].length, bullets2[i].height, 0.f, bullets2[i].bCoord);
+			MatrixCalc(bossbullets1[i].transform, bossbullets1[i].size, bossbullets1[i].size, bossbullets1[i].direction, bossbullets1[i].coords);
 		}
 
+		//Health potion
+		MatrixCalc(potion.PotionTransform, potion.size, potion.size, 0.f, potion.vector);
+
+
+		//Mobs
+		MatrixCalc(mobs.MobsTransform, mobs.size, mobs.size, 0.f, mobs.vector);
 	}
-
-	//for boss
-	MatrixCalc(boss.transform, boss.length, boss.height, 0.f, boss.Bcoord);
-
-	/*------------------------------------------------------------
-	BOSS HEALTH
-	------------------------------------------------------------*/
-	//Update Boss's Current HP
-	hp_percentage = boss.HP / BOSS_MAX_HP;
-	newBar = hp_percentage * DEFAULT_HP;
-	boss.Bhealth.length = newBar;
-	MatrixCalc(boss.Bhealth.transform, boss.Bhealth.length, boss.Bhealth.height, 0.f, boss.Bhealth.Hcoord);
-
-	/*------------------------------------------------------------
-	PLAYERS' HEALTH
-	------------------------------------------------------------*/
-	//for player2's health bar
-	player2_hp_percentage = player2.HP / PLAYER2_MAX_HP;
-	player2newbar = player2_hp_percentage * player2_default_hp;
-	p2health.plength = player2newbar;
-	p2health.Hcoord2 = { player2.pCoord.x, player2.pCoord.y + 35.0f };
-	//p2health.plength = player2.HP / PLAYER_MAX_HP * player2.size;
-	MatrixCalc(p2health.transform, p2health.plength, p2health.pheight, 0.f, p2health.Hcoord2);
-
-
-	//for player1's health bar
-	player_hp_percentage = player1.HP / PLAYER_MAX_HP;
-	playernewbar = player_hp_percentage * player_default_hp;
-	p1health.plength = playernewbar;
-	p1health.Hcoord2 = { player1.pCoord.x, player1.pCoord.y + 35.0f };
-	MatrixCalc(p1health.transform, p1health.plength, p1health.pheight, 0.f, p1health.Hcoord2);
-
-
-	// for boss attacks
-	for (int i = 0; i < MAXWAVE; i++)
-	{
-		MatrixCalc(bossbullets1[i].transform, bossbullets1[i].size, bossbullets1[i].size, bossbullets1[i].direction, bossbullets1[i].coords);
-	}
-
-	//Health potion
-	MatrixCalc(potion.PotionTransform, potion.size, potion.size, 0.f, potion.vector);
-
-
-	//Mobs
-	MatrixCalc(mobs.MobsTransform, mobs.size, mobs.size, 0.f, mobs.vector);
-
 }
 float w = 0;
 void boss_draw()
 {
-	std::cout << "boss:Draw\n";
-	/*------------------------------------------------------------
-	DRAWING BACKGROUND
-	------------------------------------------------------------*/
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
-	AEGfxSetTransform(bgBoss.transform.m);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	w += bgspeed * g_dt;
-	if (w >= 1)
+	if (game_paused)
 	{
-		w = 0;
+		pause_draw();
 	}
-	AEGfxTextureSet(bgBoss.bgTex, w, 0.f);
-	AEGfxMeshDraw(bgBoss.bgMesh, AE_GFX_MDM_TRIANGLES);
 
-	/*------------------------------------------------------------
-	DRAWING PLAYERS
-	------------------------------------------------------------*/
-
-
-	// Set position for object 1
-	if (player1.alive)
+	else 
 	{
+		std::cout << "boss:Draw\n";
+		/*------------------------------------------------------------
+		DRAWING BACKGROUND
+		------------------------------------------------------------*/
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransform(player1.transform.m);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(player1.pTex, 0, 0);
-		// Drawing the mesh (list of triangles)
-		AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
-
-		// Render health bar
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetTransform(p1health.transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
+		//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
+		AEGfxSetTransform(bgBoss.transform.m);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		AEGfxMeshDraw(p1health.pMesh, AE_GFX_MDM_TRIANGLES);
-	}
-	// drawing player 2
-	if (player2.alive)
-	{
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransform(player2.transform.m);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(player2.pTex, 0, 0);
-		AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
-
-		// Render health bar
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetTransform(p2health.transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		AEGfxMeshDraw(p2health.pMesh, AE_GFX_MDM_TRIANGLES);
-	}
-
-	/*------------------------------------------------------------
-	DRAWING BULLETS
-	------------------------------------------------------------*/
-	for (int i = 0; i < MAX_BULLETS; i++) {
-		if (bullets1[i].shot && player1.alive)
+		w += bgspeed * g_dt;
+		if (w >= 1)
 		{
-			//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
-			AEGfxSetTransform(bullets1[i].transform.m);
-			AEGfxTextureSet(NULL, 0, 0);
-			AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+			w = 0;
 		}
-		if (bullets2[i].shot && player2.alive)
+		AEGfxTextureSet(bgBoss.bgTex, w, 0.f);
+		AEGfxMeshDraw(bgBoss.bgMesh, AE_GFX_MDM_TRIANGLES);
+
+		/*------------------------------------------------------------
+		DRAWING PLAYERS
+		------------------------------------------------------------*/
+
+
+		// Set position for object 1
+		if (player1.alive)
 		{
-			//AEGfxSetPosition(bullets2[i].bCoord.x, bullets2[i].bCoord.y);
-			AEGfxSetTransform(bullets2[i].transform.m);
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetTransform(player1.transform.m);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxTextureSet(player1.pTex, 0, 0);
+			// Drawing the mesh (list of triangles)
+			AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
+
+			// Render health bar
+			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+			AEGfxSetTransform(p1health.transform.m);
 			AEGfxTextureSet(NULL, 0, 0);
-			AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+			AEGfxSetBlendMode(AE_GFX_BM_NONE);
+			AEGfxMeshDraw(p1health.pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+		// drawing player 2
+		if (player2.alive)
+		{
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetTransform(player2.transform.m);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxTextureSet(player2.pTex, 0, 0);
+			AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
+
+			// Render health bar
+			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+			AEGfxSetTransform(p2health.transform.m);
+			AEGfxTextureSet(NULL, 0, 0);
+			AEGfxSetBlendMode(AE_GFX_BM_NONE);
+			AEGfxMeshDraw(p2health.pMesh, AE_GFX_MDM_TRIANGLES);
 		}
 
-	}
-	/*------------------------------------------------------------
-	DRAWING  BOSS ATTACKS
-	------------------------------------------------------------*/
-	for (int i = 0; i < MAXWAVE; i++) {
-		if (bossbullets1[i].shot && boss.alive)
-		{
-			//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
-			AEGfxSetTransform(bossbullets1[i].transform.m);
+		/*------------------------------------------------------------
+		DRAWING BULLETS
+		------------------------------------------------------------*/
+		for (int i = 0; i < MAX_BULLETS; i++) {
+			if (bullets1[i].shot && player1.alive)
+			{
+				//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+				AEGfxSetTransform(bullets1[i].transform.m);
+				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+			}
+			if (bullets2[i].shot && player2.alive)
+			{
+				//AEGfxSetPosition(bullets2[i].bCoord.x, bullets2[i].bCoord.y);
+				AEGfxSetTransform(bullets2[i].transform.m);
+				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+			}
+
+		}
+		/*------------------------------------------------------------
+		DRAWING  BOSS ATTACKS
+		------------------------------------------------------------*/
+		for (int i = 0; i < MAXWAVE; i++) {
+			if (bossbullets1[i].shot && boss.alive)
+			{
+				//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+				AEGfxSetTransform(bossbullets1[i].transform.m);
+				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+
+		if (mobs_stop == false) {
+
+			//Render Mobs
+
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetTransform(mobs.MobsTransform.m);
+			AEGfxTextureSet(mobs.pTex, 0, 0);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxMeshDraw(mobs.pMesh, AE_GFX_MDM_TRIANGLES);
+
+		}
+
+		/*------------------------------------------------------------
+		 Rendering of Boss Health System/ BOSS
+		------------------------------------------------------------*/
+		if (boss.alive) {
+
+			// drawing boss
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetTransform(boss.transform.m);
+			AEGfxTextureSet(boss.pTex, 0, 0);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+			// drawing Current boss.Bhealth
+			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+			AEGfxSetTransform(boss.Bhealth.transform.m);
 			AEGfxTextureSet(NULL, 0, 0);
-			AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
+			AEGfxSetBlendMode(AE_GFX_BM_NONE);
+			AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
+
+
+		}
+		/*------------------------------------------------------------
+		 Rendering of Boss Health System/ BOSS
+		------------------------------------------------------------*/
+		if (potion_stop == false) {
+
+			// drawing potion
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetTransform(potion.PotionTransform.m);
+			AEGfxTextureSet(potion.pTex, 0, 0);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxMeshDraw(potion.pMesh, AE_GFX_MDM_TRIANGLES);
+
 		}
 	}
-
-
-	if (mobs_stop == false) {
-
-		//Render Mobs
-
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransform(mobs.MobsTransform.m);
-		AEGfxTextureSet(mobs.pTex, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxMeshDraw(mobs.pMesh, AE_GFX_MDM_TRIANGLES);
-
-	}
-
-	/*------------------------------------------------------------
-	 Rendering of Boss Health System/ BOSS
-	------------------------------------------------------------*/
-	if (boss.alive) {
-
-		// drawing boss
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransform(boss.transform.m);
-		AEGfxTextureSet(boss.pTex, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
-		// drawing Current boss.Bhealth
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetTransform(boss.Bhealth.transform.m);
-		AEGfxTextureSet(NULL, 0, 0);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
-
-
-	}
-	/*------------------------------------------------------------
-	 Rendering of Boss Health System/ BOSS
-	------------------------------------------------------------*/
-	if (potion_stop == false) {
-
-		// drawing potion
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransform(potion.PotionTransform.m);
-		AEGfxTextureSet(potion.pTex, 0, 0);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxMeshDraw(potion.pMesh, AE_GFX_MDM_TRIANGLES);
-
-	}
-
-
-
-
-
-
 }
 
 void boss_free()
@@ -890,6 +903,8 @@ void boss_free()
 		//bossbullets1[i].shot = false;
 		//bossbullets1[i].shot = false;
 	}
+
+	pause_free();
 }
 
 void boss_unload()
@@ -916,6 +931,7 @@ void boss_unload()
 	AEGfxMeshFree(pBullet);
 	AEAudioExit();
 
+	pause_unload();
 }
 void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool& potion_stop, int& timer)
 {

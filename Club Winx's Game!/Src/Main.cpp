@@ -16,6 +16,8 @@
 
 // ---------------------------------------------------------------------------
 
+bool game_paused = false;
+
 /*------------------------------------------------------------
 DECLARE GLOBAL VARIABLES
 ------------------------------------------------------------*/
@@ -81,19 +83,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 
 		// Initalize current game state
-		if (prev_state != PAUSE || curr_state == MENU) {
-			fpInit();
-		}                                                                            
+		fpInit();                                                                           
 
 		while (next_state == curr_state) {
 			AESysFrameStart();
 			AEInputUpdate();
+			AEAudioUpdate();
+
+			fpUpdate();
+			fpDraw();
+
+
 			// check if forcing the application to quit
 			if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
 				next_state = QUIT;
 
 			if (AEInputCheckReleased(AEVK_SPACE) && curr_state != MENU && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != WIN_PLAYERONE && curr_state != WIN_PLAYERTWO && curr_state != ENDGAME)
-				next_state = PAUSE;
+				game_paused = (game_paused == true)? false : true;
 
 			//if (prev_state != PAUSE || curr_state == MENU) {
 				fpUpdate();
