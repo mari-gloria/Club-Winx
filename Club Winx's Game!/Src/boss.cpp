@@ -30,6 +30,7 @@ const f32 PLAYER_MAX_HP = 150.f;
 const f32 PLAYER2_MAX_HP = 150.f;
 const f32 BOSSATTACK_1_DMG = 5.5f;
 const f32 MOBSATTACK_DMG = 1.5f;
+const f32 MOBS_MAX_HP = 50.f;
 const f32 bgspeed = 0.05F;
 
 /*------------------------------------------------------------
@@ -165,6 +166,7 @@ struct Mobs {
 	AEVec2				vector{ 700.0f,0 };
 	AEVec2				MobsVelocity{ 0.0f, 0.0f }; //velocity for the item 
 	AABB				boundingBox; //collision
+	f32 HP;
 
 
 
@@ -176,7 +178,7 @@ struct Mobs {
 #define MOBS_start_positonX 400
 #define MOBS_start_positonY  0 //center of window
 double radians_mob = 0;
-int max_mobs = 3; //number of max potion produce
+int max_mobs = 5; //number of max potion produce
 bool mobscheck = false;
 bool mobs_stop = false;
 bool mobs_spawn = false;
@@ -282,6 +284,7 @@ void boss_init()
 	
 	timer = 0;
 	mobs_stop = false;
+	mobs.HP = MOBS_MAX_HP;
 	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
 	potion_stop = false;
     potion.vector = { potion_start_positonX, potion_start_positonY};
@@ -360,6 +363,19 @@ void boss_update()
 			//bossHPbar = FALSE;
 			boss.alive = FALSE; //Boss DIES	
 			//boss.Bhealth.length = bossHP;
+		}
+
+		/*------------------------------------------------------------
+		MOBS UPDATE
+		------------------------------------------------------------*/
+		if (mobs.HP < 0) {
+
+			max_mobs -= 1; //decrease mobs spawn
+			mobs.vector = { -1000,-1000 };
+			mobs.HP = MOBS_MAX_HP; //so that the next mobs can spawn
+			mobs.vector = { MOBS_start_positonX,MOBS_start_positonY };
+			//mobs.alive = FALSE; //MOBS DIES	
+
 		}
 
 
@@ -543,17 +559,13 @@ void boss_update()
 			//Shoot MOBS
 			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
 			{
-
-				mobs.vector = { -1000,-1000 };
-				max_mobs -= 1; //decrease mobs spawn
+				mobs.HP -= PLAYERDMG;
 				bullets1[i].shot = false;
 
 			}
 			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
 			{
-
-				mobs.vector = { -1000,-1000 };
-				max_mobs -= 1; //decrease mobs spawn
+				mobs.HP -= PLAYERDMG;
 				bullets2[i].shot = false;
 
 			}
@@ -973,14 +985,14 @@ void mobs_position(float& x, float& y, bool& mobs_spawn, bool& mobscheck, bool& 
 
 	if (mobs_stop != true) {
 
-		if (timer % 50 == 0 && mobs_spawn != true) { //start spawning
+		if (timer % 30 == 0 && mobs_spawn != true) { //start spawning
 			x = MOBS_start_positonX;
 			y = MOBS_start_positonY;
 			mobs_spawn = true;
 		}
+		std::cout << " MOBS:   " << x << " \n";
 
-
-		if (timer % 1000 == 0) { //stop spawning
+		if (timer % 900 == 0) { //stop spawning
 			mobs_spawn = false;
 		}
 

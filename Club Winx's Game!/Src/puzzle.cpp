@@ -46,6 +46,20 @@ struct Map {
 };
 Map map;
 
+struct Item {
+
+	AEGfxVertexList* pMesh2{ nullptr }; // mesh of key
+	AABB				boundingBox; //collision
+	f32					size{ 0.5f };
+	AEVec2				vector{ 0.0f,0.0f };
+	AEVec2				Velocity{ 0.0f, 0.0f }; //velocity for the item 
+	AEMtx33				transform{};
+
+
+
+};
+Item item;
+
 BG puzzleLight;
 
 static AEMtx33 flipTransform1, flipTransform2;
@@ -89,8 +103,8 @@ void puzzle_load()
 	// player 2 mesh
 	SquareMesh(&player2.pMesh, 0xFFFF00FF);
 
-	//Item
-	SquareMesh(&puzzle.pMesh, 0x00FFFF00);
+	//Creating Keys
+	SquareMesh(&item.pMesh2, 0x00FF0000);
 
 	//Creating the empty
 	SquareMesh(&map.pMesh0, 0xFFA4C4DB);
@@ -193,6 +207,12 @@ void puzzle_update()
 	player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
 	player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
 
+	//item bounding box
+	item.boundingBox.min.x = item.vector.x - item.size / 2.0f;
+	item.boundingBox.min.y = item.vector.y - item.size / 2.0f;
+	item.boundingBox.max.x = item.vector.x + item.size / 2.0f;
+	item.boundingBox.max.y = item.vector.y + item.size / 2.0f;
+
 	/*------------------------------------------------------------
 	UPDATE PLAYER POSITIONS
 	------------------------------------------------------------*/
@@ -222,6 +242,8 @@ void puzzle_update()
 	MatrixCalc(puzzle.transform, puzzle.length, puzzle.height, 0.f, puzzle.IVector);
 
 	MatrixCalc(puzzleLight.transform, puzzleLight.length, puzzleLight.height, 0.0f, puzzleLight.bgCoord);
+
+	MatrixCalc(item.transform, item.size, item.size, 0.f, item.vector);
 	/*if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
 		puzzle.IVector, puzzle.length, puzzle.height) == true)
 	{
@@ -244,13 +266,11 @@ void puzzle_update()
 
 	}*/
 
-
-	if (turntransparent == TRUE) {
-
-
-		++counter;
+	if (CollisionIntersection_RectRect(item.boundingBox, item.Velocity, player2.boundingBox, player2.pVel)) {
+		std::cout << "COLLIDEEEE!!!!!!" << std::endl;
 	}
-	turntransparent = FALSE;
+
+
 }
 
 void puzzle_draw()
@@ -271,24 +291,7 @@ void puzzle_draw()
 	DRAWING PLAYERS
 	------------------------------------------------------------*/
 
-	//Item Collecteed
-	if (itemdie == TRUE) {
 
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(0.0f);
-		AEGfxSetTransform(puzzle.transform.m);
-		AEGfxMeshDraw(puzzle.pMesh, AE_GFX_MDM_TRIANGLES);
-
-	}
-	else {
-
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetBlendMode(AE_GFX_BM_NONE);
-		AEGfxSetTransform(puzzle.transform.m);
-		AEGfxMeshDraw(puzzle.pMesh, AE_GFX_MDM_TRIANGLES);
-
-	}
 
 
 	//FONTS
@@ -323,6 +326,16 @@ void puzzle_draw()
 			{
 
 				AEGfxMeshDraw(map.pMesh0, AE_GFX_MDM_TRIANGLES);
+
+			}
+			if (mapdata[i][j] == KEY)
+			{
+				AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+				AEGfxSetBlendMode(AE_GFX_BM_NONE);
+				AEMtx33Concat(&item.transform, &map.MapTransform, &item.transform);
+				AEGfxSetTransform(item.transform.m);
+				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxMeshDraw(item.pMesh2, AE_GFX_MDM_TRIANGLES);
 
 			}
 
@@ -374,11 +387,11 @@ void puzzle_free()
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
 	AEGfxMeshFree(bgPuzzle.bgMesh);
-	AEGfxMeshFree(puzzle.pMesh);
 
 	AEGfxMeshFree(map.pMesh0);
 	AEGfxMeshFree(map.pMesh1);
 	AEGfxMeshFree(puzzleLight.bgMesh);
+	AEGfxMeshFree(item.pMesh2);
 	for (int i = 0; i < GRID_ROWS; i++)
 	{
 		delete[] mapdata[i];

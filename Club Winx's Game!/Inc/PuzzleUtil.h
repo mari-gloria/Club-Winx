@@ -16,7 +16,8 @@ enum MAPOBJ {
 	EMPTY = 0,
 	WALL,
 	P1,
-	P2
+	P2,
+	KEY
 };
 
 #define GRID_COLS 36 
