@@ -192,7 +192,7 @@ void racing_init()
 	------------------------------------------------------------*/
 	bgRacingGround.height = winHEIGHT / 3.f;
 	bgRacingGround.length = bgRacing.length;
-	bgRacingGround.bgCoord.y = AEGfxGetWinMinY() - winHEIGHT / 6.f;
+	bgRacingGround.bgCoord.y = player1.pCoord.y - (bgRacingGround.height / 2.0f) - (player1.size / 2.0f);
 
 	//init pause screen
 	pause_init();
@@ -667,16 +667,6 @@ void racing_draw()
 		AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
 		/*------------------------------------------------------------
-		// DRAWING GROUND
-		------------------------------------------------------------*/
-		AEGfxSetTransform(bgRacingGround.transform.m);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(bgRacingGround.bgTex, 0, 0);
-		AEGfxMeshDraw(bgRacingGround.bgMesh, AE_GFX_MDM_TRIANGLES);
-
-		/*------------------------------------------------------------
 		// DRAWING SPLITSCREEN
 		------------------------------------------------------------*/
 		splitscreen_draw();
@@ -707,7 +697,15 @@ void racing_draw()
 		AEGfxTextureSet(bgWaves.bgTex, w, 0);
 		AEGfxMeshDraw(bgWaves.bgMesh, AE_GFX_MDM_TRIANGLES);
 
-
+		/*------------------------------------------------------------
+		// DRAWING GROUND
+		------------------------------------------------------------*/
+		AEGfxSetTransform(bgRacingGround.transform.m);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(bgRacingGround.bgTex, 0, 0);
+		AEGfxMeshDraw(bgRacingGround.bgMesh, AE_GFX_MDM_TRIANGLES);
 
 		/*------------------------------------------------------------
 		 DRAWING - Camera Movement

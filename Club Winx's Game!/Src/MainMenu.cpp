@@ -369,7 +369,7 @@ void MainMenu_Update()
 			if (hover_story == true)
 			{
 				story_click = true;
-				next_state = RACING; // TO CHANGE INTO PUZZLE 
+				next_state = PUZZLE; // TO CHANGE INTO PUZZLE 
 			}
 			else if (hover_arcade == true)
 			{
