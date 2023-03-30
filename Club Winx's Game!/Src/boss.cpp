@@ -186,7 +186,7 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void boss_load()
 {
-	std::cout << "boss:Load\n";
+	//std::cout << "boss:Load\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
@@ -251,7 +251,7 @@ void boss_load()
 
 void boss_init()
 {
-	std::cout << "boss:Initialize\n";
+	//std::cout << "boss:Initialize\n";
 	player1.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 50 };
 	player2.pCoord = { AEGfxGetWinMinX() + 50, AEGfxGetWinMinY() + 200 };
 	player1.alive = true;
@@ -299,7 +299,7 @@ void boss_update()
 
 	else
 	{
-		std::cout << "boss:Update\n";
+		//std::cout << "boss:Update\n";
 		// TIME COUNTER 
 		bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
 		bossTimeElapsed += AEFrameRateControllerGetFrameTime();
@@ -742,7 +742,7 @@ void boss_draw()
 
 	else 
 	{
-		std::cout << "boss:Draw\n";
+		//std::cout << "boss:Draw\n";
 		/*------------------------------------------------------------
 		DRAWING BACKGROUND
 		------------------------------------------------------------*/
@@ -892,7 +892,7 @@ void boss_draw()
 
 void boss_free()
 {
-	std::cout << "boss:Free\n";
+	//std::cout << "boss:Free\n";
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
@@ -909,7 +909,7 @@ void boss_free()
 
 void boss_unload()
 {
-	std::cout << "boss:Unload\n";
+	//std::cout << "boss:Unload\n";
 	AEGfxMeshFree(bgBoss.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgBoss.bgTex); // Unload Texture
 

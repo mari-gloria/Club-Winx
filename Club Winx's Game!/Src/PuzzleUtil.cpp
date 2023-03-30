@@ -37,9 +37,9 @@ int InitMapData(const char* FileName)
 			int temp = 0;
 			ifs >> temp;
 			mapdata[i][j] = temp;
-			std::cout << mapdata[i][j];
+			//std::cout << mapdata[i][j];
 		}
-		std::cout << "\n";
+		//std::cout << "\n";
 	}
 
 	ifs.close();

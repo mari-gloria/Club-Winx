@@ -251,7 +251,7 @@ void MainMenu_Update()
 {
 	//AEInputUpdate();
 	AEInputGetCursorPosition(&mouseInput_x, &mouseInput_y);
-	std::cout << mouseInput_x << ", " << mouseInput_y << std::endl;
+	//std::cout << mouseInput_x << ", " << mouseInput_y << std::endl;
 
 	if (AEInputCheckCurr(AEVK_1)) {
 		next_state = PUZZLE;
@@ -274,13 +274,13 @@ void MainMenu_Update()
 		if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, start_pos_x, start_pos_y))
 		{
 			hover_start = true;
-			std::cout << "start hover" << std::endl;
+			//std::cout << "start hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				start_click = true;
 				toggle = MODESELECTIONPAGE;
-				std::cout << "start click" << std::endl;
+				//std::cout << "start click" << std::endl;
 
 			}
 		}
@@ -288,7 +288,7 @@ void MainMenu_Update()
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, tutorial_pos_x, tutorial_pos_y))
 		{
 			hover_tutorial = true;
-			std::cout << "tutorial hover" << std::endl;
+			//std::cout << "tutorial hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
@@ -303,7 +303,7 @@ void MainMenu_Update()
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, options_pos_x, options_pos_y))
 		{
 			hover_options = true;
-			std::cout << "options hover" << std::endl;
+			//std::cout << "options hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
@@ -315,7 +315,7 @@ void MainMenu_Update()
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, credits_pos_x, credits_pos_y))
 		{
 			hover_credits = true;
-			std::cout << "credit hover" << std::endl;
+			//std::cout << "credit hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
@@ -327,7 +327,7 @@ void MainMenu_Update()
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, quit_pos_x, quit_pos_y))
 		{
 			hover_quit = true;
-			std::cout << "quit hover" << std::endl;
+			//std::cout << "quit hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{

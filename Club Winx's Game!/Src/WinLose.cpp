@@ -35,7 +35,7 @@ void Racing_Win(int player)
 			Racing_LOSER = PLAYERTWO;
 
 			// check if won
-			std::cout << "Won Player 1" << std::endl;
+			//std::cout << "Won Player 1" << std::endl;
 			// bool to yes show pic near player head
 			winRacing.bgCoord = { player1.pCoord.x + 60.0f, player1.pCoord.y + 60.0f };
 			// if press enter, goes to end of round
@@ -50,7 +50,7 @@ void Racing_Win(int player)
 			Racing_LOSER = PLAYERONE;
 
 			// check if won
-			std::cout << "Won Player 2" << std::endl; 
+			//std::cout << "Won Player 2" << std::endl; 
 			winRacing.bgCoord = { player2.pCoord.x + 60.0f, player2.pCoord.y + 60.0f };
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 				//next_state = WIN_PLAYERTWO;

@@ -172,9 +172,9 @@ void LOSE_BOTHPLAYERS_update()
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
 	// if press back, go replay
-	std::cout << "prev" << prev_state << std::endl;
-	std::cout << "curr" << curr_state << std::endl;
-	std::cout << "next" << next_state << std::endl;
+	//std::cout << "prev" << prev_state << std::endl;
+	//std::cout << "curr" << curr_state << std::endl;
+	//std::cout << "next" << next_state << std::endl;
 
 	if (AEInputCheckReleased(AEVK_SPACE)) {
 		next_state = prev_state;

@@ -60,7 +60,7 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void racing_load()
 {
-	std::cout << "racing:LOAD\n";
+	//std::cout << "racing:LOAD\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
@@ -124,7 +124,7 @@ void racing_load()
 
 void racing_init()
 {
-	std::cout << "racing:Initialize\n";
+	//std::cout << "racing:Initialize\n";
 	/*------------------------------------------------------------
 	// INIT PLAYERS
 	------------------------------------------------------------*/
@@ -205,13 +205,13 @@ void racing_update()
 {
 	if (game_paused)
 	{
-		std::cout << "PAUSED" << std::endl;		
+		//std::cout << "PAUSED" << std::endl;		
 		pause_update();
 	}
 
 	else
 	{
-		std::cout << "CONTINUE\n";
+		//std::cout << "CONTINUE\n";
 		/*------------------------------------------------------------
 		// CHANGE STATE CONDITIONS
 		------------------------------------------------------------*/
@@ -619,7 +619,7 @@ void racing_draw()
 
 	else
 	{
-		std::cout << "racing:Draw\n";
+		//std::cout << "racing:Draw\n";
 		/*------------------------------------------------------------
 		DRAWING BACKGROUND
 		------------------------------------------------------------*/
@@ -718,7 +718,7 @@ void racing_draw()
 
 void racing_free()
 {
-	std::cout << "racing:Free\n";
+	//std::cout << "racing:Free\n";
 	/*------------------------------------------------------------
 	// Resetting Camera
 	------------------------------------------------------------*/
@@ -732,7 +732,7 @@ void racing_free()
 
 void racing_unload()
 {
-	std::cout << "racing:Unload\n";
+	//std::cout << "racing:Unload\n";
 	/*------------------------------------------------------------
 	// Unload Background Meshes & Texture
 	------------------------------------------------------------*/

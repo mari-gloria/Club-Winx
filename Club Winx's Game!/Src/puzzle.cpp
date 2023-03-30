@@ -52,7 +52,7 @@ static AEMtx33 flipTransform1, flipTransform2;
 
 void puzzle_load()
 {
-	std::cout << "puzzle:Load\n";
+	//std::cout << "puzzle:Load\n";
 
 	AEGfxSetBackgroundColor(255.0f, 0.0f, 0.0f);
 	bgPuzzle.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
@@ -113,7 +113,7 @@ void puzzle_load()
 
 void puzzle_init()
 {
-	std::cout << "puzzle:Initialize\n";
+	//std::cout << "puzzle:Initialize\n";
 
 	/*------------------------------------------------------------
 	INIT PLAYERS
@@ -127,7 +127,7 @@ void puzzle_init()
 	------------------------------------------------------------*/
 	if (!InitMapData("Assets/Data/puzzlemap.txt"))
 	{
-		std::cout << "unable to open map data";
+		//std::cout << "unable to open map data";
 		next_state = QUIT;
 	}
 
@@ -140,7 +140,7 @@ void puzzle_init()
 
 void puzzle_update()
 {
-	std::cout << "puzzle:Update\n";
+	//std::cout << "puzzle:Update\n";
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -209,7 +209,7 @@ void puzzle_update()
 	------------------------------------------------------------*/
 	Map_Player_CollisionUpdate(&player1);
 	Map_Player_CollisionUpdate(&player2);
-	std::cout << player1.pFlag << '\n';
+	//std::cout << player1.pFlag << '\n';
 	/*------------------------------------------------------------
 	MATRIX CALCULATION
 	------------------------------------------------------------*/
@@ -225,7 +225,7 @@ void puzzle_update()
 	/*if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
 		puzzle.IVector, puzzle.length, puzzle.height) == true)
 	{
-		std::cout << "COLLIDE  " << std::endl;
+		//std::cout << "COLLIDE  " << std::endl;
 
 
 
@@ -255,7 +255,7 @@ void puzzle_update()
 
 void puzzle_draw()
 {
-	std::cout << "puzzle:Draw\n";
+	//std::cout << "puzzle:Draw\n";
 
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
@@ -369,7 +369,7 @@ void puzzle_draw()
 
 void puzzle_free()
 {
-	std::cout << "puzzle:Free\n";
+	//std::cout << "puzzle:Free\n";
 
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxMeshFree(player2.pMesh);
@@ -388,7 +388,7 @@ void puzzle_free()
 
 void puzzle_unload()
 {
-	std::cout << "puzzle:Unload\n";
+	//std::cout << "puzzle:Unload\n";
 
 	AEGfxTextureUnload(bgPuzzle.bgTex);
 	AEGfxTextureUnload(Key);

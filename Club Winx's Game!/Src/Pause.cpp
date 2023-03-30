@@ -61,7 +61,7 @@ int mouse_x, mouse_y;
 
 void pause_load()
 {
-	std::cout << "pause:Load\n";
+	////std::cout << "pause:Load\n";
 	//set background - black
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
@@ -76,7 +76,7 @@ void pause_load()
 
 void pause_init()
 {
-	std::cout << "pause:Initialize\n";
+	//std::cout << "pause:Initialize\n";
 	continue_button.coord.x = -125.0f;
 	continue_button.coord.y = 0.0f;
 
@@ -86,7 +86,7 @@ void pause_init()
 
 void pause_update()
 {
-	std::cout << "pause:Update\n";
+	////std::cout << "pause:Update\n";
 	if (AEInputCheckTriggered(AEVK_ESCAPE))
 	{
 		next_state = MENU;
@@ -98,7 +98,7 @@ void pause_update()
 	
 	if (checkHovering(mouse_x, mouse_y, continue_button.length, continue_button.height, continue_button.coord.x, continue_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
-		std::cout << " hover \n";
+		//std::cout << " hover \n";
 		game_paused = false;
 	}
 
@@ -111,13 +111,13 @@ void pause_update()
 
 	//update matrix
 	MatrixCalc(continue_button.transform, continue_button.length, continue_button.height, 0.0f, continue_button.coord);
-	std::cout << continue_button.coord.y << "\n";
+	//std::cout << continue_button.coord.y << "\n";
 	MatrixCalc(back_button.transform, back_button.length, back_button.height, 0.0f, back_button.coord);
 }
 
 void pause_draw()
 {
-	std::cout << "pause:Draw\n";
+	//std::cout << "pause:Draw\n";
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
 	draw_pause_buttons(continue_button);
@@ -140,14 +140,14 @@ void pause_draw()
 
 void pause_free()
 {
-	std::cout << "pause:Free\n";
+	//std::cout << "pause:Free\n";
 	AEGfxMeshFree(continue_button.mesh);
 	AEGfxMeshFree(back_button.mesh);
 }
 
 void pause_unload()
 {
-	std::cout << "pause:Unload\n";
+	//std::cout << "pause:Unload\n";
 	AEGfxTextureUnload(continue_button.texture);
 	AEGfxTextureUnload(back_button.texture);
 }

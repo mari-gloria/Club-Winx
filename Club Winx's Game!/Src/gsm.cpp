@@ -35,7 +35,7 @@ initial game state
 void GSM_init(int startingState)
 {
 	curr_state = prev_state = next_state = startingState;  //initialize all state to be the same 
-	std::cout << "GSM:Initialize\n";
+	//std::cout << "GSM:Initialize\n";
 }
 
 
@@ -46,7 +46,7 @@ updates function pointer according to the current game state
 ------------------------------------------------------------*/
 void GSM_update()
 {
-	std::cout << "GSM:Update\n";
+	//std::cout << "GSM:Update\n";
 
 	switch (curr_state)
 	{
