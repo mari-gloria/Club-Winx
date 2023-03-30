@@ -204,8 +204,7 @@ void racing_update()
 {
 	if (game_paused)
 	{
-		std::cout << "PAUSED" << std::endl;
-		
+		std::cout << "PAUSED" << std::endl;		
 		pause_update();
 	}
 

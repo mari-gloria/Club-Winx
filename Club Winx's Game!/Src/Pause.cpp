@@ -78,10 +78,10 @@ void pause_init()
 {
 	std::cout << "pause:Initialize\n";
 	continue_button.coord.x = -125.0f;
-	continue_button.coord.y = CamY;
+	continue_button.coord.y = 0.0f;
 
 	back_button.coord.x = 125.0f;
-	back_button.coord.y = CamY;
+	back_button.coord.y = 0.0f;
 }
 
 void pause_update()
@@ -94,27 +94,34 @@ void pause_update()
 
 	//update mouse coord
 	AEInputGetCursorPosition(&mouse_x, &mouse_y);
-
+	AEGfxSetCamPosition(0, 0);
+	
 	if (checkHovering(mouse_x, mouse_y, continue_button.length, continue_button.height, continue_button.coord.x, continue_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
-		game_paused = (game_paused == true) ? false : true;
+		std::cout << " hover \n";
+		game_paused = false;
 	}
 
 	if (checkHovering(mouse_x, mouse_y, back_button.length, back_button.height, back_button.coord.x, back_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
-		game_paused = (game_paused == true) ? false : true;
+		game_paused = false;
 		next_state = MENU;
 	}
 	                  
 
 	//update matrix
 	MatrixCalc(continue_button.transform, continue_button.length, continue_button.height, 0.0f, continue_button.coord);
+	std::cout << continue_button.coord.y << "\n";
 	MatrixCalc(back_button.transform, back_button.length, back_button.height, 0.0f, back_button.coord);
 }
 
 void pause_draw()
 {
 	std::cout << "pause:Draw\n";
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+
+	draw_pause_buttons(continue_button);
+	draw_pause_buttons(back_button);
 	/*------------------------------------------------------------
 	"GAME PAUSED" TEXT
 	------------------------------------------------------------*/
@@ -128,10 +135,7 @@ void pause_draw()
 	/*------------------------------------------------------------
 	draw buttons
 	------------------------------------------------------------*/
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-
-	draw_pause_buttons(continue_button);
-	draw_pause_buttons(back_button);
+	
 }
 
 void pause_free()

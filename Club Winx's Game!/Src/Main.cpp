@@ -99,7 +99,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				next_state = QUIT;
 
 			if (AEInputCheckTriggered(AEVK_SPACE) && curr_state != MENU)
-				game_paused = true;
+				game_paused = (game_paused == true)? false : true;
 		
 			AESysFrameEnd();
 
