@@ -51,7 +51,7 @@ void WIN_BOTHPLAYERS_init()
 
 void WIN_BOTHPLAYERS_update()
 {
-	AEAudioUpdate();
+	//AEAudioUpdate();
 
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
@@ -167,7 +167,7 @@ void LOSE_BOTHPLAYERS_init()
 
 void LOSE_BOTHPLAYERS_update()
 {
-	AEAudioUpdate();
+	//AEAudioUpdate();
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
@@ -281,7 +281,7 @@ void ENDGAME_init()
 
 void ENDGAME_update()
 {
-	AEAudioUpdate();
+	//AEAudioUpdate();
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/

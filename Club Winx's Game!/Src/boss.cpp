@@ -341,7 +341,7 @@ void boss_update()
 		PLAYER UPDATE
 		------------------------------------------------------------*/
 		input_handle();
-		AEAudioUpdate();
+		//AEAudioUpdate();
 
 		if (player1.HP < 0)
 		{
