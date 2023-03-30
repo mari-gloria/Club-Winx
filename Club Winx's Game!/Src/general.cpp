@@ -33,7 +33,7 @@ BG			bgRacing, bgPuzzle, bgBoss, bgWin, bgTut;
 BG			winRacing, bgWaves, winPuzzle, winBoss, bgRacingGround;
 
 
-Audio		jump,collect;
+Audio		jump, collect, win, lose;
 
 Player		player1, player2;
 

@@ -169,7 +169,8 @@ void racing_init()
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
 	CamX = 0.0f;
-	CamY = 0.0f;
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 6;
+
 
 
 	/*------------------------------------------------------------
@@ -718,9 +719,13 @@ void racing_draw()
 void racing_free()
 {
 	std::cout << "racing:Free\n";
-	CamX = 0.0f; 
+	/*------------------------------------------------------------
+	// Resetting Camera
+	------------------------------------------------------------*/
+	CamX = 0.0f;
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
+
 
 	pause_free();
 }
@@ -768,7 +773,8 @@ void racing_unload()
 	/*------------------------------------------------------------
 	// Exit Audio
 	------------------------------------------------------------*/
-	//AEAudioExit(); //exit the audio
+	AEAudioStopGroup(jump.aGroup);
 
 	pause_unload();
+
 }

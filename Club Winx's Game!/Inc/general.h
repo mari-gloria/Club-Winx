@@ -117,7 +117,7 @@ struct Audio {
 	AEAudio			audio	{ nullptr };
 	AEAudioGroup	aGroup	{ nullptr };
 };
-extern Audio jump,collect;
+extern Audio jump, collect, win, lose;
 
 
 
@@ -191,7 +191,7 @@ Platform
 ---------------------------------------------------------------------------*/
 
 // Global constant for array for platforms
-#define MAX_NUM_PLATFORMS 50
+#define MAX_NUM_PLATFORMS 20
 
 
 

@@ -116,6 +116,8 @@ void puzzle_init()
 		std::cout << "unable to open map data";
 		next_state = QUIT;
 	}
+
+
 }
 
 void puzzle_update()
@@ -327,6 +329,7 @@ void puzzle_free()
 	{
 		delete[] mapdata[i];
 	}
+
 }
 
 void puzzle_unload()
