@@ -51,7 +51,7 @@ float const BOOST_JUMP_VEL = 16.0f;
 
 float bgspeed; 
 
-AEMtx33 flipTransform1, flipTransform2;
+static AEMtx33 flipTransform1, flipTransform2;
 //AEMtx33Scale(&flipTransform, -1.0f, 1.0f); // horizontal scale
 //(&player1.transform, &player1.transform, &flipTransform);
 

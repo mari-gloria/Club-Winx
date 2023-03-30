@@ -31,7 +31,7 @@ bool itemdie = { FALSE };
 /* ------------------------------------------------------------
 CONSTANTS
 ------------------------------------------------------------*/
-
+f64 lightRadius = 100.0; // minimum 70.0
 
 
 
@@ -46,6 +46,9 @@ struct Map {
 };
 Map map;
 
+BG puzzleLight;
+
+static AEMtx33 flipTransform1, flipTransform2;
 
 void puzzle_load()
 {
@@ -54,6 +57,10 @@ void puzzle_load()
 	AEGfxSetBackgroundColor(255.0f, 0.0f, 0.0f);
 	bgPuzzle.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgPuzzle.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+
+	/*------------------------------------------------------------
+	LOADING TEXTIRES (IMAGES)
+	------------------------------------------------------------*/
 
 	// Textures for Puzzle
 	bgPuzzle.bgTex = AEGfxTextureLoad("Assets/PUZZLE.png");
@@ -65,6 +72,11 @@ void puzzle_load()
 	Spiderweb = AEGfxTextureLoad("Assets/SPIDERWEB.png");
 	AE_ASSERT_MESG(Spiderweb, "Failed to create Spiderweb!!");
 
+	puzzleLight.bgTex = AEGfxTextureLoad("Assets/puzzleLight.png");
+	AE_ASSERT_MESG(puzzleLight.bgTex, "Failed to create puzzle light!!");
+
+	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
+	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
 	/*------------------------------------------------------------
 	CREATING OBJECTS AND SHAPES
 	------------------------------------------------------------*/
@@ -86,6 +98,8 @@ void puzzle_load()
 	//Creating  walls
 	SquareMesh(&map.pMesh1, 0xFF7B94AB);
 
+	//creating puzzle light 
+	SquareMesh(&puzzleLight.bgMesh, 0);
 
 	//Compute the matrix of the binary map
 	AEMtx33 scale, trans;// , flip;
@@ -117,7 +131,11 @@ void puzzle_init()
 		next_state = QUIT;
 	}
 
+	puzzleLight.length = puzzleLight.height = lightRadius;
+	puzzleLight.bgCoord = player1.pCoord;
 
+	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
+	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
 }
 
 void puzzle_update()
@@ -145,6 +163,21 @@ void puzzle_update()
 	------------------------------------------------------------*/
 	input_handle();
 
+	if (AEInputCheckTriggered(AEVK_A)) {
+		AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 
+
+	}
+	if (AEInputCheckTriggered(AEVK_D)) {
+		AEMtx33Scale(&flipTransform1, 1.0f, 1.0f); // player 1 normal 
+	}
+	if (AEInputCheckTriggered(AEVK_LEFT)) {
+		AEMtx33Scale(&flipTransform2, -1.0f, 1.0f); // player 2 flip 
+
+	}
+	if (AEInputCheckTriggered(AEVK_RIGHT)) {
+		AEMtx33Scale(&flipTransform2, 1.0f, 1.0f); // player 1 normal
+	}
+
 	/*------------------------------------------------------------
 	UPDATE PLAYER BOUNDING BOX
 	------------------------------------------------------------*/
@@ -169,6 +202,8 @@ void puzzle_update()
 	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
 	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
 	
+	// update light position 
+	puzzleLight.bgCoord = player1.pCoord;
 	/*------------------------------------------------------------
 	COLLISION CHECKS
 	------------------------------------------------------------*/
@@ -186,6 +221,7 @@ void puzzle_update()
 
 	MatrixCalc(puzzle.transform, puzzle.length, puzzle.height, 0.f, puzzle.IVector);
 
+	MatrixCalc(puzzleLight.transform, puzzleLight.length, puzzleLight.height, 0.0f, puzzleLight.bgCoord);
 	/*if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
 		puzzle.IVector, puzzle.length, puzzle.height) == true)
 	{
@@ -293,22 +329,40 @@ void puzzle_draw()
 		}
 	}
 
+	/*------------------------------------------------------------
+		// DRAWING PLAYERS
+	------------------------------------------------------------*/
 	// Drawing player 1
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEMtx33Concat(&player1.transform, &player1.transform, &flipTransform1);
 	AEMtx33Concat(&player1.transform, &map.MapTransform, &player1.transform);
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTransform(player1.transform.m);
-	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(player1.pTex, 0, 0);
 	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
-
 	// drawing player 2
+	//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEMtx33Concat(&player2.transform, &player2.transform, &flipTransform2);
 	AEMtx33Concat(&player2.transform, &map.MapTransform, &player2.transform);
 	AEGfxSetTransform(player2.transform.m);
-	//AEGfxSetBlendMode(AE_GFX_BM_NONE);
-	AEGfxTextureSet(NULL, 0, 0);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(player2.pTex, 0, 0);
 	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 	
+	// RENDER LIGHT AND SHADOW
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEMtx33Concat(&puzzleLight.transform, &map.MapTransform, &puzzleLight.transform);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetTransparency(0.97f);
+	AEGfxSetTransform(puzzleLight.transform.m);
+	AEGfxTextureSet(puzzleLight.bgTex, 0, 0);
+	AEGfxMeshDraw(puzzleLight.bgMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 
@@ -324,7 +378,7 @@ void puzzle_free()
 
 	AEGfxMeshFree(map.pMesh0);
 	AEGfxMeshFree(map.pMesh1);
-
+	AEGfxMeshFree(puzzleLight.bgMesh);
 	for (int i = 0; i < GRID_ROWS; i++)
 	{
 		delete[] mapdata[i];
@@ -339,6 +393,9 @@ void puzzle_unload()
 	AEGfxTextureUnload(bgPuzzle.bgTex);
 	AEGfxTextureUnload(Key);
 	AEGfxTextureUnload(Spiderweb);
+	AEGfxTextureUnload(player1.pTex);
+	AEGfxTextureUnload(player2.pTex);
+	AEGfxTextureUnload(puzzleLight.bgTex);
 
 }
 
