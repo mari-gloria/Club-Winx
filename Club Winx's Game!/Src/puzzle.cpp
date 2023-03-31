@@ -50,15 +50,23 @@ struct Item {
 
 	AEGfxVertexList* pMesh2{ nullptr }; // mesh of key
 	AABB				boundingBox; //collision
-	f32					size{ 0.5f };
-	AEVec2				vector{ 0.0f,0.0f };
+	AABB				boundingBox2; //collision
+	f32					size{ 1.0f };
+	AEVec2				vector{ 2.5,3.5 };
+	AEVec2				vector2{ 10.5,9.5 };
 	AEVec2				Velocity{ 0.0f, 0.0f }; //velocity for the item 
 	AEMtx33				transform{};
+	AEMtx33				transform2{};
+	AEMtx33				transform3{};
+	AEVec2               posCurr;
+	AEVec2              velCurr;
+	float               scale;
+	int					pFlag;
 
 
 
 };
-Item item;
+Item item, item2;
 
 BG puzzleLight;
 
@@ -123,6 +131,10 @@ void puzzle_load()
 	//creating puzzle light 
 	SquareMesh(&puzzleLight.bgMesh, 0);
 
+	//creating keys
+	SquareMesh(&item.pMesh2, 0x00FF0000);
+	SquareMesh(&item2.pMesh2, 0x00FF0000);
+
 	//load pause screen
 	pause_load();
 
@@ -176,6 +188,12 @@ void puzzle_init()
 	// PLAY SOUND EFFECTS/AUDIO
 	------------------------------------------------------------*/
 	AEAudioPlay(puzzle_bgm.audio, puzzle_bgm.aGroup, 0.75, 1, -1);
+
+	/*------------------------------------------------------------
+	// INIT KEYS
+	------------------------------------------------------------*/
+	item.vector = { 2.5,3.5 };
+	item2.vector2 = { 7.5,9.5 };
 
 	//init pause screen
 	pause_init();
@@ -266,6 +284,11 @@ void puzzle_update()
 		item.boundingBox.max.x = item.vector.x + item.size / 2.0f;
 		item.boundingBox.max.y = item.vector.y + item.size / 2.0f;
 
+		item2.boundingBox2.min.x = item2.vector2.x - item2.size / 2.0f;
+		item2.boundingBox2.min.y = item2.vector2.y - item2.size / 2.0f;
+		item2.boundingBox2.max.x = item2.vector2.x + item2.size / 2.0f;
+		item2.boundingBox2.max.y = item2.vector2.y + item2.size / 2.0f;
+
 		/*------------------------------------------------------------
 		UPDATE PLAYER POSITIONS
 		------------------------------------------------------------*/
@@ -297,6 +320,7 @@ void puzzle_update()
 		MatrixCalc(puzzleLight.transform, puzzleLight.length, puzzleLight.height, 0.0f, puzzleLight.bgCoord);
 
 		MatrixCalc(item.transform, item.size, item.size, 0.f, item.vector);
+		MatrixCalc(item2.transform2, item2.size, item2.size, 0.f, item2.vector2);
 		/*if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
 			puzzle.IVector, puzzle.length, puzzle.height) == true)
 		{
@@ -319,8 +343,17 @@ void puzzle_update()
 
 		}*/
 
-		if (CollisionIntersection_RectRect(item.boundingBox, item.Velocity, player2.boundingBox, player2.pVel)) {
+		if (CollisionIntersection_RectRect(item.boundingBox, item.Velocity, player1.boundingBox, player1.pVel)) {
 			std::cout << "COLLIDEEEE!!!!!!" << std::endl;
+			item.vector = { -1000,1000 };
+
+		}
+
+		if (CollisionIntersection_RectRect(item2.boundingBox2, item2.vector2, player1.boundingBox, player1.pVel))
+		{
+			std::cout << "COLLIDEEEE!!!!!!" << std::endl;
+			item2.vector2 = { -1000,1000 };
+
 		}
 	}
 }
@@ -384,16 +417,7 @@ void puzzle_draw()
 					AEGfxMeshDraw(map.pMesh0, AE_GFX_MDM_TRIANGLES);
 
 				}
-				if (mapdata[i][j] == KEY)
-				{
-					AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-					AEGfxSetBlendMode(AE_GFX_BM_NONE);
-					AEMtx33Concat(&item.transform, &map.MapTransform, &item.transform);
-					AEGfxSetTransform(item.transform.m);
-					AEGfxTextureSet(NULL, 0, 0);
-					AEGfxMeshDraw(item.pMesh2, AE_GFX_MDM_TRIANGLES);
 
-				}
 
 			}
 		}
@@ -423,6 +447,20 @@ void puzzle_draw()
 		AEGfxTextureSet(player2.pTex, 0, 0);
 		AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
 
+		//RENDER KEYS
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEMtx33Concat(&item.transform, &map.MapTransform, &item.transform);
+		AEGfxSetTransform(item.transform.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(item.pMesh2, AE_GFX_MDM_TRIANGLES);
+
+
+		AEMtx33Concat(&item2.transform2, &map.MapTransform, &item2.transform2);
+		AEGfxSetTransform(item2.transform2.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(item2.pMesh2, AE_GFX_MDM_TRIANGLES);
+
 		// RENDER LIGHT AND SHADOW
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEMtx33Concat(&puzzleLight.transform, &map.MapTransform, &puzzleLight.transform);
@@ -446,6 +484,8 @@ void puzzle_draw()
 		memset(strBuf, 0, 1000 * sizeof(char));
 		sprintf_s(strBuf, "No. of keys: %d", counter);
 		AEGfxPrint(text, strBuf, numberofkeys.x, numberofkeys.y, 0.7f, 1.0f, 1.0f, 1.0f);
+
+
 
 	}
 }
