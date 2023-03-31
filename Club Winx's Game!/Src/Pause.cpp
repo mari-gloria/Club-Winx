@@ -89,7 +89,8 @@ void pause_update()
 	////std::cout << "pause:Update\n";
 	if (AEInputCheckTriggered(AEVK_ESCAPE))
 	{
-		next_state = MENU;
+		//next_state = MENU;
+		game_paused = false;
 	}
 
 	//update mouse coord

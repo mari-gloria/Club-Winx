@@ -352,10 +352,6 @@ void boss_update()
 		if (AEInputCheckCurr(AEVK_Q)) {
 			next_state = QUIT;
 		}
-		if (AEInputCheckCurr(AEVK_ESCAPE)) {
-			curr_state = RESTART;
-			next_state = MENU;
-		}
 
 		/*------------------------------------------------------------
 		PLAYER UPDATE

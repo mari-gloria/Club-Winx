@@ -95,10 +95,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 			// check if forcing the application to quit
-			if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
-				next_state = QUIT;
+			//if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
+				//next_state = QUIT;
 
-			if (AEInputCheckReleased(AEVK_SPACE) && curr_state != MENU && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
+			if (AEInputCheckReleased(AEVK_ESCAPE) && curr_state != MENU && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
 				game_paused = (game_paused == true) ? false : true;
 
 				//if (prev_state != PAUSE || curr_state == MENU) {

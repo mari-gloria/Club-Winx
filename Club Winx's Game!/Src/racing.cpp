@@ -254,9 +254,6 @@ void racing_update()
 		if (AEInputCheckCurr(AEVK_BACK)) {
 			next_state = RESTART;
 		}
-		if (AEInputCheckCurr(AEVK_ESCAPE)) {
-			next_state = MENU;
-		}
 
 		/*------------------------------------------------------------
 		// TIMER

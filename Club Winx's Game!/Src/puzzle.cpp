@@ -220,10 +220,6 @@ void puzzle_update()
 		if (AEInputCheckCurr(AEVK_Q)) {
 			next_state = QUIT;
 		}
-		if (AEInputCheckCurr(AEVK_ESCAPE)) {
-			next_state = MENU;
-		}
-
 		/*------------------------------------------------------------
 		// TIMER
 		------------------------------------------------------------*/
