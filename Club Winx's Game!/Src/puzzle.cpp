@@ -31,8 +31,8 @@ bool itemdie = { FALSE };
 /* ------------------------------------------------------------
 CONSTANTS
 ------------------------------------------------------------*/
-f64 lightRadius = 100.0; // minimum 70.0
-
+const f64 lightRadius = 100.0; // minimum 70.0
+const f32 shadowAlpha = 0.97f; ////CHANGE TRANSPARENCY OF SHADOW HERE
 
 
 /* ------------------------------------------------------------
@@ -386,7 +386,7 @@ void puzzle_draw()
 		AEMtx33Concat(&puzzleLight.transform, &map.MapTransform, &puzzleLight.transform);
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetTransparency(0.97f);
+		AEGfxSetTransparency(shadowAlpha); 
 		AEGfxSetTransform(puzzleLight.transform.m);
 		AEGfxTextureSet(puzzleLight.bgTex, 0, 0);
 		AEGfxMeshDraw(puzzleLight.bgMesh, AE_GFX_MDM_TRIANGLES);

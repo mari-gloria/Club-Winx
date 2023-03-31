@@ -184,7 +184,7 @@ COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& 
 {
 
 	//player hotspots
-	AEVec2 Atop, Abottom;
+	AEVec2 Atop{}, Abottom{};
 
 	Atop.x = (aabb1.min.x + aabb1.max.x) / 2.0f;
 	Atop.y = aabb1.max.y;
@@ -193,7 +193,7 @@ COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& 
 	Abottom.y = aabb1.min.y;
 
 	//platform hotspots
-	AEVec2 Btop, Bbottom;
+	AEVec2 Btop{}, Bbottom{};
 
 	Btop.x = (aabb2.min.x + aabb2.max.x) / 2.0f;
 	Btop.y = aabb2.max.y;

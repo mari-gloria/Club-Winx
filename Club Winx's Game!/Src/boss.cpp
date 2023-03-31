@@ -23,16 +23,17 @@
 CONSTANTS
 ------------------------------------------------------------*/
 int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
-const f32 BULLETSPEED = 10.0f;
+const f32 BULLETSPEED = 12.0f; // speed of players bullet
 const f32 PLAYERDMG = 5.5f; //Player's hit
-const f32 BOSS_MAX_HP = 500.f;
-const f32 PLAYER_MAX_HP = 150.f;
+const f32 BOSS_MAX_HP = 500.f; //  boss hp
+const f32 PLAYER_MAX_HP = 150.f; // players hp
 const f32 PLAYER2_MAX_HP = 150.f;
-const f32 BOSSATTACK_1_DMG = 5.5f;
-const f32 MOBSATTACK_DMG = 1.5f;
-const f32 MOBS_MAX_HP = 50.f;
-const f32 bgspeed = 0.05F;
-
+const f32 BOSSATTACK_1_DMG = 5.5f;  // boss attack dmg
+const f32 MOBSATTACK_DMG = 1.5f;  // mobs attack dmg
+const f32 MOBS_MAX_HP = 50.f;  // mobs hp 
+const f32 bgspeed = 0.05F; // bg speed 
+const f32 bossMoveLimit = 130.f; // limit of boss movement Y value 
+const f32 bossSpeed = 50.f; // speed of boss
 /*------------------------------------------------------------
 PLAYER BULLETS
 ------------------------------------------------------------*/
@@ -94,7 +95,7 @@ AEGfxVertexList* pbossbullet{ nullptr };
 
 const f32 gravity = 9.8f;
 f64 bossTimeElapsed = 0.0f;
-f64 bossmovetime = 0.0f;
+bool bossSwitch;
 /*-----------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
@@ -268,13 +269,12 @@ void boss_init()
 	player2.HP = PLAYER2_MAX_HP; //initialise the first length of max_hp
 
 	boss.HP = BOSS_MAX_HP;
-	boss.alive = true;
-	boss.Bcoord = { 380.0f, -30.f };
+	boss.alive = false;
+	boss.Bcoord = { 380.f, -30.f }; // 380, -30.f 
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
-	bossmovetime = 0.0;
-
+	bossSwitch = false;
 	for (int i = 0; i < MAXWAVE; i++)
 	{
 		bossbullets1[i].shot = false;
@@ -306,14 +306,13 @@ void boss_update()
 		// TIME COUNTER 
 		bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
 		bossTimeElapsed += AEFrameRateControllerGetFrameTime();
-		bossmovetime += AEFrameRateControllerGetFrameTime();
 
 		/*------------------------------------------------------------
 		CHANGE STATE CONDITION
 		------------------------------------------------------------*/
 		//NOT DONE!! still testing
 		//players win
-		if (!boss.alive)
+		if (!boss.alive && boss.HP <=0)
 		{
 			next_state = ENDGAME;
 		}
@@ -365,6 +364,14 @@ void boss_update()
 			//boss.Bhealth.length = bossHP;
 		}
 
+		if (mobs_stop == true)
+		{
+			boss.alive = true; 
+		}
+		else
+		{
+			boss.alive = false;
+		}
 		/*------------------------------------------------------------
 		MOBS UPDATE
 		------------------------------------------------------------*/
@@ -392,7 +399,7 @@ void boss_update()
 				//bossTimeElapsed = 0.0;
 				bulletTimeElapsed = 0.0;
 			}
-			if (boss.alive == FALSE) { //bullets will stop shooting when monster dies
+			if (boss.alive == FALSE && boss.HP <= 0) { //bullets will stop shooting when monster dies
 
 				bullets1[i].shot = FALSE;
 				bullets2[i].shot = FALSE;
@@ -481,6 +488,34 @@ void boss_update()
 			bossbullets1[i].coords.x -= (f32)(bossbullets1[i].velocity.x * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
 			bossbullets1[i].coords.y += (f32)(bossbullets1[i].velocity.y * AEFrameRateControllerGetFrameTime() * bossbullets1[i].speed); // bullet speed
 		}
+
+		/*------------------------------------------------------------
+		BOSS MOVEMENT
+		------------------------------------------------------------*/
+		if (boss.alive)
+		{
+			if (boss.Bcoord.y <= -bossMoveLimit)
+			{
+				bossSwitch = true;
+			}
+			else if (boss.Bcoord.y >= bossMoveLimit)
+			{
+				bossSwitch = false;
+			}
+
+			if (bossSwitch)
+			{
+				boss.bossVel.y = bossSpeed;
+			}
+			else
+			{
+				boss.bossVel.y = -bossSpeed;
+			}
+		}
+
+		boss.Bcoord.y += boss.bossVel.y * g_dt;
+		boss.Bcoord.x += boss.bossVel.x * g_dt;
+
 		/*------------------------------------------------------------
 		COLLISION CHECKS
 		------------------------------------------------------------*/
@@ -532,7 +567,7 @@ void boss_update()
 
 			//Shoot BOSS
 			//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
-			if (mobs_stop == true) {
+			//if (mobs_stop == true) {
 				if (boss.alive)
 				{
 					if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
@@ -558,7 +593,7 @@ void boss_update()
 
 					}
 				}
-			}
+			//}
 			//Shoot MOBS
 			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
 			{
@@ -841,7 +876,7 @@ void boss_draw()
 		DRAWING  BOSS ATTACKS
 		------------------------------------------------------------*/
 		for (int i = 0; i < MAXWAVE; i++) {
-			if (mobs_stop == true) { //bullets start shooting after mobs died
+			//if (mobs_stop == true) { //bullets start shooting after mobs died
 
 				if (bossbullets1[i].shot && boss.alive)
 				{
@@ -851,7 +886,7 @@ void boss_draw()
 					AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
 				}
 
-			}
+			//}
 			
 		}
 
@@ -873,7 +908,7 @@ void boss_draw()
 		/*------------------------------------------------------------
 		 Rendering of Boss Health System/ BOSS
 		------------------------------------------------------------*/
-		if (mobs_stop == true) {
+		//if (mobs_stop == true) {
 
 			if (boss.alive) {
 
@@ -895,7 +930,7 @@ void boss_draw()
 
 			}
 
-		}
+		//}
 		
 		/*------------------------------------------------------------
 		 Rendering of Boss Health System/ BOSS
@@ -921,7 +956,6 @@ void boss_free()
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
-	bossmovetime = 0.0;
 
 	for (int i = 0; i < MAX_BULLETS; i++)
 	{

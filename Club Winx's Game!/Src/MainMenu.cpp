@@ -203,42 +203,42 @@ void MainMenu_Init()
 	//Load background mesh
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-WINDOW_W / 2, -WINDOW_H / 2, 0x00FFFFFF, 0.0f, 1.0f,
-		WINDOW_W / 2, -WINDOW_H / 2, 0x00FFFFFF, 1.0f, 1.0f,
-		-WINDOW_W / 2, WINDOW_H / 2, 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(-WINDOW_W / 2), (float)(-WINDOW_H / 2), 0x00FFFFFF, 0.0f, 1.0f,
+		(float)(WINDOW_W / 2), (float)(-WINDOW_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
+		(float)(-WINDOW_W / 2), (float)(WINDOW_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 
 	AEGfxTriAdd(
-		WINDOW_W / 2, -WINDOW_H / 2, 0x00FFFFFF, 1.0f, 1.0f,
-		WINDOW_W / 2, WINDOW_H / 2, 0x00FFFFFF, 1.0f, 0.0f,
-		-WINDOW_W / 2, WINDOW_H / 2, 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(WINDOW_W / 2), (float)(-WINDOW_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
+		(float)(WINDOW_W / 2), (float)(WINDOW_H / 2), 0x00FFFFFF, 1.0f, 0.0f,
+		(float)(-WINDOW_W / 2), (float)(WINDOW_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 	Main_Menu_Mesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(Main_Menu_Mesh, "Failed to create Main_Menu_Mesh!!");
 
 	//Load Main Menu Button Mesh
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-MAIN_MENU_BUTTON_W / 2, -MAIN_MENU_BUTTON_H / 2, 0x00FFFFFF, 0.0f, 1.0f,
-		MAIN_MENU_BUTTON_W / 2, -MAIN_MENU_BUTTON_H / 2, 0x00FFFFFF, 1.0f, 1.0f,
-		-MAIN_MENU_BUTTON_W / 2, MAIN_MENU_BUTTON_H / 2, 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(-MAIN_MENU_BUTTON_W / 2), (float)(-MAIN_MENU_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 1.0f,
+		(float)(MAIN_MENU_BUTTON_W / 2), (float)(-MAIN_MENU_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
+		(float)(-MAIN_MENU_BUTTON_W / 2), (float)(MAIN_MENU_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 
 	AEGfxTriAdd(
-		MAIN_MENU_BUTTON_W / 2, -MAIN_MENU_BUTTON_H / 2, 0x00FFFFFF, 1.0f, 1.0f,
-		MAIN_MENU_BUTTON_W / 2, MAIN_MENU_BUTTON_H / 2, 0x00FFFFFF, 1.0f, 0.0f,
-		-MAIN_MENU_BUTTON_W / 2, MAIN_MENU_BUTTON_H / 2, 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(MAIN_MENU_BUTTON_W / 2), (float)(-MAIN_MENU_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
+		(float)(MAIN_MENU_BUTTON_W / 2), (float)(MAIN_MENU_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 0.0f,
+		(float)(-MAIN_MENU_BUTTON_W / 2), (float)(MAIN_MENU_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 	MM_Button_Mesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(MM_Button_Mesh, "Failed to create Main_Menu_Mesh!!");
 
 	// Mode Selection & Level Selection Button Mesh
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-MODE_SELECTION_BUTTON_W / 2, -MODE_SELECTION_BUTTON_H / 2, 0x00FFFFFF, 0.0f, 1.0f,
-		MODE_SELECTION_BUTTON_W / 2, -MODE_SELECTION_BUTTON_H / 2, 0x00FFFFFF, 1.0f, 1.0f,
-		-MODE_SELECTION_BUTTON_W / 2, MODE_SELECTION_BUTTON_H / 2, 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(-MODE_SELECTION_BUTTON_W / 2), (float)(-MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 1.0f,
+		(float)(MODE_SELECTION_BUTTON_W / 2), (float)(-MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
+		(float)(-MODE_SELECTION_BUTTON_W / 2), (float)(MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 
 	AEGfxTriAdd(
-		MODE_SELECTION_BUTTON_W / 2, -MODE_SELECTION_BUTTON_H / 2, 0x00FFFFFF, 1.0f, 1.0f,
-		MODE_SELECTION_BUTTON_W / 2, MODE_SELECTION_BUTTON_H / 2, 0x00FFFFFF, 1.0f, 0.0f,
-		-MODE_SELECTION_BUTTON_W / 2, MODE_SELECTION_BUTTON_H / 2, 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(MODE_SELECTION_BUTTON_W / 2), (float)(-MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
+		(float)(MODE_SELECTION_BUTTON_W / 2), (float)(MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 0.0f,
+		(float)(- MODE_SELECTION_BUTTON_W / 2), (float)(MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 
 	MS_Button_Mesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(MS_Button_Mesh, "Failed to create MS_Button_Mesh!!");

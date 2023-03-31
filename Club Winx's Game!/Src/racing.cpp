@@ -169,7 +169,7 @@ void racing_init()
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
 	CamX = 0.0f;
-	CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 6;
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2.f +winHEIGHT / 6;
 
 
 
@@ -185,7 +185,7 @@ void racing_init()
 	------------------------------------------------------------*/
 	bgWaves.height = bgRacing.height / 5.0f;
 	bgWaves.length = bgRacing.length;
-	bgWaves.bgCoord.y = AEGfxGetWinMinY() - 2*bgWaves.height;
+	bgWaves.bgCoord.y = -AEGetWindowHeight() + 10.f;
 
 	/*------------------------------------------------------------
 	// INIT GROUND
@@ -563,9 +563,8 @@ void racing_update()
 		/*------------------------------------------------------------
 		UPDATE CAMERA MOVEMENT
 		//------------------------------------------------------------*/
-		CamY = (player1.pCoord.y + player2.pCoord.y) / 2 + winHEIGHT / 6;
-
-
+		CamY = (player1.pCoord.y + player2.pCoord.y - 100) / 2 ;
+		
 		/*------------------------------------------------------------
 		MATRIX CALCULATION
 		------------------------------------------------------------*/
