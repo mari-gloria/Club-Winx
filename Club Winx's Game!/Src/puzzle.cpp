@@ -225,7 +225,7 @@ void puzzle_update()
 		------------------------------------------------------------*/
 		puzzleTime.minute -= AEFrameRateControllerGetFrameTime();
 		puzzleTime.second -= AEFrameRateControllerGetFrameTime();
-		puzzleMinute = puzzleTime.minute / 60;
+		puzzleMinute = (int)puzzleTime.minute / 60;
 		//std::cout << puzzleTime.minute << ":" << puzzleMinute << ":" << puzzleTime.second << std::endl;
 
 		if (puzzleTime.second < 0.0f)

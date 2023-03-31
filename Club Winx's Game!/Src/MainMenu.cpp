@@ -10,6 +10,8 @@
 ==================================================================================*/
 
 #include "General.h"
+//global
+bool arcadeMode = false;
 
 // Window Size
 #define WINDOW_W 1080
@@ -347,6 +349,7 @@ void MainMenu_Update()
 		{
 			hover_start = false, hover_tutorial = false, hover_options = false, hover_credits = false, hover_quit = false;
 			start_click = false, tutorial_click = false, options_click = false, credits_click = false, quit_click = false;
+			arcadeMode = false;
 		}
 	}
 	else if (toggle == MODESELECTIONPAGE)
@@ -370,6 +373,7 @@ void MainMenu_Update()
 		{
 			hover_story = false, hover_arcade = false, hover_back = false;
 			story_click = false, arcade_click = false, back_click = false;
+			arcadeMode = false;
 		}
 
 		if (AEInputCheckTriggered(AEVK_LBUTTON))
@@ -382,6 +386,7 @@ void MainMenu_Update()
 			else if (hover_arcade == true)
 			{
 				arcade_click = true;
+				arcadeMode = true;
 				toggle = LEVELSELECTIONPAGE;
 			}
 			else if (hover_back == true)

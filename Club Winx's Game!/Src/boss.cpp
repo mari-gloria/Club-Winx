@@ -28,15 +28,15 @@ const f32 PLAYERDMG = 5.5f; //Player's hit
 const f32 BOSS_MAX_HP = 600.f; //  boss hp
 const f32 PLAYER_MAX_HP = 100.f; // players hp
 const f32 PLAYER2_MAX_HP = 100.f;
-const f32 BOSSATTACK_1_DMG = 5.5f;  // boss attack dmg
+const f32 BOSSATTACK_1_DMG = 7.5f;  // boss attack dmg
 const f32 MOBSATTACK_DMG = 1.5f;  // mobs attack dmg
 const f32 MOBS_MAX_HP = 50.f;  // mobs hp 
 const f32 bgspeed = 0.05F; // bg speed 
 const f32 bossMoveLimit = 130.f; // limit of boss movement Y value 
 const f32 bossSpeed = 50.f; // speed of boss
-const f32 knockBackDistance = 50.0f;
+const f32 knockBackDistance = 50.0f; // boss knockback when hit 
 const f32 knockBackDuration = 0.2f;
-
+const f32 healAmount = 0.3f; // potion heal percentage of MAX HP 
 /*------------------------------------------------------------
 PLAYER BULLETS
 ------------------------------------------------------------*/
@@ -643,8 +643,14 @@ void boss_update()
 
 				if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, potion.boundingBox, potion.pVelocity))
 				{
+					float hpToHeal = PLAYER2_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
+					float hpMissing = PLAYER2_MAX_HP - player2.HP; //  HP needed to reach max HP
 
-					player2.HP = PLAYER2_MAX_HP; //refill to full hp bar
+					if (hpToHeal > hpMissing) {
+						hpToHeal = hpMissing; // 
+					}
+
+					player2.HP += hpToHeal; // Heal the player
 					potion.vector = { -1000,-1000 };
 					max_potion -= 1;
 					AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
@@ -653,8 +659,14 @@ void boss_update()
 				}
 				if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, potion.boundingBox, potion.pVelocity))
 				{
+					float hpToHeal = PLAYER_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
+					float hpMissing = PLAYER_MAX_HP - player1.HP; //  HP needed to reach max HP
 
-					player1.HP = PLAYER_MAX_HP; //refill to full hp bar
+					if (hpToHeal > hpMissing) {
+						hpToHeal = hpMissing; // 
+					}
+
+					player1.HP += hpToHeal; // Heal the player
 
 					potion.vector = { -1000,-1000 };
 					max_potion -= 1;

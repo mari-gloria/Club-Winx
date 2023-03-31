@@ -59,8 +59,14 @@ void WIN_BOTHPLAYERS_update()
 
 	// if press space, go to the next game
 	if (AEInputCheckReleased(AEVK_SPACE)) {
+		if (arcadeMode)
+		{
+			next_state = prev_state;
+		}
+		else {
+			next_state = prev_state == RACING ? BOSS : (PUZZLE ? RACING : MENU);
+		}
 		
-		next_state = prev_state == RACING? BOSS : (PUZZLE ? RACING : MENU);
 	}
 
 	/*------------------------------------------------------------

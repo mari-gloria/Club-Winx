@@ -62,7 +62,8 @@ extern const float	PLAYER_JUMP;
 //racing.cpp
 extern f32 CamY;
 
-
+//for game 
+extern bool arcadeMode;
 
 /*--------------------------------------------------------------------------
 Structs
@@ -124,8 +125,8 @@ TIMER
 ---------------------------------------------------------------------------*/
 struct Timer {
 	AEVec2			timeleft{ -0.9f, 0.8f };
-	f64				minute;
-	f64				second;
+	f64				minute{ };
+	f64				second{};
 };
 extern Timer puzzleTime, racingTime;
 

@@ -260,7 +260,7 @@ void racing_update()
 		------------------------------------------------------------*/
 		racingTime.minute -= AEFrameRateControllerGetFrameTime();
 		racingTime.second -= AEFrameRateControllerGetFrameTime();
-		racingMinute = racingTime.minute / 60;
+		racingMinute = (int)racingTime.minute / 60;
 		//std::cout << racingTime.minute << ":" << racingMinute << ":" << racingTime.second << std::endl;
 
 		if (racingTime.second < 0.0f)
