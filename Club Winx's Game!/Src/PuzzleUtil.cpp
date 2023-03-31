@@ -80,7 +80,7 @@ void Map_Player_CollisionUpdate(Player * player)
 /******************************************************************************/
 void SnapToCell(float* Coordinate)
 {
-	*Coordinate = static_cast<int>(*Coordinate); // cast to int 
+	*Coordinate = (float)(static_cast<int>(*Coordinate)); // cast to int 
 	*Coordinate += 0.5f;  // snap to center
 }
 

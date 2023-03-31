@@ -25,15 +25,18 @@ CONSTANTS
 int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
 const f32 BULLETSPEED = 12.0f; // speed of players bullet
 const f32 PLAYERDMG = 5.5f; //Player's hit
-const f32 BOSS_MAX_HP = 500.f; //  boss hp
-const f32 PLAYER_MAX_HP = 150.f; // players hp
-const f32 PLAYER2_MAX_HP = 150.f;
+const f32 BOSS_MAX_HP = 600.f; //  boss hp
+const f32 PLAYER_MAX_HP = 100.f; // players hp
+const f32 PLAYER2_MAX_HP = 100.f;
 const f32 BOSSATTACK_1_DMG = 5.5f;  // boss attack dmg
 const f32 MOBSATTACK_DMG = 1.5f;  // mobs attack dmg
 const f32 MOBS_MAX_HP = 50.f;  // mobs hp 
 const f32 bgspeed = 0.05F; // bg speed 
 const f32 bossMoveLimit = 130.f; // limit of boss movement Y value 
 const f32 bossSpeed = 50.f; // speed of boss
+const f32 knockBackDistance = 50.0f;
+const f32 knockBackDuration = 0.2f;
+
 /*------------------------------------------------------------
 PLAYER BULLETS
 ------------------------------------------------------------*/
@@ -96,6 +99,9 @@ AEGfxVertexList* pbossbullet{ nullptr };
 const f32 gravity = 9.8f;
 f64 bossTimeElapsed = 0.0f;
 bool bossSwitch;
+float knockBackTimer = 0.0f;
+bool isKnockedBack = false;
+float originalX;
 /*-----------------------------------------------------------*/
 
 /*--------------------------------------------------------------------------
@@ -273,10 +279,14 @@ void boss_init()
 
 	boss.HP = BOSS_MAX_HP;
 	boss.alive = false;
-	boss.Bcoord = { 380.f, -30.f }; // 380, -30.f 
+	boss.Bcoord = { 380.f, -30.f }; // 380, -30.f
+	originalX = boss.Bcoord.x;
+	isKnockedBack = false;
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
+	knockBackTimer = 0.0f;
+
 	bossSwitch = false;
 	for (int i = 0; i < MAXWAVE; i++)
 	{
@@ -372,7 +382,7 @@ void boss_update()
 			//boss.Bhealth.length = bossHP;
 		}
 
-		if (mobs_stop == true)
+		if (mobs_stop == true && boss.HP > 0)
 		{
 			boss.alive = true; 
 		}
@@ -403,8 +413,6 @@ void boss_update()
 			{
 				bullets1[i].shot = TRUE;
 				bullets2[i].shot = TRUE;
-
-				//bossTimeElapsed = 0.0;
 				bulletTimeElapsed = 0.0;
 			}
 			if (boss.alive == FALSE && boss.HP <= 0) { //bullets will stop shooting when monster dies
@@ -502,23 +510,43 @@ void boss_update()
 		------------------------------------------------------------*/
 		if (boss.alive)
 		{
-			if (boss.Bcoord.y <= -bossMoveLimit)
+			if (isKnockedBack)
 			{
-				bossSwitch = true;
+				// move boss along x axis away from point of impact
+				if (knockBackTimer < knockBackDuration)
+				{
+					boss.Bcoord.x += knockBackDistance * g_dt;
+					knockBackTimer += g_dt;
+				}
+				else
+				{
+					// reset knock-back variables and return to original x position
+					isKnockedBack = false;
+					knockBackTimer = 0.0f;
+					boss.Bcoord.x = originalX;
+				}
 			}
-			else if (boss.Bcoord.y >= bossMoveLimit)
-			{
-				bossSwitch = false;
-			}
+			else {
 
-			if (bossSwitch)
-			{
-				boss.bossVel.y = bossSpeed;
+				if (boss.Bcoord.y <= -bossMoveLimit)
+				{
+					bossSwitch = true;
+				}
+				else if (boss.Bcoord.y >= bossMoveLimit)
+				{
+					bossSwitch = false;
+				}
+
+				if (bossSwitch)
+				{
+					boss.bossVel.y = bossSpeed;
+				}
+				else
+				{
+					boss.bossVel.y = -bossSpeed;
+				}
 			}
-			else
-			{
-				boss.bossVel.y = -bossSpeed;
-			}
+			
 		}
 
 		boss.Bcoord.y += boss.bossVel.y * g_dt;
@@ -529,79 +557,50 @@ void boss_update()
 		------------------------------------------------------------*/
 
 		//update player bounding box
-		player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
-		player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
-		player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
-		player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
-
-		player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
-		player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
-		player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
-		player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
-
-
-
+		BoundingBoxUpdate(player1.boundingBox, player1.pCoord, player1.size, player1.size);
+		BoundingBoxUpdate(player2.boundingBox, player2.pCoord, player2.size, player2.size);
 		//update boss bounding box
-		boss.boundingBox.min.x = boss.Bcoord.x - boss.length / 2.0f;
-		boss.boundingBox.min.y = boss.Bcoord.y - boss.height / 2.0f;
-		boss.boundingBox.max.x = boss.Bcoord.x + boss.length / 2.0f;
-		boss.boundingBox.max.y = boss.Bcoord.y + boss.height / 2.0f;
-
+		BoundingBoxUpdate(boss.boundingBox, boss.Bcoord, boss.length, boss.length);
 		//update potion bounding box
-		potion.boundingBox.min.x = potion.vector.x - potion.size / 2.0f;
-		potion.boundingBox.min.y = potion.vector.y - potion.size / 2.0f;
-		potion.boundingBox.max.x = potion.vector.x + potion.size / 2.0f;
-		potion.boundingBox.max.y = potion.vector.y + potion.size / 2.0f;
-
+		BoundingBoxUpdate(potion.boundingBox, potion.vector, potion.size, potion.size);
 		//update mobs bounding box
-		mobs.boundingBox.min.x = mobs.vector.x - mobs.size / 2.0f;
-		mobs.boundingBox.min.y = mobs.vector.y - mobs.size / 2.0f;
-		mobs.boundingBox.max.x = mobs.vector.x + mobs.size / 2.0f;
-		mobs.boundingBox.max.y = mobs.vector.y + mobs.size / 2.0f;
-
+		BoundingBoxUpdate(mobs.boundingBox, mobs.vector, mobs.size, mobs.size);
 
 		for (int i = 0; i < MAX_BULLETS; i++) // for bullet hit boss
 		{
 			//update bounding box
-			bullets1[i].boundingBox.min.x = bullets1[i].bCoord.x - bullets1[i].length / 2.0f;
-			bullets1[i].boundingBox.min.y = bullets1[i].bCoord.y - bullets1[i].height / 2.0f;
-			bullets1[i].boundingBox.max.x = bullets1[i].bCoord.x + bullets1[i].length / 2.0f;
-			bullets1[i].boundingBox.max.y = bullets1[i].bCoord.y + bullets1[i].height / 2.0f;
-
-			bullets2[i].boundingBox.min.x = bullets2[i].bCoord.x - bullets2[i].length / 2.0f;
-			bullets2[i].boundingBox.min.y = bullets2[i].bCoord.y - bullets2[i].height / 2.0f;
-			bullets2[i].boundingBox.max.x = bullets2[i].bCoord.x + bullets2[i].length / 2.0f;
-			bullets2[i].boundingBox.max.y = bullets2[i].bCoord.y + bullets2[i].height / 2.0f;
+			BoundingBoxUpdate(bullets1[i].boundingBox, bullets1[i].bCoord, bullets1[i].length, bullets1[i].height);
+			BoundingBoxUpdate(bullets2[i].boundingBox, bullets2[i].bCoord, bullets2[i].length, bullets2[i].height);
 
 			//Shoot BOSS
-			//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
-			//if (mobs_stop == true) {
-				if (boss.alive)
+			if (boss.alive)
+			{
+				if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
 				{
-					if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
-					{
-						if (player1.alive) {
+					if (player1.alive) {
 
-							boss.HP -= PLAYERDMG; //decrease monster health
-							bullets1[i].shot = false;
-						}
-
-
-
+						boss.HP -= PLAYERDMG; //decrease monster health
+						bullets1[i].shot = false;
+						isKnockedBack = true;
 					}
-					if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && bullets2[i].shot)
-					{
-						if (player2.alive) {
-
-							boss.HP -= PLAYERDMG; //decrease monster health
-							bullets2[i].shot = false;
-						}
 
 
 
-					}
 				}
-			//}
+				if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && bullets2[i].shot)
+				{
+					if (player2.alive) {
+
+						boss.HP -= PLAYERDMG; //decrease monster health
+						bullets2[i].shot = false;
+						isKnockedBack = true;
+					}
+
+
+
+				}
+			}
+				
 			//Shoot MOBS
 			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
 			{
@@ -620,10 +619,7 @@ void boss_update()
 		for (int i = 0; i < MAXWAVE; i++) // for bullet hit players
 		{
 			//update bounding box
-			bossbullets1[i].boundingBox.min.x = bossbullets1[i].coords.x - bossbullets1[i].size / 2.0f;
-			bossbullets1[i].boundingBox.min.y = bossbullets1[i].coords.y - bossbullets1[i].size / 2.0f;
-			bossbullets1[i].boundingBox.max.x = bossbullets1[i].coords.x + bossbullets1[i].size / 2.0f;
-			bossbullets1[i].boundingBox.max.y = bossbullets1[i].coords.y + bossbullets1[i].size / 2.0f;
+			BoundingBoxUpdate(bossbullets1[i].boundingBox, bossbullets1[i].coords, bossbullets1[i].size, bossbullets1[i].size);
 
 			if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
 			{
@@ -884,18 +880,13 @@ void boss_draw()
 		DRAWING  BOSS ATTACKS
 		------------------------------------------------------------*/
 		for (int i = 0; i < MAXWAVE; i++) {
-			//if (mobs_stop == true) { //bullets start shooting after mobs died
-
-				if (bossbullets1[i].shot && boss.alive)
-				{
-					//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
-					AEGfxSetTransform(bossbullets1[i].transform.m);
-					AEGfxTextureSet(NULL, 0, 0);
-					AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
-				}
-
-			//}
-			
+			if (bossbullets1[i].shot && boss.alive)
+			{
+				//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+				AEGfxSetTransform(bossbullets1[i].transform.m);
+				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
+			}
 		}
 
 
@@ -916,30 +907,26 @@ void boss_draw()
 		/*------------------------------------------------------------
 		 Rendering of Boss Health System/ BOSS
 		------------------------------------------------------------*/
-		//if (mobs_stop == true) {
+		if (boss.alive) {
 
-			if (boss.alive) {
-
-				// drawing boss
-				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-				AEGfxSetTransform(boss.transform.m);
-				AEGfxTextureSet(boss.pTex, 0, 0);
-				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-				AEGfxSetTransparency(1.0f);
-				AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
-				// drawing Current boss.Bhealth
-				AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-				AEGfxSetTransform(boss.Bhealth.transform.m);
-				AEGfxTextureSet(NULL, 0, 0);
-				AEGfxSetBlendMode(AE_GFX_BM_NONE);
-				AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
+			// drawing boss
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetTransform(boss.transform.m);
+			AEGfxTextureSet(boss.pTex, 0, 0);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+			// drawing Current boss.Bhealth
+			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+			AEGfxSetTransform(boss.Bhealth.transform.m);
+			AEGfxTextureSet(NULL, 0, 0);
+			AEGfxSetBlendMode(AE_GFX_BM_NONE);
+			AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
 
 
-			}
+		}
 
-		//}
-		
 		/*------------------------------------------------------------
 		 Rendering of Boss Health System/ BOSS
 		------------------------------------------------------------*/
@@ -964,12 +951,6 @@ void boss_free()
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
-
-	for (int i = 0; i < MAX_BULLETS; i++)
-	{
-		//bossbullets1[i].shot = false;
-		//bossbullets1[i].shot = false;
-	}
 
 	pause_free();
 }

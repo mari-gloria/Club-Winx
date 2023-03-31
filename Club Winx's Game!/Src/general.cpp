@@ -60,7 +60,13 @@ const float		JUMP_HEIGHT_MAX{ 100.0f };
 
 
 
-
+void BoundingBoxUpdate(AABB & boundingbox, AEVec2 const &coords, f32 const length, f32 const height)
+{
+	boundingbox.min.x = coords.x - length / 2.0f;
+	boundingbox.min.y = coords.y - height / 2.0f;
+	boundingbox.max.x = coords.x + length / 2.0f;
+	boundingbox.max.y = coords.y + height / 2.0f;
+}
 
 void MatrixCalc(AEMtx33 & transform, const f32 length, const f32 height, const f32 direction, const AEVec2& coords)
 {

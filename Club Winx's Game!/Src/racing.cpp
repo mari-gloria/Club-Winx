@@ -178,7 +178,7 @@ void racing_init()
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
 	CamX = 0.0f;
-	CamY = (player1.pCoord.y + player2.pCoord.y) / 2.f +winHEIGHT / 6;
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2.f +winHEIGHT / 6.f;
 
 
 
@@ -303,30 +303,15 @@ void racing_update()
 		// CHECK PLAYER-PLATFORM COLLISON
 		------------------------------------------------------------*/
 		//update player bounding box
-		player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
-		player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
-		player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
-		player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
-
-		player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
-		player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
-		player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
-		player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
-
+		BoundingBoxUpdate(player1.boundingBox, player1.pCoord, player1.size, player1.size);
+		BoundingBoxUpdate(player2.boundingBox, player2.pCoord, player2.size, player2.size);
 
 		//checking for player-platform collision
 		for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
 		{
 			//update platform bounding box
-			platformA[i].platBoundingBox.min.x = platformA[i].platVect.x - platformA[i].length / 2.0f;
-			platformA[i].platBoundingBox.min.y = platformA[i].platVect.y - platformA[i].height / 2.0f;
-			platformA[i].platBoundingBox.max.x = platformA[i].platVect.x + platformA[i].length / 2.0f;
-			platformA[i].platBoundingBox.max.y = platformA[i].platVect.y + platformA[i].height / 2.0f;
-
-			platformB[i].platBoundingBox.min.x = platformB[i].platVect.x - platformB[i].length / 2.0f;
-			platformB[i].platBoundingBox.min.y = platformB[i].platVect.y - platformB[i].height / 2.0f;
-			platformB[i].platBoundingBox.max.x = platformB[i].platVect.x + platformB[i].length / 2.0f;
-			platformB[i].platBoundingBox.max.y = platformB[i].platVect.y + platformB[i].height / 2.0f;
+			BoundingBoxUpdate(platformA[i].platBoundingBox, platformA[i].platVect, platformA[i].length, platformA[i].height);
+			BoundingBoxUpdate(platformB[i].platBoundingBox, platformB[i].platVect, platformB[i].length, platformB[i].height);
 
 
 			bool player1_collide = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
@@ -431,15 +416,8 @@ void racing_update()
 		------------------------------------------------------------*/
 		for (int i = 0; i < MAX_NUM_ITEMS; i++)
 		{
-			racing_boostsA[i].boundingBox.min.x = racing_boostsA[i].pCoord.x - racing_boostsA[i].size / 2.0f;
-			racing_boostsA[i].boundingBox.min.y = racing_boostsA[i].pCoord.y - racing_boostsA[i].size / 2.0f;
-			racing_boostsA[i].boundingBox.max.x = racing_boostsA[i].pCoord.x + racing_boostsA[i].size / 2.0f;
-			racing_boostsA[i].boundingBox.max.y = racing_boostsA[i].pCoord.y + racing_boostsA[i].size / 2.0f;
-
-			racing_boostsB[i].boundingBox.min.x = racing_boostsB[i].pCoord.x - racing_boostsB[i].size / 2.0f;
-			racing_boostsB[i].boundingBox.min.y = racing_boostsB[i].pCoord.y - racing_boostsB[i].size / 2.0f;
-			racing_boostsB[i].boundingBox.max.x = racing_boostsB[i].pCoord.x + racing_boostsB[i].size / 2.0f;
-			racing_boostsB[i].boundingBox.max.y = racing_boostsB[i].pCoord.y + racing_boostsB[i].size / 2.0f;
+			BoundingBoxUpdate(racing_boostsA[i].boundingBox, racing_boostsA[i].pCoord, racing_boostsA[i].size, racing_boostsA[i].size);
+			BoundingBoxUpdate(racing_boostsB[i].boundingBox, racing_boostsB[i].pCoord, racing_boostsB[i].size, racing_boostsB[i].size);
 
 		}
 

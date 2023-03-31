@@ -268,15 +268,8 @@ void puzzle_update()
 		------------------------------------------------------------*/
 
 		//update player bounding box
-		player1.boundingBox.min.x = player1.pCoord.x - player1.size / 2.0f;
-		player1.boundingBox.min.y = player1.pCoord.y - player1.size / 2.0f;
-		player1.boundingBox.max.x = player1.pCoord.x + player1.size / 2.0f;
-		player1.boundingBox.max.y = player1.pCoord.y + player1.size / 2.0f;
-
-		player2.boundingBox.min.x = player2.pCoord.x - player2.size / 2.0f;
-		player2.boundingBox.min.y = player2.pCoord.y - player2.size / 2.0f;
-		player2.boundingBox.max.x = player2.pCoord.x + player2.size / 2.0f;
-		player2.boundingBox.max.y = player2.pCoord.y + player2.size / 2.0f;
+		BoundingBoxUpdate(player1.boundingBox, player1.pCoord, player1.size, player1.size);
+		BoundingBoxUpdate(player2.boundingBox, player2.pCoord, player2.size, player2.size);
 
 		//item bounding box
 		item.boundingBox.min.x = item.vector.x - item.size / 2.0f;
@@ -437,7 +430,6 @@ void puzzle_draw()
 		AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 		// drawing player 2
-		//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEMtx33Concat(&player2.transform, &player2.transform, &flipTransform2);
 		AEMtx33Concat(&player2.transform, &map.MapTransform, &player2.transform);
 		AEGfxSetTransform(player2.transform.m);
