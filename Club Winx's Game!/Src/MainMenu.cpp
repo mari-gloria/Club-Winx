@@ -290,7 +290,7 @@ void MainMenu_Update()
 			hover_tutorial = true;
 			//std::cout << "tutorial hover" << std::endl;
 
-			if (AEInputCheckTriggered(AEVK_LBUTTON))
+			if (AEInputCheckReleased(AEVK_LBUTTON))
 			{
 				tutorial_click = true;
 				/*toggle = TUTORIAL;*/
