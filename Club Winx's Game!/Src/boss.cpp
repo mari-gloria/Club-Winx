@@ -178,7 +178,7 @@ struct Mobs {
 #define MOBS_start_positonX 400
 #define MOBS_start_positonY  0 //center of window
 double radians_mob = 0;
-int max_mobs = 5; //number of max potion produce
+int max_mobs = 4; //number of max mobs produce
 bool mobscheck = false;
 bool mobs_stop = false;
 bool mobs_spawn = false;
@@ -463,6 +463,7 @@ void boss_update()
 
 		for (int i = 0; i < MAXWAVE; i++)
 		{
+			
 			if (bossbullets1[i].shot && boss.alive)
 			{
 				bossbullets1[i].direction = rand_num(-PI, PI); // base direction
@@ -531,29 +532,31 @@ void boss_update()
 
 			//Shoot BOSS
 			//if (bullets1[i].bCoord.x >= 250 && bullets1[i].bCoord.x <= 252 || bullets1[i].bCoord.x > 200 && bullets1[i].bCoord.x < 210) //at a nearer distance it is still able to damage the boss
-			if (boss.alive)
-			{
-				if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
+			if (mobs_stop == true) {
+				if (boss.alive)
 				{
-					if (player1.alive) {
+					if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, boss.boundingBox, boss.bossVel) && bullets1[i].shot) //if player1 or player2 bullet collide with boss && boss is alive
+					{
+						if (player1.alive) {
 
-						boss.HP -= PLAYERDMG; //decrease monster health
-						bullets1[i].shot = false;
+							boss.HP -= PLAYERDMG; //decrease monster health
+							bullets1[i].shot = false;
+						}
+
+
+
 					}
+					if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && bullets2[i].shot)
+					{
+						if (player2.alive) {
+
+							boss.HP -= PLAYERDMG; //decrease monster health
+							bullets2[i].shot = false;
+						}
 
 
 
-				}
-				if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, boss.boundingBox, boss.bossVel) && bullets2[i].shot)
-				{
-					if (player2.alive) {
-
-						boss.HP -= PLAYERDMG; //decrease monster health
-						bullets2[i].shot = false;
 					}
-
-
-
 				}
 			}
 			//Shoot MOBS
@@ -838,13 +841,18 @@ void boss_draw()
 		DRAWING  BOSS ATTACKS
 		------------------------------------------------------------*/
 		for (int i = 0; i < MAXWAVE; i++) {
-			if (bossbullets1[i].shot && boss.alive)
-			{
-				//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
-				AEGfxSetTransform(bossbullets1[i].transform.m);
-				AEGfxTextureSet(NULL, 0, 0);
-				AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
+			if (mobs_stop == true) { //bullets start shooting after mobs died
+
+				if (bossbullets1[i].shot && boss.alive)
+				{
+					//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+					AEGfxSetTransform(bossbullets1[i].transform.m);
+					AEGfxTextureSet(NULL, 0, 0);
+					AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
+				}
+
 			}
+			
 		}
 
 
@@ -865,25 +873,30 @@ void boss_draw()
 		/*------------------------------------------------------------
 		 Rendering of Boss Health System/ BOSS
 		------------------------------------------------------------*/
-		if (boss.alive) {
+		if (mobs_stop == true) {
 
-			// drawing boss
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			AEGfxSetTransform(boss.transform.m);
-			AEGfxTextureSet(boss.pTex, 0, 0);
-			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			AEGfxSetTransparency(1.0f);
-			AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
-			// drawing Current boss.Bhealth
-			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-			AEGfxSetTransform(boss.Bhealth.transform.m);
-			AEGfxTextureSet(NULL, 0, 0);
-			AEGfxSetBlendMode(AE_GFX_BM_NONE);
-			AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
+			if (boss.alive) {
 
+				// drawing boss
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTransform(boss.transform.m);
+				AEGfxTextureSet(boss.pTex, 0, 0);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+				// drawing Current boss.Bhealth
+				AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+				AEGfxSetTransform(boss.Bhealth.transform.m);
+				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxSetBlendMode(AE_GFX_BM_NONE);
+				AEGfxMeshDraw(boss.Bhealth.pMesh, AE_GFX_MDM_TRIANGLES);
+
+
+			}
 
 		}
+		
 		/*------------------------------------------------------------
 		 Rendering of Boss Health System/ BOSS
 		------------------------------------------------------------*/
@@ -985,20 +998,20 @@ void mobs_position(float& x, float& y, bool& mobs_spawn, bool& mobscheck, bool& 
 
 	if (mobs_stop != true) {
 
-		if (timer % 30 == 0 && mobs_spawn != true) { //start spawning
+		if (timer % 20 == 0 && mobs_spawn != true) { //start spawning
 			x = MOBS_start_positonX;
 			y = MOBS_start_positonY;
 			mobs_spawn = true;
 		}
-		std::cout << " MOBS:   " << x << " \n";
+		//std::cout << " MOBS:   " << x << " \n";
 
-		if (timer % 900 == 0) { //stop spawning
+		if (timer % 550 == 0) { //stop spawning
 			mobs_spawn = false;
 		}
 
 		if (mobs_spawn == true) {
 			if ((mobscheck == false)) {
-				x -= (float)cos(radians_mob);
+				x -= 2.0f;
 			}
 
 
