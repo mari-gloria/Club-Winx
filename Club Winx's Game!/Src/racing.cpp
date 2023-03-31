@@ -54,6 +54,9 @@ float bgspeed;
 static AEMtx33 flipTransform1, flipTransform2;
 //AEMtx33Scale(&flipTransform, -1.0f, 1.0f); // horizontal scale
 //(&player1.transform, &player1.transform, &flipTransform);
+static AEVec2 timeleft;
+
+int racingMinute = 0;
 
 /*------------------------------------------------------------
 FUNCTIONS
@@ -119,12 +122,18 @@ void racing_load()
 	jump.audio = AEAudioLoadSound("Assets/Audio/jump.wav");
 	jump.aGroup = AEAudioCreateGroup();
 
+	racing_bgm.audio = AEAudioLoadSound("Assets/Audio/racingMusic.wav");
+	racing_bgm.aGroup = AEAudioCreateGroup();
+
 	return;
 }
 
 void racing_init()
 {
 	//std::cout << "racing:Initialize\n";
+	racingTime.minute = 120.0f; //2 minutes
+	racingTime.second = 60.0f;
+
 	/*------------------------------------------------------------
 	// INIT PLAYERS
 	------------------------------------------------------------*/
@@ -194,6 +203,11 @@ void racing_init()
 	bgRacingGround.length = bgRacing.length;
 	bgRacingGround.bgCoord.y = player1.pCoord.y - (bgRacingGround.height / 2.0f) - (player1.size / 2.0f);
 
+	/*------------------------------------------------------------
+	// PLAY SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	AEAudioPlay(racing_bgm.audio, racing_bgm.aGroup, 0.75, 1, -1);
+
 	//init pause screen
 	pause_init();
 
@@ -244,6 +258,24 @@ void racing_update()
 			next_state = MENU;
 		}
 
+		/*------------------------------------------------------------
+		// TIMER
+		------------------------------------------------------------*/
+		racingTime.minute -= AEFrameRateControllerGetFrameTime();
+		racingTime.second -= AEFrameRateControllerGetFrameTime();
+		racingMinute = racingTime.minute / 60;
+		//std::cout << racingTime.minute << ":" << racingMinute << ":" << racingTime.second << std::endl;
+
+		if (racingTime.second < 0.0f)
+		{
+			racingTime.second = 60.0f;
+
+			if (racingTime.minute < 0.0f)
+			{
+				//game stops
+				next_state = LOSE_BOTHPLAYERS;
+			}
+		}
 
 		/*------------------------------------------------------------
 		// INPUT HANDLING
@@ -709,6 +741,16 @@ void racing_draw()
 		 DRAWING - Camera Movement
 		------------------------------------------------------------*/
 		AEGfxSetCamPosition(CamX, CamY); // Set Camera's Position to values of CamX & CamY
+		
+		/*------------------------------------------------------------
+		 DRAWING - Words
+		------------------------------------------------------------*/
+		char strBuf[1000];
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		memset(strBuf, 0, 1000 * sizeof(char));
+		sprintf_s(strBuf, "Time Left: %d:%.0f", racingMinute, racingTime.second);
+		AEGfxPrint(text, strBuf, racingTime.timeleft.x, racingTime.timeleft.y, 0.7f, 1.0f, 1.0f, 1.0f);
 	}
 }
 
@@ -769,6 +811,7 @@ void racing_unload()
 	// Exit Audio
 	------------------------------------------------------------*/
 	AEAudioStopGroup(jump.aGroup);
+	AEAudioStopGroup(racing_bgm.aGroup);
 
 	pause_unload();
 

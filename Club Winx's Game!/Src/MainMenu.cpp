@@ -167,6 +167,12 @@ void MainMenu_Load()
 
 	Back_Mode_Button = AEGfxTextureLoad("Assets/BACK_MODE_BUTTON.png");
 	AE_ASSERT_MESG(Back_Mode_Button, "Failed to create Back_Mode_Button!!");
+	
+	/*------------------------------------------------------------
+	// LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	mainmenu_bgm.audio = AEAudioLoadSound("Assets/Audio/mainmenuMusic.wav");
+	mainmenu_bgm.aGroup = AEAudioCreateGroup();
 }
 
 /*------------------------------------------------------------
@@ -242,6 +248,8 @@ void MainMenu_Init()
 
 	MS_Button_Mesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(MS_Button_Mesh, "Failed to create MS_Button_Mesh!!");
+	
+	AEAudioPlay(mainmenu_bgm.audio, mainmenu_bgm.aGroup, 0.75, 1, -1);
 }
 
 /*------------------------------------------------------------
@@ -567,4 +575,9 @@ void MainMenu_Unload()
 	AEGfxTextureUnload(Puzzle_Button);
 	AEGfxTextureUnload(Boss_Button);
 	AEGfxTextureUnload(Back_Mode_Button);
+
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioStopGroup(mainmenu_bgm.aGroup);
 }

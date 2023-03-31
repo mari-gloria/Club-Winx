@@ -239,7 +239,7 @@ void boss_load()
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
 	boss.pTex = AEGfxTextureLoad("Assets/BOSS.png");
 	potion.pTex = AEGfxTextureLoad("Assets/potion.png");
-	mobs.pTex = AEGfxTextureLoad("Assets/mobs.png");
+	mobs.pTex = AEGfxTextureLoad("Assets/MONSTER.png");
 
 
 	/*------------------------------------------------------------
@@ -247,6 +247,9 @@ void boss_load()
 	------------------------------------------------------------*/
 	collect.audio = AEAudioLoadSound("Assets/Audio/collect.wav");
 	collect.aGroup = AEAudioCreateGroup();
+
+	boss_bgm.audio = AEAudioLoadSound("Assets/Audio/bossMusic.wav");
+	boss_bgm.aGroup = AEAudioCreateGroup();
 
 	//load pause
 	pause_load();
@@ -288,6 +291,11 @@ void boss_init()
 	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
 	potion_stop = false;
     potion.vector = { potion_start_positonX, potion_start_positonY};
+
+	/*------------------------------------------------------------
+	// PLAY SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	AEAudioPlay(boss_bgm.audio, boss_bgm.aGroup, 0.75, 1, -1);
 
 	//pause init
 	pause_init();
@@ -989,6 +997,11 @@ void boss_unload()
 	AEGfxTextureUnload(boss.pTex);
 	AEGfxMeshFree(pBullet);
 	AEAudioExit();
+
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioStopGroup(boss_bgm.aGroup);
 
 	pause_unload();
 }

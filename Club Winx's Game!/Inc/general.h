@@ -117,9 +117,17 @@ struct Audio {
 	AEAudio			audio	{ nullptr };
 	AEAudioGroup	aGroup	{ nullptr };
 };
-extern Audio jump, collect, win, lose;
+extern Audio jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm;;
 
-
+/*--------------------------------------------------------------------------
+TIMER
+---------------------------------------------------------------------------*/
+struct Timer {
+	AEVec2			timeleft{ -0.9f, 0.8f };
+	f64				minute;
+	f64				second;
+};
+extern Timer puzzleTime, racingTime;
 
 
 

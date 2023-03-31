@@ -33,7 +33,9 @@ BG			bgRacing, bgPuzzle, bgBoss, bgWin, bgTut;
 BG			winRacing, bgWaves, winPuzzle, winBoss, bgRacingGround;
 
 
-Audio		jump, collect, win, lose;
+Audio		jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm;
+
+Timer		puzzleTime, racingTime;
 
 Player		player1, player2;
 

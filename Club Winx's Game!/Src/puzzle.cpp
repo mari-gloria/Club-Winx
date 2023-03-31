@@ -25,8 +25,8 @@ AEGfxTexture* Spiderweb;
 
 int counter = 0;
 bool turntransparent = { FALSE };
-
 bool itemdie = { FALSE };
+int puzzleMinute = 0;
 
 /* ------------------------------------------------------------
 CONSTANTS
@@ -63,6 +63,7 @@ Item item;
 BG puzzleLight;
 
 static AEMtx33 flipTransform1, flipTransform2;
+static AEVec2 numberofkeys;
 
 void puzzle_load()
 {
@@ -91,6 +92,13 @@ void puzzle_load()
 
 	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
+	
+	/*------------------------------------------------------------
+	// LOAD SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	puzzle_bgm.audio = AEAudioLoadSound("Assets/Audio/puzzleMusic.wav");
+	puzzle_bgm.aGroup = AEAudioCreateGroup();
+
 	/*------------------------------------------------------------
 	CREATING OBJECTS AND SHAPES
 	------------------------------------------------------------*/
@@ -131,6 +139,16 @@ void puzzle_load()
 void puzzle_init()
 {
 	//std::cout << "puzzle:Initialize\n";
+	puzzleTime.minute = 180.0f; //3 minutes
+	puzzleTime.second = 60.0f;
+
+	/*------------------------------------------------------------
+	// FONT POSITIONS
+	------------------------------------------------------------*/
+	//puzzle.timeleft.x = -0.9f;
+	//puzzle.timeleft.y = 0.8f;
+	numberofkeys.x = -0.9f;
+	numberofkeys.y = 0.7f;
 
 	/*------------------------------------------------------------
 	INIT PLAYERS
@@ -153,6 +171,11 @@ void puzzle_init()
 
 	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
 	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
+
+	/*------------------------------------------------------------
+	// PLAY SOUND EFFECTS/AUDIO
+	------------------------------------------------------------*/
+	AEAudioPlay(puzzle_bgm.audio, puzzle_bgm.aGroup, 0.75, 1, -1);
 
 	//init pause screen
 	pause_init();
@@ -181,6 +204,25 @@ void puzzle_update()
 		}
 		if (AEInputCheckCurr(AEVK_ESCAPE)) {
 			next_state = MENU;
+		}
+
+		/*------------------------------------------------------------
+		// TIMER
+		------------------------------------------------------------*/
+		puzzleTime.minute -= AEFrameRateControllerGetFrameTime();
+		puzzleTime.second -= AEFrameRateControllerGetFrameTime();
+		puzzleMinute = puzzleTime.minute / 60;
+		//std::cout << puzzleTime.minute << ":" << puzzleMinute << ":" << puzzleTime.second << std::endl;
+
+		if (puzzleTime.second < 0.0f)
+		{
+			puzzleTime.second = 60.0f;
+
+			if (puzzleTime.minute < 0.0f)
+			{
+				//game stops
+				next_state = LOSE_BOTHPLAYERS;
+			}
 		}
 
 		/*------------------------------------------------------------
@@ -390,6 +432,21 @@ void puzzle_draw()
 		AEGfxSetTransform(puzzleLight.transform.m);
 		AEGfxTextureSet(puzzleLight.bgTex, 0, 0);
 		AEGfxMeshDraw(puzzleLight.bgMesh, AE_GFX_MDM_TRIANGLES);
+		
+		//FONTS
+
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		memset(strBuf, 0, 1000 * sizeof(char));
+		sprintf_s(strBuf, "Time Left: %d:%.0f", puzzleMinute, puzzleTime.second);
+		AEGfxPrint(text, strBuf, puzzleTime.timeleft.x, puzzleTime.timeleft.y, 0.7f, 1.0f, 1.0f, 1.0f);
+
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		memset(strBuf, 0, 1000 * sizeof(char));
+		sprintf_s(strBuf, "No. of keys: %d", counter);
+		AEGfxPrint(text, strBuf, numberofkeys.x, numberofkeys.y, 0.7f, 1.0f, 1.0f, 1.0f);
+
 	}
 }
 
@@ -426,6 +483,11 @@ void puzzle_unload()
 	AEGfxTextureUnload(player1.pTex);
 	AEGfxTextureUnload(player2.pTex);
 	AEGfxTextureUnload(puzzleLight.bgTex);
+
+	/*------------------------------------------------------------
+	// Exit Audio
+	------------------------------------------------------------*/
+	AEAudioStopGroup(puzzle_bgm.aGroup);
 
 	//unload pause
 	pause_unload();
