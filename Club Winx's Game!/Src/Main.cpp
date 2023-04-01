@@ -52,7 +52,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysInit(hInstance, nCmdShow, winLENGTH, winHEIGHT, 1, 60, true, NULL);
 
 	// Changing the window title
-	AESysSetWindowTitle("Winx Demo!");
+	AESysSetWindowTitle("Up For Orbital!");
 
 
 	// reset the system modules
@@ -100,7 +100,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 			//pause game
-			if (AEInputCheckReleased(AEVK_ESCAPE) && curr_state != MENU && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
+			if (AEInputCheckReleased(AEVK_ESCAPE) && curr_state != MENU && curr_state != TUT && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
 				game_paused = (game_paused == true) ? false : true;
 			}
 
