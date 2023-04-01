@@ -129,6 +129,15 @@ void Tutorial_Unload()
 	return;
 }
 
+
+
+
+
+
+/**************************************************************
+// IN GAME TUTORIAL
+**************************************************************/
+
 // Variables
 struct game_tut
 {
@@ -149,23 +158,23 @@ bool tut_viewed = false;
 // Individual Game Tutorial
 void GameTutorial_Load()
 {
-	
+
 	// tutorial game mesh
 	SquareMesh(&TUT_game.mesh, 0);
 
 	// load tutorial texture according to what state it is & if tut has been viewed or not
-		switch (curr_state)
-		{
-		case PUZZLE:
-			TUT_game.texture = AEGfxTextureLoad("Assets/TUT_puzzle.png");
-			break;
-		case RACING:
-			TUT_game.texture = AEGfxTextureLoad("Assets/TUT_racing.png");
-			break;
-		case BOSS:
-			TUT_game.texture = AEGfxTextureLoad("Assets/TUT_boss.png");
-			break;
-		}
+	switch (curr_state)
+	{
+	case PUZZLE:
+		TUT_game.texture = AEGfxTextureLoad("Assets/TUT_puzzle.png");
+		break;
+	case RACING:
+		TUT_game.texture = AEGfxTextureLoad("Assets/TUT_racing.png");
+		break;
+	case BOSS:
+		TUT_game.texture = AEGfxTextureLoad("Assets/TUT_boss.png");
+		break;
+	}
 
 
 	return;
@@ -173,9 +182,6 @@ void GameTutorial_Load()
 
 void GameTutorial_Init(f32 CamX, f32 CamY)
 {
-	//TUT_game.coord.x = (AEGfxGetWinMaxX() - AEGfxGetWinMinX()) / 4;
-	//TUT_game.coord.y = (AEGfxGetWinMaxY() - AEGfxGetWinMinY()) / 4;
-
 	if (curr_state == RACING)
 	{
 		TUT_game.coord.x = CamX;
@@ -187,8 +193,6 @@ void GameTutorial_Init(f32 CamX, f32 CamY)
 		AEGfxSetCamPosition(CamX, CamY);
 	}
 
-
-
 	return;
 }
 
@@ -199,7 +203,7 @@ void GameTutorial_Update()
 
 	// if player clicks on tutorial page, tutorial continue
 	// when you load in a game the tut will 
-	if (checkHovering(mouse_x, mouse_y, TUT_game.length, TUT_game.height, TUT_game.coord.x, TUT_game.coord.y) && AEInputCheckReleased(AEVK_LBUTTON))
+	if (AEInputCheckReleased(AEVK_SPACE))
 	{
 		tut_viewed = true;
 	}
@@ -207,7 +211,7 @@ void GameTutorial_Update()
 	//update matrix
 	MatrixCalc(TUT_game.transform, TUT_game.length, TUT_game.height, 0.0f, TUT_game.coord);
 
-	
+
 	return;
 }
 
@@ -225,15 +229,14 @@ void GameTutorial_Draw()
 	char strBuffer[100];
 	memset(strBuffer, 0, 100 * sizeof(char));
 
-	sprintf_s(strBuffer, "click here to start");
+	sprintf_s(strBuffer, "press SPACE to start");
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	if (curr_state == BOSS) {
-		AEGfxPrint(text, strBuffer, -0.3f, -0.675f, 0.75f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(text, strBuffer, -0.315f, -0.675f, 0.75f, 0.0f, 0.0f, 0.0f);
 	}
-	else 	AEGfxPrint(text, strBuffer, -0.3f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
+	else 	AEGfxPrint(text, strBuffer, -0.315f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
 
-	
 	return;
 }
 

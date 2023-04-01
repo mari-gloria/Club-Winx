@@ -1109,7 +1109,12 @@ void boss_unload()
 	AEGfxTextureUnload(TexBullet1);
 	AEGfxTextureUnload(TexBullet2);
 
-	AEAudioExit();
+	//unload pause
+	pause_unload();
+
+	//unload game tutorial
+	GameTutorial_Unload();
+
 
 	/*------------------------------------------------------------
 	// Exit Audio
@@ -1117,8 +1122,7 @@ void boss_unload()
 	AEAudioStopGroup(boss_bgm.aGroup);
 	AEAudioStopGroup(shoot.aGroup);
 
-	pause_unload();
-	GameTutorial_Unload();
+	
 
 }
 void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool& potion_stop, int& timer)

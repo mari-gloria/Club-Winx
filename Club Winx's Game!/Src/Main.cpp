@@ -100,7 +100,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 			//pause game
-			if (AEInputCheckReleased(AEVK_ESCAPE) && curr_state != MENU && curr_state != TUT && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
+			if (AEInputCheckReleased(AEVK_ESCAPE) && (curr_state == PUZZLE || curr_state == RACING || curr_state == BOSS)) {
 				game_paused = (game_paused == true) ? false : true;
 			}
 
@@ -116,10 +116,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AEInputCheckCurr(AEVK_3)) {
 				next_state = BOSS;
 			}
+			if (AEInputCheckCurr(AEVK_4))
+			{
+				next_state = WIN_BOTHPLAYERS;
+			}
+			if (AEInputCheckCurr(AEVK_5))
+			{
+				next_state = LOSE_BOTHPLAYERS;
+			}
+			if (AEInputCheckCurr(AEVK_6))
+			{
+				next_state = ENDGAME;
+			}
 			if (AEInputCheckCurr(AEVK_Q)) {
 				next_state = QUIT;
 			}
-		
+
 			AESysFrameEnd();
 
 			//app runtime, delta time
@@ -127,9 +139,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			g_appTime += g_dt;
 		}
 
-		//if (next_state != PAUSE) {			
-			fpFree();
-		//}
+
+		fpFree();
+
 		if (next_state != RESTART) {
 			fpUnload();
 		}
