@@ -300,6 +300,7 @@ void boss_init()
 	
 	timer = 0;
 	mobs_stop = false;
+	max_mobs = 4;
 	mobs.HP = MOBS_MAX_HP;
 	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
 	potion_stop = false;

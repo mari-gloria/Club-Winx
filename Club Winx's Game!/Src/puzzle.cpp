@@ -49,11 +49,34 @@ Map map;
 struct Item {
 
 	AEGfxVertexList* pMesh2{ nullptr }; // mesh of key
+	AEGfxTexture* pTex{ nullptr };			// texture
 	AABB				boundingBox; //collision
 	AABB				boundingBox2; //collision
+	AABB				boundingBox3; //collision
 	f32					size{ 1.0f };
 	AEVec2				vector{ 2.5,3.5 };
 	AEVec2				vector2{ 10.5,9.5 };
+	AEVec2              vector3{ 0,0 };
+	AEVec2				Velocity{ 0.0f, 0.0f }; //velocity for the item 
+	AEMtx33				transform{};
+	AEMtx33				transform2{};
+	AEMtx33				transform3{};
+
+
+
+
+};
+Item item, item2, item3;
+
+struct Trap {
+	AEGfxVertexList* pMesh2{ nullptr }; // mesh of key
+	AABB				boundingBox; //collision
+	AABB				boundingBox2; //collision
+	AABB				boundingBox3; //collision
+	f32					size{ 1.0f };
+	AEVec2				vector{ 0,0 };
+	AEVec2				vector2{ 0,0 };
+	AEVec2				vector3{ 0,0 };
 	AEVec2				Velocity{ 0.0f, 0.0f }; //velocity for the item 
 	AEMtx33				transform{};
 	AEMtx33				transform2{};
@@ -63,10 +86,8 @@ struct Item {
 	float               scale;
 	int					pFlag;
 
-
-
 };
-Item item, item2;
+Trap trap, trap2, trap3;
 
 BG puzzleLight;
 
@@ -134,6 +155,16 @@ void puzzle_load()
 	//creating keys
 	SquareMesh(&item.pMesh2, 0x00FF0000);
 	SquareMesh(&item2.pMesh2, 0x00FF0000);
+	SquareMesh(&item3.pMesh2, 0x00FF0000);
+
+	//creating traps
+	SquareMesh(&trap.pMesh2, 0x003300FF);
+	SquareMesh(&trap2.pMesh2, 0x003300FF);
+	SquareMesh(&trap3.pMesh2, 0x003300FF);
+
+
+
+
 
 	//load pause screen
 	pause_load();
@@ -195,8 +226,16 @@ void puzzle_init()
 	/*------------------------------------------------------------
 	// INIT KEYS
 	------------------------------------------------------------*/
-	item.vector = { 2.5,3.5 };
-	item2.vector2 = { 7.5,9.5 };
+	item.vector = { 2.5,18 };
+	item2.vector2 = { 14,5.5 };
+	item3.vector3 = { 34,14 };
+
+	trap.vector = { 2,11 };
+	trap2.vector2 = { 33,1.5 };
+	trap3.vector3 = { 33,18 };
+
+
+
 
 	//init pause screen
 	pause_init();
@@ -279,15 +318,14 @@ void puzzle_update()
 		BoundingBoxUpdate(player2.boundingBox, player2.pCoord, player2.size, player2.size);
 
 		//item bounding box
-		item.boundingBox.min.x = item.vector.x - item.size / 2.0f;
-		item.boundingBox.min.y = item.vector.y - item.size / 2.0f;
-		item.boundingBox.max.x = item.vector.x + item.size / 2.0f;
-		item.boundingBox.max.y = item.vector.y + item.size / 2.0f;
+		BoundingBoxUpdate(item.boundingBox, item.vector, item.size, item.size);
+		BoundingBoxUpdate(item2.boundingBox2, item2.vector2, item2.size, item2.size);
+		BoundingBoxUpdate(item3.boundingBox3, item3.vector3, item3.size, item3.size);
 
-		item2.boundingBox2.min.x = item2.vector2.x - item2.size / 2.0f;
-		item2.boundingBox2.min.y = item2.vector2.y - item2.size / 2.0f;
-		item2.boundingBox2.max.x = item2.vector2.x + item2.size / 2.0f;
-		item2.boundingBox2.max.y = item2.vector2.y + item2.size / 2.0f;
+		//Trap Bounding box
+		BoundingBoxUpdate(trap.boundingBox, trap.vector, trap.size, trap.size);
+		BoundingBoxUpdate(trap2.boundingBox2, trap2.vector2, trap2.size, trap2.size);
+		BoundingBoxUpdate(trap3.boundingBox3, trap3.vector3, trap3.size, trap3.size);
 
 		/*------------------------------------------------------------
 		UPDATE PLAYER POSITIONS
@@ -321,6 +359,11 @@ void puzzle_update()
 
 		MatrixCalc(item.transform, item.size, item.size, 0.f, item.vector);
 		MatrixCalc(item2.transform2, item2.size, item2.size, 0.f, item2.vector2);
+		MatrixCalc(item3.transform3, item3.size, item3.size, 0.f, item3.vector3);
+
+		MatrixCalc(trap.transform, trap.size, trap.size, 0.f, trap.vector);
+		MatrixCalc(trap2.transform2, trap2.size, trap2.size, 0.f, trap2.vector2);
+		MatrixCalc(trap3.transform3, trap3.size, trap3.size, 0.f, trap3.vector3);
 		/*if (CollisionIntersection_Item(player2.pCoord, player2.size, player2.size,
 			puzzle.IVector, puzzle.length, puzzle.height) == true)
 		{
@@ -344,15 +387,60 @@ void puzzle_update()
 		}*/
 
 		if (CollisionIntersection_RectRect(item.boundingBox, item.Velocity, player1.boundingBox, player1.pVel)) {
-			std::cout << "COLLIDEEEE!!!!!!" << std::endl;
+			//std::cout << "COLLIDEEEE!!!!!!" << std::endl;
 			item.vector = { -1000,1000 };
+			counter = counter + 1;
+
 
 		}
 
 		if (CollisionIntersection_RectRect(item2.boundingBox2, item2.vector2, player1.boundingBox, player1.pVel))
 		{
-			std::cout << "COLLIDEEEE!!!!!!" << std::endl;
+			//std::cout << "COLLIDEEEE!!!!!!" << std::endl;
 			item2.vector2 = { -1000,1000 };
+			counter = counter + 1;
+
+		}
+
+		if (CollisionIntersection_RectRect(item3.boundingBox3, item3.vector3, player1.boundingBox, player1.pVel))
+		{
+			//std::cout << "COLLIDEEEE!!!!!!" << std::endl;
+			item3.vector3 = { -1000,1000 };
+			counter = counter + 1;
+
+		}
+
+
+		if (CollisionIntersection_RectRect(trap.boundingBox, trap.Velocity, player2.boundingBox, player2.pVel) ||
+			CollisionIntersection_RectRect(trap.boundingBox, trap.Velocity, player1.boundingBox, player1.pVel)) {
+
+
+			//player render back to original position
+			player1.pCoord = { 1.5,1.5 };
+			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+
+
+		}
+
+		if (CollisionIntersection_RectRect(trap2.boundingBox2, trap2.Velocity, player2.boundingBox, player2.pVel) ||
+			CollisionIntersection_RectRect(trap2.boundingBox2, trap2.Velocity, player1.boundingBox, player1.pVel)) {
+
+
+			//player render back to original position
+			player1.pCoord = { 1.5,1.5 };
+			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+
+
+		}
+
+		if (CollisionIntersection_RectRect(trap3.boundingBox3, trap3.Velocity, player2.boundingBox, player2.pVel) ||
+			CollisionIntersection_RectRect(trap3.boundingBox3, trap3.Velocity, player1.boundingBox, player1.pVel)) {
+
+
+			//player render back to original position
+			player1.pCoord = { 1.5,1.5 };
+			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+
 
 		}
 	}
@@ -460,6 +548,33 @@ void puzzle_draw()
 		AEGfxTextureSet(NULL, 0, 0);
 		AEGfxMeshDraw(item2.pMesh2, AE_GFX_MDM_TRIANGLES);
 
+		AEMtx33Concat(&item3.transform3, &map.MapTransform, &item3.transform3);
+		AEGfxSetTransform(item3.transform3.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(item3.pMesh2, AE_GFX_MDM_TRIANGLES);
+
+		//RENDER TRAPS
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEMtx33Concat(&trap.transform, &map.MapTransform, &trap.transform);
+		AEGfxSetTransform(trap.transform.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(trap.pMesh2, AE_GFX_MDM_TRIANGLES);
+
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEMtx33Concat(&trap2.transform2, &map.MapTransform, &trap2.transform2);
+		AEGfxSetTransform(trap2.transform2.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(trap2.pMesh2, AE_GFX_MDM_TRIANGLES);
+
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetBlendMode(AE_GFX_BM_NONE);
+		AEMtx33Concat(&trap3.transform3, &map.MapTransform, &trap3.transform3);
+		AEGfxSetTransform(trap3.transform3.m);
+		AEGfxTextureSet(NULL, 0, 0);
+		AEGfxMeshDraw(trap3.pMesh2, AE_GFX_MDM_TRIANGLES);
+
 		// RENDER LIGHT AND SHADOW
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEMtx33Concat(&puzzleLight.transform, &map.MapTransform, &puzzleLight.transform);
@@ -509,6 +624,12 @@ void puzzle_free()
 	AEGfxMeshFree(map.pMesh1);
 	AEGfxMeshFree(puzzleLight.bgMesh);
 	AEGfxMeshFree(item.pMesh2);
+	AEGfxMeshFree(item2.pMesh2);
+	AEGfxMeshFree(item3.pMesh2);
+	AEGfxMeshFree(trap.pMesh2);
+	AEGfxMeshFree(trap2.pMesh2);
+	AEGfxMeshFree(trap3.pMesh2);
+
 	for (int i = 0; i < GRID_ROWS; i++)
 	{
 		delete[] mapdata[i];
