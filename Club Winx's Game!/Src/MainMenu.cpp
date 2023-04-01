@@ -42,7 +42,7 @@ AEGfxTexture* Main_Menu_BG;
 AEGfxTexture* Plain_BG; //BG used for tutorial, options & credits page
 AEGfxTexture* Start_Button;
 AEGfxTexture* Tutorial_Button;
-AEGfxTexture* Options_Button;
+//AEGfxTexture* Options_Button;
 AEGfxTexture* Credits_Button;
 AEGfxTexture* Quit_Button;
 
@@ -65,7 +65,7 @@ int mouseInput_y = 0;
 // Buttons on Main Menu
 float start_pos_x, start_pos_y;
 float tutorial_pos_x, tutorial_pos_y;
-float options_pos_x, options_pos_y;
+//float options_pos_x, options_pos_y;
 float credits_pos_x, credits_pos_y;
 float quit_pos_x, quit_pos_y;
 
@@ -84,7 +84,7 @@ float backmode_pos_x, backmode_pos_y;
 // Hovering Buttons on Main Menu
 bool hover_start;
 bool hover_tutorial;
-bool hover_options;
+//bool hover_options;
 bool hover_credits;
 bool hover_quit;
 
@@ -102,7 +102,7 @@ bool hover_backmode;
 // Clicked Buttons on Main Menu
 bool start_click;
 bool tutorial_click;
-bool options_click;
+//bool options_click;
 bool credits_click;
 bool quit_click;
 
@@ -146,8 +146,8 @@ void MainMenu_Load()
 	Tutorial_Button = AEGfxTextureLoad("Assets/TUTORIAL_BUTTON.png");
 	AE_ASSERT_MESG(Tutorial_Button, "Failed to create Tutorial_Button!!");
 
-	Options_Button = AEGfxTextureLoad("Assets/OPTIONS_BUTTON.png");
-	AE_ASSERT_MESG(Options_Button, "Failed to create Options_Button!!");
+	//Options_Button = AEGfxTextureLoad("Assets/OPTIONS_BUTTON.png");
+	//AE_ASSERT_MESG(Options_Button, "Failed to create Options_Button!!");
 
 	Credits_Button = AEGfxTextureLoad("Assets/CREDITS_BUTTON.png");
 	AE_ASSERT_MESG(Credits_Button, "Failed to create Credits_Button!!");
@@ -248,9 +248,9 @@ void MainMenu_Init()
 	// Buttons on Main Menu
 	start_pos_x = -160.0f, start_pos_y = -60.0f;
 	tutorial_pos_x = 160.0f, tutorial_pos_y = -60.0f;
-	options_pos_x = -160.0f, options_pos_y = -145.0f;
-	credits_pos_x = 160.0f, credits_pos_y = -145.0f;
-	quit_pos_x = 0.0f, quit_pos_y = -230.0f;
+	//options_pos_x = -160.0f, options_pos_y = -145.0f;
+	credits_pos_x = -160.0f, credits_pos_y = -145.0f;
+	quit_pos_x = 160.0f, quit_pos_y = -145.0f;
 
 	// Buttons on Mode Selection Page
 	story_pos_x = -165.0f, story_pos_y = -75.0f;
@@ -270,8 +270,8 @@ void MainMenu_Init()
 
 
 	// Booleansf
-	start_click = false, tutorial_click = false, options_click = false, credits_click = false, quit_click = false;
-	hover_start = false, hover_tutorial = false, hover_options = false, hover_credits = false, hover_quit = false;
+	start_click = false, tutorial_click = false, credits_click = false, quit_click = false;
+	hover_start = false, hover_tutorial = false, hover_credits = false, hover_quit = false;
 	hover_story = false, hover_arcade = false, hover_back = false;
 	hover_racing = false, hover_puzzle = false, hover_boss = false, hover_backmode = false;
 	
@@ -321,17 +321,17 @@ void MainMenu_Update()
 			}
 		}
 		//Options button
-		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, options_pos_x, options_pos_y))
-		{
-			hover_options = true;
-			//std::cout << "options hover" << std::endl;
+		//else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, options_pos_x, options_pos_y))
+		//{
+		//	hover_options = true;
+		//	//std::cout << "options hover" << std::endl;
 
-			if (AEInputCheckTriggered(AEVK_LBUTTON))
-			{
-				options_click = true;
-				toggle = OPTIONS;
-			}
-		}
+		//	if (AEInputCheckTriggered(AEVK_LBUTTON))
+		//	{
+		//		options_click = true;
+		//		toggle = OPTIONS;
+		//	}
+		//}
 		//Credits button
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, credits_pos_x, credits_pos_y))
 		{
@@ -358,8 +358,8 @@ void MainMenu_Update()
 		}
 		else
 		{
-			hover_start = false, hover_tutorial = false, hover_options = false, hover_credits = false, hover_quit = false;
-			start_click = false, tutorial_click = false, options_click = false, credits_click = false, quit_click = false;
+			hover_start = false, hover_tutorial = false, hover_credits = false, hover_quit = false;
+			start_click = false, tutorial_click = false, credits_click = false, quit_click = false;
 			arcadeMode = false;
 		}
 	}
@@ -541,7 +541,7 @@ void MainMenu_Draw()
 		drawButtons(tutorial_pos_x, tutorial_pos_y, Tutorial_Button, MM_Button_Mesh);
 
 		// Options
-		drawButtons(options_pos_x, options_pos_y, Options_Button, MM_Button_Mesh);
+		//drawButtons(options_pos_x, options_pos_y, Options_Button, MM_Button_Mesh);
 
 		// Credits
 		drawButtons(credits_pos_x, credits_pos_y, Credits_Button, MM_Button_Mesh);
@@ -608,7 +608,7 @@ void MainMenu_Unload()
 	AEGfxTextureUnload(Main_Menu_BG);
 	AEGfxTextureUnload(Start_Button);
 	AEGfxTextureUnload(Tutorial_Button);
-	AEGfxTextureUnload(Options_Button);
+	//AEGfxTextureUnload(Options_Button);
 	AEGfxTextureUnload(Credits_Button);
 	AEGfxTextureUnload(Quit_Button);
 
