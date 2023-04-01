@@ -57,7 +57,7 @@ const float		GRAVITY{ -8.0f };
 const float		PLAYER_JUMP{ 8.0f };
 
 const float		JUMP_HEIGHT_MAX{ 100.0f };
-
+const float		PLAYER_MOVE_MAX{ 150.0f };
 
 
 void BoundingBoxUpdate(AABB & boundingbox, AEVec2 const &coords, f32 const length, f32 const height)
@@ -362,23 +362,18 @@ void input_handle()
 		 A -> move left
 		 D -> move right
 		-----------------------------------------------------------------------------------*/
-		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size)
+		
+		if (AEInputCheckCurr(AEVK_W))
 		{
 			player1.pVel.y += player1.pAcceleration * PLAYER_MOVE * g_dt;
 			player1.pVel.y *= (f32)0.99; //simulate friction
 		}
 
-
-
-		else if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY())
+		if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY())
 		{
 			player1.pVel.y += player1.pAcceleration * -PLAYER_MOVE * g_dt;
 			player1.pVel.y *= (f32)0.99; //simulate friction
 		}
-
-
-		else
-			player1.pVel.y = 0;
 
 		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX())
 		{
@@ -391,9 +386,30 @@ void input_handle()
 			player1.pVel.x += player1.pAcceleration * PLAYER_MOVE * g_dt;
 			player1.pVel.x *= (f32)0.99; //simulate friction
 		}
+		// wrappers 
+		player1.pCoord.x = AEWrap(player1.pCoord.x, AEGfxGetWinMinX() - player1.size, AEGfxGetWinMaxX() + player1.size);
+		player1.pCoord.y = AEWrap(player1.pCoord.y, AEGfxGetWinMinY() - player1.size, AEGfxGetWinMaxY() + player1.size);
 
-		else
-			player1.pVel.x = 0;
+		//speed limiters
+		if (player1.pVel.x >= PLAYER_MOVE_MAX)
+		{
+			player1.pVel.x = PLAYER_MOVE_MAX;
+		}
+		if (player1.pVel.y >= PLAYER_MOVE_MAX)
+		{
+			player1.pVel.y = PLAYER_MOVE_MAX;
+
+		}
+		if (player1.pVel.x <= -PLAYER_MOVE_MAX)
+		{
+			player1.pVel.x = -PLAYER_MOVE_MAX;
+		}
+		if (player1.pVel.y <= -PLAYER_MOVE_MAX)
+		{
+			player1.pVel.y = -PLAYER_MOVE_MAX;
+
+		}
+		
 
 		/*----------------------------------------------------------------------------------
 		 player 2 movement controls
@@ -403,20 +419,17 @@ void input_handle()
 		 left	-> move left
 		 right	-> move right
 		-----------------------------------------------------------------------------------*/
-		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size)
+		if (AEInputCheckCurr(AEVK_UP))
 		{
 			player2.pVel.y += player2.pAcceleration * PLAYER_MOVE * g_dt;
 			player2.pVel.y *= (f32)0.99; //simulate friction
 		}
 
-		else if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY())
+		if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY())
 		{
 			player2.pVel.y += player2.pAcceleration * -PLAYER_MOVE * g_dt;
 			player2.pVel.y *= (f32)0.99; //simulate friction
 		}
-
-		else
-			player2.pVel.y = 0;
 
 		if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= AEGfxGetWinMinX())
 		{
@@ -429,9 +442,29 @@ void input_handle()
 			player2.pVel.x += player2.pAcceleration * PLAYER_MOVE * g_dt;
 			player2.pVel.x *= (f32)0.99; //simulate friction
 		}
+		// wrappers 
+		player2.pCoord.x = AEWrap(player2.pCoord.x, AEGfxGetWinMinX() - player2.size, AEGfxGetWinMaxX() + player2.size);
+		player2.pCoord.y = AEWrap(player2.pCoord.y, AEGfxGetWinMinY() - player2.size, AEGfxGetWinMaxY() + player2.size);
 
-		else
-			player2.pVel.x = 0;
+		//speed limiters
+		if (player2.pVel.x >= PLAYER_MOVE_MAX)
+		{
+			player2.pVel.x = PLAYER_MOVE_MAX;
+		}
+		if (player2.pVel.y >= PLAYER_MOVE_MAX)
+		{
+			player2.pVel.y = PLAYER_MOVE_MAX;
+
+		}
+		if (player2.pVel.x <= -PLAYER_MOVE_MAX)
+		{
+			player2.pVel.x = -PLAYER_MOVE_MAX;
+		}
+		if (player2.pVel.y <= -PLAYER_MOVE_MAX)
+		{
+			player2.pVel.y = -PLAYER_MOVE_MAX;
+
+		}
 
 
 		/*------------------------------------------------------------

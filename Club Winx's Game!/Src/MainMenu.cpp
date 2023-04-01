@@ -125,7 +125,7 @@ int toggle;
 BG credits_text;
 float credits_height_scale = 1.5f;
 float scroll_time = 0.0f;
-float scroll_speed = 0.05f;
+float scroll_speed = 0.005f;
 
 
 /*------------------------------------------------------------

@@ -131,7 +131,7 @@ void racing_load()
 void racing_init()
 {
 	// std::cout << "racing:Initialize\n";
-	racingTime.minute = 120.0f; // 2 minutes
+	racingTime.minute = 60.0f; // 2 minutes
 	racingTime.second = 60.0f;
 
 	/*------------------------------------------------------------
