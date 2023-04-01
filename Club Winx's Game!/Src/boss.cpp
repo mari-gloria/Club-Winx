@@ -266,6 +266,9 @@ void boss_load()
 
 	boss_bgm.audio = AEAudioLoadSound("Assets/Audio/bossMusic.wav");
 	boss_bgm.aGroup = AEAudioCreateGroup();
+	
+	shoot.audio = AEAudioLoadSound("Assets/Audio/shoot.wav");
+	shoot.aGroup = AEAudioCreateGroup();
 
 	//load pause
 	pause_load();
@@ -467,6 +470,7 @@ void boss_update()
 						bullets1[i].bVel.x = BULLETSPEED; // bullet speed 
 						bullets1[i].bCoord.x += bullets1[i].bVel.x;
 						//std::cout << "bullets 1 no. " << i << " launched \n";
+						//AEAudioPlay(shoot.audio, shoot.aGroup, 0.02, 1, -1);
 					}
 					else
 					{
@@ -490,6 +494,7 @@ void boss_update()
 						bullets2[i].bVel.x = BULLETSPEED; // bullet speed 
 						bullets2[i].bCoord.x += bullets2[i].bVel.x;
 						//std::cout << "bullets 2 no. " << i << " launched \n";
+						//AEAudioPlay(shoot.audio, shoot.aGroup, 0.45, 1, 0);
 					}
 					else
 					{
@@ -1096,6 +1101,7 @@ void boss_unload()
 	// Exit Audio
 	------------------------------------------------------------*/
 	AEAudioStopGroup(boss_bgm.aGroup);
+	AEAudioStopGroup(shoot.aGroup);
 
 	pause_unload();
 	GameTutorial_Unload();
