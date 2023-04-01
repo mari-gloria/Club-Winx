@@ -440,21 +440,11 @@ void Tutorial_Unload()
 	AEGfxTextureUnload(racing.texture);
 	AEGfxTextureUnload(boss.texture);
 
+	return;
+}
 /**************************************************************
 // IN GAME TUTORIAL
 **************************************************************/
-
-// Variables
-//struct game_tut
-//{
-//	f32 length{ 425.0f };
-//	f32 height{ 425.0f };
-//
-//	AEVec2 coord;
-//	AEGfxVertexList* mesh{ nullptr };
-//	AEGfxTexture* texture{ nullptr };
-//	AEMtx33	transform{};
-//};
 
 game_tut TUT_game;
 

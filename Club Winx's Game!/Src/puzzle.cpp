@@ -512,7 +512,7 @@ void puzzle_update()
 		if (counter == 3)
 		{
 			gateIsOpen = true;
-			std::cout << "gate open" << std::endl;
+			//std::cout << "gate open" << std::endl;
 			
 			if (player1AtGate == true && player2AtGate == true)
 			{
