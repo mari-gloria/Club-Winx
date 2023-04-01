@@ -5,7 +5,7 @@
 * Group Name : Club Winx
 * Primary Author : Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 * Secondary Authors :
-*
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> debug
 *
 ==================================================================================*/
 

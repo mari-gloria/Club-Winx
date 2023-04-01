@@ -5,7 +5,7 @@
 * Group Name: Club Winx
 * Primary Author: Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 * Secondary Authors:
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> bullet rendering and movement from player
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> player bullets, boss bullets, boss movements, collision
 *   Amirah Isa (amirah.b@digipen.edu) -> boss and health rendering
 *
 ==================================================================================*/

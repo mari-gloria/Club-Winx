@@ -5,7 +5,7 @@
 * Group Name: Club Winx
 * Primary Author: Yeo Hui Shan (huishan.y@digipen.edu)
 * Secondary Authors:
-*
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> clean n debug
 *
 ==================================================================================*/
 

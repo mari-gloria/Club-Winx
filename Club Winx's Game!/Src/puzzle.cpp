@@ -3,7 +3,7 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Binary Map, Map transform, Light mechanism, Player-map collision) 
 * Secondary Authors:
 *	Yeo Hui Shan (huishan.y@digipen.edu)
 *
@@ -39,7 +39,8 @@ GLOABLS
 struct Map {
 	AEGfxVertexList* pMesh0{ nullptr }; // mesh of empty
 	AEGfxVertexList* pMesh1{ nullptr }; // mesh of wall
-	AEGfxTexture* pTex{ nullptr };			// texture
+	AEGfxTexture* pTex0{ nullptr };			// texture
+	AEGfxTexture* pTex1{ nullptr };			// texture
 	AEMtx33				MapTransform{};		// transform mtx 
 };
 Map map;
@@ -54,11 +55,11 @@ struct Item {
 	f32					size{ 1.2f };
 	AEVec2				vector{ 2.5,3.5 };
 	AEVec2				vector2{ 10.5,9.5 };
+	AEMtx33				transform3{};
 	AEVec2              vector3{ 0,0 };
 	AEVec2				Velocity{ 0.0f, 0.0f }; //velocity for the item 
 	AEMtx33				transform{};
 	AEMtx33				transform2{};
-	AEMtx33				transform3{};
 };
 Item item1, item2, item3;
 
@@ -147,6 +148,8 @@ void puzzle_load()
 	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
 	
+	map.pTex0 = AEGfxTextureLoad("Assets/empty.png");
+	map.pTex1 = AEGfxTextureLoad("Assets/wall.png");
 	/*------------------------------------------------------------
 	// LOAD SOUND EFFECTS/AUDIO
 	------------------------------------------------------------*/
@@ -194,12 +197,11 @@ void puzzle_load()
 	GameTutorial_Load();
 
 	//Compute the matrix of the binary map
-	AEMtx33 scale, trans;// , flip;
-	//AEMtx33Scale(&flip, 1.0f, -1.0f);
+	AEMtx33 scale, trans;
 	AEMtx33Trans(&trans, (-(float)GRID_COLS / 2), (-(float)GRID_ROWS / 2));
 	AEMtx33Scale(&scale, (float)AEGetWindowWidth() / (float)GRID_COLS, (float)AEGetWindowHeight() / (float)GRID_ROWS);
 	AEMtx33Concat(&map.MapTransform, &scale, &trans);
-	//AEMtx33Concat(&map.MapTransform, &flip, &map.MapTransform);
+	
 }
 
 void puzzle_init()
@@ -233,6 +235,8 @@ void puzzle_init()
 
 	puzzleLight.length = puzzleLight.height = lightRadius;
 	puzzleLight.bgCoord = player2.pCoord;
+
+	counter = 0;
 
 	AEMtx33Scale(&flipTransform1, 1.0f, 1.0f);
 	AEMtx33Scale(&flipTransform2, 1.0f, 1.0f);
@@ -578,18 +582,26 @@ void puzzle_draw()
 		{
 			for (int j = 0; j < GRID_COLS; j++)
 			{
+				
 				AEMtx33Trans(&trans, (float)j + 0.5f, (float)i + 0.5f);
 				AEMtx33Concat(&final, &map.MapTransform, &trans);
 				AEMtx33Concat(&final, &flip, &final);
 				AEGfxSetTransform(final.m);
 
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+
 				if (mapdata[i][j] == WALL)
 				{
+					AEGfxTextureSet(map.pTex1, 0, 0);
 					AEGfxMeshDraw(map.pMesh1, AE_GFX_MDM_TRIANGLES);
 				}
 
 				if (mapdata[i][j] == EMPTY)
 				{
+					AEGfxTextureSet(map.pTex0, 0, 0);
 					AEGfxMeshDraw(map.pMesh0, AE_GFX_MDM_TRIANGLES);
 				}
 			}
@@ -763,7 +775,8 @@ void puzzle_unload()
 	AEGfxTextureUnload(player2.pTex);
 	AEGfxTextureUnload(puzzleLight.bgTex);
 	AEGfxTextureUnload(gate.gTex);
-
+	AEGfxTextureUnload(map.pTex0);
+	AEGfxTextureUnload(map.pTex1);
 	/*------------------------------------------------------------
 	// Exit Audio
 	------------------------------------------------------------*/

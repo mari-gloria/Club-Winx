@@ -3,7 +3,7 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu) ->move backgrounds, set camera limit, flipping of characters, arcade 
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload)
 *   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision
@@ -571,7 +571,7 @@ void racing_update()
 		/*------------------------------------------------------------
 		UPDATE CAMERA MOVEMENT
 		//------------------------------------------------------------*/
-		CamY = (player1.pCoord.y + player2.pCoord.y - 100) / 2;
+		CamY = (player1.pCoord.y + player2.pCoord.y - 105) / 2;
 
 		/*------------------------------------------------------------
 		MATRIX CALCULATION

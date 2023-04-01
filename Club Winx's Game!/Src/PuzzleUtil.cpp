@@ -12,7 +12,6 @@
 #include "PuzzleUtil.h"
 
 //GLOBAL CONSTANTS
-const double GAP = 0.00000;
 
 int InitMapData(const char* FileName)
 {
@@ -117,12 +116,12 @@ int Map_Object_Collision(float PosX, float PosY, float scaleX, float scaleY)
 	/************* LEFT SIDE *****************/
 	int leftx1, lefty1, leftx2, lefty2;
 	// HOTSPOT 1 
-	leftx1 = (int)(PosX - GAP - scaleX / 2.f);	//To reach the left side
-	lefty1 = (int)(PosY + GAP + scaleY / 4.f);	//To go up 1 / 4 of the height
+	leftx1 = (int)(PosX  - scaleX / 2.f);	//To reach the left side
+	lefty1 = (int)(PosY  + scaleY / 4.f);	//To go up 1 / 4 of the height
 
 	//HOTSPOT 2
-	leftx2 = (int)(PosX - GAP - scaleX / 2.f); //To reach left side 
-	lefty2 = (int)(PosY - GAP - scaleY / 4.f); // to go down 1/4 of height 
+	leftx2 = (int)(PosX  - scaleX / 2.f); //To reach left side 
+	lefty2 = (int)(PosY  - scaleY / 4.f); // to go down 1/4 of height 
 	if (GetCellValue(leftx1, lefty1) == WALL || GetCellValue(leftx2, lefty2) == WALL) // if hotspot value > 0
 	{
 		//std::cout << "left\n";
@@ -149,11 +148,11 @@ int Map_Object_Collision(float PosX, float PosY, float scaleX, float scaleY)
 	/************* BOTTOM SIDE *****************/
 	int bottomx1, bottomy1, bottomx2, bottomy2;
 	// HOTSPOT 1 
-	bottomx1 = (int)(PosX + GAP + scaleX / 4.f);	//To go 1/4 towards right
-	bottomy1 = (int)(PosY - GAP - scaleY / 2.f);	//To reach bottom side
+	bottomx1 = (int)(PosX  + scaleX / 4.f);	//To go 1/4 towards right
+	bottomy1 = (int)(PosY  - scaleY / 2.f);	//To reach bottom side
 	//HOTSPOT 2
-	bottomx2 = (int)(PosX - GAP - scaleX / 4.f); //To go 1/4 towards left
-	bottomy2 = (int)(PosY - GAP - scaleY / 2.f); // to reach bottom
+	bottomx2 = (int)(PosX  - scaleX / 4.f); //To go 1/4 towards left
+	bottomy2 = (int)(PosY  - scaleY / 2.f); // to reach bottom
 	if (GetCellValue(bottomx1, bottomy1) == WALL || GetCellValue(bottomx2, bottomy2) == WALL) // if hotspot value > 0
 	{
 		//std::cout << "bottom\n";
