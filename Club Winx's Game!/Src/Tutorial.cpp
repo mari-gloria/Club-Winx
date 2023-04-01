@@ -227,7 +227,12 @@ void GameTutorial_Draw()
 
 	sprintf_s(strBuffer, "click here to start");
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxPrint(text, strBuffer, -0.3f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
+
+	if (curr_state == BOSS) {
+		AEGfxPrint(text, strBuffer, -0.3f, -0.675f, 0.75f, 0.0f, 0.0f, 0.0f);
+	}
+	else 	AEGfxPrint(text, strBuffer, -0.3f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
+
 	
 	return;
 }

@@ -259,6 +259,9 @@ void boss_load()
 
 	//load pause
 	pause_load();
+
+	// load tut screen
+	GameTutorial_Load();
 }
 
 void boss_init()
@@ -307,6 +310,13 @@ void boss_init()
 	------------------------------------------------------------*/
 	AEAudioPlay(boss_bgm.audio, boss_bgm.aGroup, 0.75, 1, -1);
 
+	/*------------------------------------------------------------
+	// INIT TUT_game
+	------------------------------------------------------------*/
+	tut_viewed = false;
+	GameTutorial_Init(0.0f, 0.0f);
+
+
 	//pause init
 	pause_init();
 }
@@ -320,6 +330,15 @@ void boss_update()
 
 	else
 	{
+		// Game Tutorial
+		if (tut_viewed == false)
+		{
+			GameTutorial_Update();
+			AEAudioPauseGroup(boss_bgm.aGroup);
+		}
+		else
+			AEAudioResumeGroup(boss_bgm.aGroup);
+
 		//std::cout << "boss:Update\n";
 		// TIME COUNTER 
 		bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
@@ -391,69 +410,71 @@ void boss_update()
 		/*------------------------------------------------------------
 		BULLET MOVEMENT
 		------------------------------------------------------------*/
-		for (int i = 0; i < MAX_BULLETS; i++)
-		{
-			if (bulletTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
+		if (tut_viewed == true) {
+			for (int i = 0; i < MAX_BULLETS; i++)
 			{
-				bullets1[i].shot = TRUE;
-				bullets2[i].shot = TRUE;
-				bulletTimeElapsed = 0.0;
-			}
-			if (boss.alive == FALSE && boss.HP <= 0) { //bullets will stop shooting when monster dies
-
-				bullets1[i].shot = FALSE;
-				bullets2[i].shot = FALSE;
-			}
-
-		}
-		for (int i = 0; i < MAX_BULLETS; i++)
-		{
-
-			if (player1.alive) {
-
-				if (bullets1[i].shot)
+				if (bulletTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
 				{
-					bullets1[i].bVel.x = BULLETSPEED; // bullet speed 
-					bullets1[i].bCoord.x += bullets1[i].bVel.x;
-					//std::cout << "bullets 1 no. " << i << " launched \n";
+					bullets1[i].shot = TRUE;
+					bullets2[i].shot = TRUE;
+					bulletTimeElapsed = 0.0;
 				}
-				else
+				if (boss.alive == FALSE && boss.HP <= 0) { //bullets will stop shooting when monster dies
+
+					bullets1[i].shot = FALSE;
+					bullets2[i].shot = FALSE;
+				}
+
+			}
+			for (int i = 0; i < MAX_BULLETS; i++)
+			{
+
+				if (player1.alive) {
+
+					if (bullets1[i].shot)
+					{
+						bullets1[i].bVel.x = BULLETSPEED; // bullet speed 
+						bullets1[i].bCoord.x += bullets1[i].bVel.x;
+						//std::cout << "bullets 1 no. " << i << " launched \n";
+					}
+					else
+					{
+						bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
+					}
+				}
+				else //if player ded
 				{
-					bullets1[i].bCoord = { player1.pCoord.x + (player1.size / 2.0f), player1.pCoord.y };
+					bullets1[i].shot = false;
 				}
-			}
-			else //if player ded
-			{
-				bullets1[i].shot = false;
-			}
 
-			if (bullets1[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
-			{
-				bullets1[i].shot = FALSE;
-			}
-
-			if (player2.alive) {
-
-				if (bullets2[i].shot)
+				if (bullets1[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
 				{
-					bullets2[i].bVel.x = BULLETSPEED; // bullet speed 
-					bullets2[i].bCoord.x += bullets2[i].bVel.x;
-					//std::cout << "bullets 2 no. " << i << " launched \n";
+					bullets1[i].shot = FALSE;
 				}
-				else
-				{
-					bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
-				}
-			}
-			else //if player ded
-			{
-				bullets2[i].shot = false;
-			}
-			if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
-			{
-				bullets2[i].shot = FALSE;
-			}
 
+				if (player2.alive) {
+
+					if (bullets2[i].shot)
+					{
+						bullets2[i].bVel.x = BULLETSPEED; // bullet speed 
+						bullets2[i].bCoord.x += bullets2[i].bVel.x;
+						//std::cout << "bullets 2 no. " << i << " launched \n";
+					}
+					else
+					{
+						bullets2[i].bCoord = { player2.pCoord.x + (player2.size / 2.0f), player2.pCoord.y };
+					}
+				}
+				else //if player ded
+				{
+					bullets2[i].shot = false;
+				}
+				if (bullets2[i].bCoord.x >= AEGfxGetWinMaxX()) // if exit map 
+				{
+					bullets2[i].shot = FALSE;
+				}
+
+			}
 
 		}
 		/*------------------------------------------------------------
@@ -620,84 +641,87 @@ void boss_update()
 		/*------------------------------------------------------------
 		POTION COLLECTION
 		------------------------------------------------------------*/
-		timer = timer + 1;
-		potion_position(potion.vector.x, potion.vector.y, potion_produce, check, potion_stop, timer);
+		if (tut_viewed == true) 
+		{
+			timer = timer + 1;
+			potion_position(potion.vector.x, potion.vector.y, potion_produce, check, potion_stop, timer);
+
+			if (potion_stop != true) {
+
+				if (potion_produce == true) {
+
+					if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, potion.boundingBox, potion.pVelocity))
+					{
+						float hpToHeal = PLAYER2_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
+						float hpMissing = PLAYER2_MAX_HP - player2.HP; //  HP needed to reach max HP
+
+						if (hpToHeal > hpMissing) {
+							hpToHeal = hpMissing; // 
+						}
+
+						player2.HP += hpToHeal; // Heal the player
+						potion.vector = { -1000,-1000 };
+						max_potion -= 1;
+						AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
 
 
-
-		if (potion_stop != true) {
-
-			if (potion_produce == true) {
-
-				if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, potion.boundingBox, potion.pVelocity))
-				{
-					float hpToHeal = PLAYER2_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
-					float hpMissing = PLAYER2_MAX_HP - player2.HP; //  HP needed to reach max HP
-
-					if (hpToHeal > hpMissing) {
-						hpToHeal = hpMissing; // 
 					}
+					if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, potion.boundingBox, potion.pVelocity))
+					{
+						float hpToHeal = PLAYER_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
+						float hpMissing = PLAYER_MAX_HP - player1.HP; //  HP needed to reach max HP
 
-					player2.HP += hpToHeal; // Heal the player
-					potion.vector = { -1000,-1000 };
-					max_potion -= 1;
-					AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
+						if (hpToHeal > hpMissing) {
+							hpToHeal = hpMissing; // 
+						}
+
+						player1.HP += hpToHeal; // Heal the player
+
+						potion.vector = { -1000,-1000 };
+						max_potion -= 1;
+
+						AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
 
 
-				}
-				if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, potion.boundingBox, potion.pVelocity))
-				{
-					float hpToHeal = PLAYER_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
-					float hpMissing = PLAYER_MAX_HP - player1.HP; //  HP needed to reach max HP
-
-					if (hpToHeal > hpMissing) {
-						hpToHeal = hpMissing; // 
 					}
-
-					player1.HP += hpToHeal; // Heal the player
-
-					potion.vector = { -1000,-1000 };
-					max_potion -= 1;
-
-					AEAudioPlay(collect.audio, collect.aGroup, 1, 1, 0);
-
 
 				}
 
 			}
+			//stop spawning potion
+			if (max_potion == 0) {
+				potion_stop = true;
+			}
 
-		}
-		//stop spawning potion
-		if (max_potion == 0) {
-			potion_stop = true;
 		}
 
 		/*------------------------------------------------------------
 		MOBS SPAWN
 		------------------------------------------------------------*/
-		mobs_position(mobs.vector.x, mobs.vector.y, mobs_spawn, mobscheck, mobs_stop, timer);
+		// spawn after tut has been viewed
+		if (tut_viewed == true) {
+			mobs_position(mobs.vector.x, mobs.vector.y, mobs_spawn, mobscheck, mobs_stop, timer);
 
+			if (mobs_stop != true) {
 
+				if (mobs_spawn == true) {
 
-		if (mobs_stop != true) {
+					if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+						player2.HP -= MOBSATTACK_DMG;
 
-			if (mobs_spawn == true) {
+					}
+					if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+						player1.HP -= MOBSATTACK_DMG;
 
-				if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
-					player2.HP -= MOBSATTACK_DMG;
-
-				}
-				if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
-					player1.HP -= MOBSATTACK_DMG;
+					}
 
 				}
 
 			}
-
-		}
-		//stop spawning mobs
-		if (max_mobs == 0) {
-			mobs_stop = true;
+			//stop spawning mobs
+			if (max_mobs == 0) {
+				mobs_stop = true;
+			}
 		}
 
 
@@ -812,8 +836,6 @@ void boss_draw()
 		/*------------------------------------------------------------
 		DRAWING PLAYERS
 		------------------------------------------------------------*/
-
-
 		// Set position for object 1
 		if (player1.alive)
 		{
@@ -938,6 +960,14 @@ void boss_draw()
 			AEGfxMeshDraw(potion.pMesh, AE_GFX_MDM_TRIANGLES);
 
 		}
+
+		/*------------------------------------------------------------
+		// DRAWING TUTORIAL
+		------------------------------------------------------------*/
+		if (tut_viewed == false)
+			GameTutorial_Draw();
+
+
 	}
 }
 
@@ -949,6 +979,7 @@ void boss_free()
 	bulletTimeElapsed = 0.0;
 
 	pause_free();
+	GameTutorial_Free();
 }
 
 void boss_unload()
@@ -981,6 +1012,8 @@ void boss_unload()
 	AEAudioStopGroup(boss_bgm.aGroup);
 
 	pause_unload();
+	GameTutorial_Unload();
+
 }
 void potion_position(float& x, float& y, bool& potion_produce, bool& check, bool& potion_stop, int& timer)
 {
