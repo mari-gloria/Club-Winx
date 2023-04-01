@@ -184,7 +184,6 @@ void MainMenu_Load()
 	mainmenu_bgm.audio = AEAudioLoadSound("Assets/Audio/mainmenuMusic.wav");
 	mainmenu_bgm.aGroup = AEAudioCreateGroup();
 
-
 	/*------------------------------------------------------------
 	// LOAD MESHES
 	------------------------------------------------------------*/
@@ -231,11 +230,9 @@ void MainMenu_Load()
 	MS_Button_Mesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(MS_Button_Mesh, "Failed to create MS_Button_Mesh!!");
 
-
 	//Credits text
 	SquareMesh(&credits_text.bgMesh, 0);
 	credits_text.bgTex = AEGfxTextureLoad("Assets/Credits_text.png");
-	
 }
 
 /*------------------------------------------------------------
@@ -517,9 +514,9 @@ void MainMenu_Draw()
 	case TUTORIAL:
 		AEGfxTextureSet(Plain_BG, 0.0f, 0.0f);
 		break;
-	case OPTIONS:
+	/*case OPTIONS:
 		AEGfxTextureSet(Plain_BG, 0.0f, 0.0f);
-		break;
+		break;*/
 	case CREDITS:
 		AEGfxTextureSet(Plain_BG, 0.0f, 0.0f);
 		break;
