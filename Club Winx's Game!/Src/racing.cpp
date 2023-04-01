@@ -6,7 +6,7 @@
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload)
-*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision 
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
@@ -16,43 +16,42 @@
 
 // ---------------------------------------------------------------------------
 
-
 /*------------------------------------------------------------
 defines
 ------------------------------------------------------------*/
 
 // Camera Movement Variables
-f32			CamX{ 0.0f },
-			CamY{ 0.0f };	// Camera's X & Y Positions
+f32 CamX{0.0f},
+	CamY{0.0f}; // Camera's X & Y Positions
 
-//// 
-static AABB			Waves_boundingBox;
-static AEVec2		Waves_vel{ 0.f, 0.f };
-static bool			section_done{ false };
+////
+static AABB Waves_boundingBox;
+static AEVec2 Waves_vel{0.f, 0.f};
+static bool section_done{false};
 
 ///
-static int			if_win{ 0 } ; // 0: None, 1: Player_one, 2: Player_two
+static int if_win{0}; // 0: None, 1: Player_one, 2: Player_two
 
-//players variables
+// players variables
 int player1_current_platform;
 int player2_current_platform;
 
-bool player1_boosted{ false };
-bool player2_boosted{ false };
+bool player1_boosted{false};
+bool player2_boosted{false};
 
-int player1_boost_counter{ 0 };
-int player1_use_boost_counter{ 0 };
+int player1_boost_counter{0};
+int player1_use_boost_counter{0};
 
-int player2_boost_counter{ 0 };
-int player2_use_boost_counter{ 0 };
+int player2_boost_counter{0};
+int player2_use_boost_counter{0};
 
 float const BOOST_JUMP_HEIGHT = 200.0f;
 float const BOOST_JUMP_VEL = 16.0f;
 
-float bgspeed; 
+float bgspeed;
 
 static AEMtx33 flipTransform1, flipTransform2;
-//AEMtx33Scale(&flipTransform, -1.0f, 1.0f); // horizontal scale
+// AEMtx33Scale(&flipTransform, -1.0f, 1.0f); // horizontal scale
 //(&player1.transform, &player1.transform, &flipTransform);
 static AEVec2 timeleft;
 
@@ -63,17 +62,15 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void racing_load()
 {
-	//std::cout << "racing:LOAD\n";
+	// std::cout << "racing:LOAD\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png");		// BG Texture
-	SquareMesh(&bgRacing.bgMesh, 0);							// BG Mesh
-	bgRacing.length = (f32)winWIDTH;
+	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png"); // BG Texture
+	SquareMesh(&bgRacing.bgMesh, 0);						   // BG Mesh
+	bgRacing.length = (f32)winLENGTH;
 	bgRacing.height = (f32)winHEIGHT;
-
-
 
 	/*------------------------------------------------------------
 	CREATING OBJECTS AND SHAPES
@@ -81,11 +78,11 @@ void racing_load()
 
 	// Informing the library that we're about to start adding triangles
 
-	// player 1 mesh 
-	SquareMesh(&player1.pMesh,  0xFFB62891);
+	// player 1 mesh
+	SquareMesh(&player1.pMesh, 0xFFB62891);
 
 	// player 2 mesh
-	SquareMesh(&player2.pMesh,0xFFFF00FF);
+	SquareMesh(&player2.pMesh, 0xFFFF00FF);
 
 	// loading in platform meshes in map
 	racing_map_load();
@@ -99,15 +96,14 @@ void racing_load()
 	// loagin Waves texture
 	SquareMesh(&bgWaves.bgMesh, 0);
 
-	//loading ground texture
+	// loading ground texture
 	SquareMesh(&bgRacingGround.bgMesh, 0);
 
-	//load pause screen
+	// load pause screen
 	pause_load();
 
 	// load tut screen
 	GameTutorial_Load();
-
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -116,8 +112,8 @@ void racing_load()
 	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
 
 	winRacing.bgTex = AEGfxTextureLoad("Assets/Racing_Winner.png");
-	bgWaves.bgTex = AEGfxTextureLoad("Assets/Waves.png"); // Waves Texture for rising water..
-	bgRacingGround.bgTex = AEGfxTextureLoad("Assets/RacingGround.png"); //texture for ground
+	bgWaves.bgTex = AEGfxTextureLoad("Assets/Waves.png");				// Waves Texture for rising water..
+	bgRacingGround.bgTex = AEGfxTextureLoad("Assets/RacingGround.png"); // texture for ground
 
 	/*------------------------------------------------------------
 	// LOAD SOUND EFFECTS/AUDIO
@@ -135,8 +131,8 @@ void racing_load()
 
 void racing_init()
 {
-	//std::cout << "racing:Initialize\n";
-	racingTime.minute = 120.0f; //2 minutes
+	// std::cout << "racing:Initialize\n";
+	racingTime.minute = 120.0f; // 2 minutes
 	racingTime.second = 60.0f;
 
 	/*------------------------------------------------------------
@@ -147,8 +143,8 @@ void racing_init()
 	player2.pGround = AEGfxGetWinMinY() + player2.size / 2.f;
 	player2.pCurrGround = player2.pGround;
 
-	player1.pCoord = { AEGfxGetWinMinX() / 2, player1.pGround }; //spawn at left half of screen
-	player2.pCoord = { AEGfxGetWinMaxX() / 2, player2.pGround }; //spawn at right half of screen
+	player1.pCoord = {AEGfxGetWinMinX() / 2, player1.pGround}; // spawn at left half of screen
+	player2.pCoord = {AEGfxGetWinMaxX() / 2, player2.pGround}; // spawn at right half of screen
 
 	player1.size = 50.0f;
 	player2.size = 50.0f;
@@ -159,33 +155,27 @@ void racing_init()
 	// INIT PLATFORM - MAP
 	------------------------------------------------------------*/
 	// declaring values for start and end values for player1 & 2 - which is needed for racing map
-	player1.startX	= AEGfxGetWinMinX();
-	player1.endX	= - 0.0f;
+	player1.startX = AEGfxGetWinMinX();
+	player1.endX = -0.0f;
 
-	//player2.start = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
-	player2.startX	= 0.0f;
-	player2.endX	= AEGfxGetWinMaxX();
+	// player2.start = (AEGfxGetWinMinX() + AEGfxGetWinMaxX()) / 2;
+	player2.startX = 0.0f;
+	player2.endX = AEGfxGetWinMaxX();
 
 	// calling racing map initialisation fucntion, using values from previous lines
 	racing_map_init(player1.startX, player1.endX, 1);
 	racing_map_init(player2.startX, player2.endX, 2);
-
-
 
 	/*------------------------------------------------------------
 	// INIT SPLITSCREEN
 	------------------------------------------------------------*/
 	splitscreen_init();
 
-
-
 	/*------------------------------------------------------------
 	// INIT - Camera Movement
 	------------------------------------------------------------*/
 	CamX = 0.0f;
-	CamY = (player1.pCoord.y + player2.pCoord.y) / 2.f +winHEIGHT / 6.f;
-
-
+	CamY = (player1.pCoord.y + player2.pCoord.y) / 2.f + winHEIGHT / 6.f;
 
 	/*------------------------------------------------------------
 	// INIT - Racing Win Texture
@@ -221,7 +211,7 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT TUT_game
 	------------------------------------------------------------*/
-	//tut_viewed = false;
+	// tut_viewed = false;
 	GameTutorial_Init(CamX, CamY);
 
 	/*------------------------------------------------------------
@@ -234,7 +224,7 @@ void racing_init()
 void racing_update()
 {
 	if (game_paused)
-	{	
+	{
 		pause_update();
 	}
 
@@ -245,9 +235,10 @@ void racing_update()
 			GameTutorial_Update();
 			AEAudioPauseGroup(racing_bgm.aGroup);
 		}
-		else AEAudioResumeGroup(racing_bgm.aGroup);
-		
-		//std::cout << "CONTINUE\n";
+		else
+			AEAudioResumeGroup(racing_bgm.aGroup);
+
+		// std::cout << "CONTINUE\n";
 		/*------------------------------------------------------------
 		// CHANGE STATE CONDITIONS
 		------------------------------------------------------------*/
@@ -262,30 +253,15 @@ void racing_update()
 			break;
 		}
 
-
-
-		//for testing
-		if (AEInputCheckCurr(AEVK_1)) {
-			next_state = PUZZLE;
-		}
-		if (AEInputCheckCurr(AEVK_3)) {
-			next_state = BOSS;
-		}
-		if (AEInputCheckCurr(AEVK_Q)) {
-			next_state = QUIT;
-		}
-		if (AEInputCheckCurr(AEVK_BACK)) {
-			next_state = RESTART;
-		}
-
 		/*------------------------------------------------------------
 		// TIMER
 		------------------------------------------------------------*/
-		if (tut_viewed == true) {
+		if (tut_viewed == true)
+		{
 			racingTime.minute -= AEFrameRateControllerGetFrameTime();
 			racingTime.second -= AEFrameRateControllerGetFrameTime();
 			racingMinute = (int)racingTime.minute / 60;
-			//std::cout << racingTime.minute << ":" << racingMinute << ":" << racingTime.second << std::endl;
+			// std::cout << racingTime.minute << ":" << racingMinute << ":" << racingTime.second << std::endl;
 
 			if (racingTime.second < 0.0f)
 			{
@@ -293,49 +269,48 @@ void racing_update()
 
 				if (racingTime.minute < 0.0f)
 				{
-					//game stops
+					// game stops
 					next_state = LOSE_BOTHPLAYERS;
 				}
 			}
-
 		}
 
 		/*------------------------------------------------------------
 		// INPUT HANDLING
 		------------------------------------------------------------*/
 		input_handle();
-		//AEAudioUpdate();
+		// AEAudioUpdate();
 
-		if (AEInputCheckTriggered(AEVK_A)) {
-			AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 
-
+		if (AEInputCheckTriggered(AEVK_A))
+		{
+			AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip
 		}
-		if (AEInputCheckTriggered(AEVK_D)) {
-			AEMtx33Scale(&flipTransform1, 1.0f, 1.0f); // player 1 normal 
+		if (AEInputCheckTriggered(AEVK_D))
+		{
+			AEMtx33Scale(&flipTransform1, 1.0f, 1.0f); // player 1 normal
 		}
-		if (AEInputCheckTriggered(AEVK_LEFT)) {
-			AEMtx33Scale(&flipTransform2, -1.0f, 1.0f); // player 2 flip 
-
+		if (AEInputCheckTriggered(AEVK_LEFT))
+		{
+			AEMtx33Scale(&flipTransform2, -1.0f, 1.0f); // player 2 flip
 		}
-		if (AEInputCheckTriggered(AEVK_RIGHT)) {
+		if (AEInputCheckTriggered(AEVK_RIGHT))
+		{
 			AEMtx33Scale(&flipTransform2, 1.0f, 1.0f); // player 1 normal
 		}
-
 
 		/*------------------------------------------------------------
 		// CHECK PLAYER-PLATFORM COLLISON
 		------------------------------------------------------------*/
-		//update player bounding box
+		// update player bounding box
 		BoundingBoxUpdate(player1.boundingBox, player1.pCoord, player1.size, player1.size);
 		BoundingBoxUpdate(player2.boundingBox, player2.pCoord, player2.size, player2.size);
 
-		//checking for player-platform collision
+		// checking for player-platform collision
 		for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
 		{
-			//update platform bounding box
+			// update platform bounding box
 			BoundingBoxUpdate(platformA[i].platBoundingBox, platformA[i].platVect, platformA[i].length, platformA[i].height);
 			BoundingBoxUpdate(platformB[i].platBoundingBox, platformB[i].platVect, platformB[i].length, platformB[i].height);
-
 
 			bool player1_collide = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, platformA[i].platBoundingBox, platformA[i].platVel);
 			bool player2_collide = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, platformB[i].platBoundingBox, platformB[i].platVel);
@@ -360,9 +335,8 @@ void racing_update()
 				}
 			}
 
-
-			//update pOnSurface
-			if (player1.pCoord.y == player1.pGround)//player on the ground
+			// update pOnSurface
+			if (player1.pCoord.y == player1.pGround) // player on the ground
 			{
 				player1.pCurrGround = player1.pGround;
 				player1.pOnSurface = true;
@@ -386,7 +360,6 @@ void racing_update()
 				MatrixCalc(winRacing.transform, winRacing.length, winRacing.height, 0.f, winRacing.bgCoord);
 			}
 
-
 			/*******************
 				player 2
 			*******************/
@@ -407,8 +380,8 @@ void racing_update()
 				}
 			}
 
-			//update pOnSurface
-			if (player2.pCoord.y == player2.pGround)//player on the ground
+			// update pOnSurface
+			if (player2.pCoord.y == player2.pGround) // player on the ground
 			{
 				player2.pCurrGround = player2.pGround;
 				player2.pOnSurface = true;
@@ -433,7 +406,6 @@ void racing_update()
 			}
 		}
 
-
 		/*------------------------------------------------------------
 		// CHECK FOR PLAYER-BOOST COLLISION
 		------------------------------------------------------------*/
@@ -441,16 +413,13 @@ void racing_update()
 		{
 			BoundingBoxUpdate(racing_boostsA[i].boundingBox, racing_boostsA[i].pCoord, racing_boostsA[i].size, racing_boostsA[i].size);
 			BoundingBoxUpdate(racing_boostsB[i].boundingBox, racing_boostsB[i].pCoord, racing_boostsB[i].size, racing_boostsB[i].size);
-
 		}
 
-
-		//checking for player-boost collision
+		// checking for player-boost collision
 		for (int i = 0; i < MAX_NUM_ITEMS; i++)
 		{
 			bool player1_collected_boost = CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, racing_boostsA[i].boundingBox, racing_boostsA[i].pVel);
 			bool player2_collected_boost = CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, racing_boostsB[i].boundingBox, racing_boostsB[i].pVel);
-
 
 			/*******************
 				player 1
@@ -459,23 +428,23 @@ void racing_update()
 			{
 				racing_boostsA[i].collected = true;
 
-				//updated boost bool
+				// updated boost bool
 				player1_boosted = true;
 
-				//update boost counter
+				// update boost counter
 				player1_boost_counter++;
 			}
 
-			//boosted jumping mechanism
+			// boosted jumping mechanism
 			if (player1.pJumping)
 			{
-				//boost > used = boost unused
+				// boost > used = boost unused
 				if (player1_boosted)
 				{
-					//set new jump height
+					// set new jump height
 					player1.pJumpHeightMax = BOOST_JUMP_HEIGHT;
 
-					//set new vel
+					// set new vel
 					player1.pVel.y = BOOST_JUMP_VEL;
 
 					player1_use_boost_counter = player1_boost_counter;
@@ -483,10 +452,10 @@ void racing_update()
 
 				else
 				{
-					//reset player jump height max
+					// reset player jump height max
 					player1.pJumpHeightMax = JUMP_HEIGHT_MAX;
 
-					//reset player vel
+					// reset player vel
 					player1.pVel.y = PLAYER_JUMP;
 				}
 			}
@@ -496,8 +465,6 @@ void racing_update()
 				player1_boosted = false;
 			}
 
-
-
 			/*******************
 				player 2
 			*******************/
@@ -505,23 +472,23 @@ void racing_update()
 			{
 				racing_boostsB[i].collected = true;
 
-				//updated boost bool
+				// updated boost bool
 				player2_boosted = true;
 
-				//update boost counter
+				// update boost counter
 				player2_boost_counter++;
 			}
 
-			//boosted jumping mechanism
+			// boosted jumping mechanism
 			if (player2.pJumping)
 			{
-				//boost > used = boost unused
+				// boost > used = boost unused
 				if (player2_boosted)
 				{
-					//set new jump height
+					// set new jump height
 					player2.pJumpHeightMax = BOOST_JUMP_HEIGHT;
 
-					//set new vel
+					// set new vel
 					player2.pVel.y = BOOST_JUMP_VEL;
 
 					player2_use_boost_counter = player2_boost_counter;
@@ -529,10 +496,10 @@ void racing_update()
 
 				else
 				{
-					//reset player jump height max
+					// reset player jump height max
 					player2.pJumpHeightMax = JUMP_HEIGHT_MAX;
 
-					//reset player vel
+					// reset player vel
 					player2.pVel.y = PLAYER_JUMP;
 				}
 			}
@@ -565,23 +532,25 @@ void racing_update()
 
 		int section = int(MAX_NUM_PLATFORMS / 10); // divides the platforms to 10 sections
 
-
 		// if both players pass the 1st section
 		if (player1.boundingBox.min.y > platformA[section].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section].platBoundingBox.max.y)
 		{
-			if (section_done == false)	bgWaves.bgCoord.y = CamY - 2.6f * bgWaves.height;
+			if (section_done == false)
+				bgWaves.bgCoord.y = CamY - 2.6f * bgWaves.height;
 
 			// if players passes the halfway mark
 			if (player1.boundingBox.min.y > platformA[section * 5].platBoundingBox.max.y && player2.boundingBox.min.y > platformB[section * 5].platBoundingBox.max.y)
 			{
 				section_done = true;
-				if (section_done == true)	bgWaves.bgCoord.y = CamY - 2.3f * bgWaves.height;
+				if (section_done == true)
+					bgWaves.bgCoord.y = CamY - 2.3f * bgWaves.height;
 			}
 		}
 
 		// players lose mechanics
 
-		if (player1_lose || player2_lose) {
+		if (player1_lose || player2_lose)
+		{
 
 			COLLISION lose1_flag = get_collision_flag(player1.boundingBox, player1.pVel, Waves_boundingBox, Waves_vel);
 			COLLISION lose2_flag = get_collision_flag(player2.boundingBox, player2.pVel, Waves_boundingBox, Waves_vel);
@@ -592,45 +561,44 @@ void racing_update()
 			}
 		}
 
-
 		/*------------------------------------------------------------
 		UPDATE CAMERA MOVEMENT
 		//------------------------------------------------------------*/
-		CamY = (player1.pCoord.y + player2.pCoord.y - 100) / 2 ;
-		
+		CamY = (player1.pCoord.y + player2.pCoord.y - 100) / 2;
+
 		/*------------------------------------------------------------
 		MATRIX CALCULATION
 		------------------------------------------------------------*/
 		// for background
 		MatrixCalc(bgRacing.transform, bgRacing.length, bgRacing.height, 0.0f, bgRacing.bgCoord);
 
-		// for players 
+		// for players
 		MatrixCalc(player1.transform, player1.size, player1.size, 0.f, player1.pCoord);
 		MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
 
-
-		//for platforms 
-		for (int i = 0; i < MAX_NUM_PLATFORMS; i++) {
+		// for platforms
+		for (int i = 0; i < MAX_NUM_PLATFORMS; i++)
+		{
 			MatrixCalc(platformA[i].transform, platformA[i].length, platformA[i].height, 0.f, platformA[i].platVect);
 			MatrixCalc(platformB[i].transform, platformB[i].length, platformB[i].height, 0.f, platformB[i].platVect);
 		}
 
-		//for boosts
-		for (int i = 0; i < MAX_NUM_ITEMS; i++) {
+		// for boosts
+		for (int i = 0; i < MAX_NUM_ITEMS; i++)
+		{
 			MatrixCalc(racing_boostsA[i].transform, racing_boostsA[i].size, racing_boostsA[i].size, 0.f, racing_boostsA[i].pCoord);
 			MatrixCalc(racing_boostsB[i].transform, racing_boostsB[i].size, racing_boostsB[i].size, 0.f, racing_boostsB[i].pCoord);
 		}
 
-		//for splitscreen
+		// for splitscreen
 		MatrixCalc(splitscreen.transform, splitscreen.length, splitscreen.height, 0.f, splitscreen.lVect);
 
-		//for Waves
+		// for Waves
 		MatrixCalc(bgWaves.transform, bgWaves.length, bgWaves.height, 0.f, bgWaves.bgCoord);
 
-		//for ground
+		// for ground
 
 		MatrixCalc(bgRacingGround.transform, bgRacingGround.length, bgRacingGround.height, 0.f, bgRacingGround.bgCoord);
-
 
 		///*------------------------------------------------------------
 		// UPDATE - Background Y
@@ -650,13 +618,13 @@ void racing_draw()
 
 	else
 	{
-		
-		//std::cout << "racing:Draw\n";
+
+		// std::cout << "racing:Draw\n";
 		/*------------------------------------------------------------
 		DRAWING BACKGROUND
 		------------------------------------------------------------*/
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
+		// AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
 		AEGfxSetTransform(bgRacing.transform.m);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -674,7 +642,6 @@ void racing_draw()
 		------------------------------------------------------------*/
 		racing_map_draw();
 
-
 		/*------------------------------------------------------------
 		// DRAWING PLAYERS
 		------------------------------------------------------------*/
@@ -689,7 +656,7 @@ void racing_draw()
 		AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
 
 		// drawing player 2
-		//AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		// AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEMtx33Concat(&player2.transform, &player2.transform, &flipTransform2);
 		AEGfxSetTransform(player2.transform.m);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -702,7 +669,6 @@ void racing_draw()
 		// DRAWING SPLITSCREEN
 		------------------------------------------------------------*/
 		splitscreen_draw();
-
 
 		/*------------------------------------------------------------
 		// DRAWING Winner Texture
@@ -743,7 +709,7 @@ void racing_draw()
 		 DRAWING - Camera Movement
 		------------------------------------------------------------*/
 		AEGfxSetCamPosition(CamX, CamY); // Set Camera's Position to values of CamX & CamY
-		
+
 		/*------------------------------------------------------------
 		 DRAWING - Words
 		------------------------------------------------------------*/
@@ -757,14 +723,14 @@ void racing_draw()
 		/*------------------------------------------------------------
 		// DRAWING TUTORIAL
 		------------------------------------------------------------*/
-		if (tut_viewed == false) GameTutorial_Draw();
-
+		if (tut_viewed == false)
+			GameTutorial_Draw();
 	}
 }
 
 void racing_free()
 {
-	//std::cout << "racing:Free\n";
+	// std::cout << "racing:Free\n";
 	/*------------------------------------------------------------
 	// Resetting Camera
 	------------------------------------------------------------*/
@@ -772,32 +738,43 @@ void racing_free()
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
 
+	/*------------------------------------------------------------
+	// Free Background Meshes & Texture
+	------------------------------------------------------------*/
+	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
+	AEGfxMeshFree(bgWaves.bgMesh);
+	AEGfxMeshFree(bgRacingGround.bgMesh);
+
+	/*------------------------------------------------------------
+	// Free Player Meshes
+	------------------------------------------------------------*/
+	AEGfxMeshFree(player1.pMesh);
+	AEGfxMeshFree(player2.pMesh);
+
+	/*------------------------------------------------------------
+	// Free Win Meshes
+	------------------------------------------------------------*/
+	AEGfxMeshFree(winRacing.bgMesh);
+
 	pause_free();
 	GameTutorial_Free();
-
 }
 
 void racing_unload()
 {
-	//std::cout << "racing:Unload\n";
+	// std::cout << "racing:Unload\n";
 	/*------------------------------------------------------------
 	// Unload Background Meshes & Texture
 	------------------------------------------------------------*/
-	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
 
-	AEGfxMeshFree(bgWaves.bgMesh);
 	AEGfxTextureUnload(bgWaves.bgTex);
 
-	AEGfxMeshFree(bgRacingGround.bgMesh);
 	AEGfxTextureUnload(bgRacingGround.bgTex);
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes
 	------------------------------------------------------------*/
-	AEGfxMeshFree(player1.pMesh);
-	AEGfxMeshFree(player2.pMesh);
-
 	AEGfxTextureUnload(player1.pTex);
 	AEGfxTextureUnload(player2.pTex);
 
@@ -812,9 +789,8 @@ void racing_unload()
 	splitscreen_unload();
 
 	/*------------------------------------------------------------
-	// Unload Player Meshes
+	// Unload Win Meshes
 	------------------------------------------------------------*/
-	AEGfxMeshFree(winRacing.bgMesh);
 	AEGfxTextureUnload(winRacing.bgTex);
 
 	/*------------------------------------------------------------
@@ -825,5 +801,4 @@ void racing_unload()
 
 	pause_unload();
 	GameTutorial_Unload();
-
 }

@@ -47,7 +47,7 @@
 Defines
 ---------------------------------------------------------------------------*/
 //from main.cpp
-extern int const	winWIDTH, winHEIGHT;
+extern int const	winLENGTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
 extern s8			fontID, text;

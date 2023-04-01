@@ -23,7 +23,7 @@ DECLARE GLOBAL VARIABLES
 ------------------------------------------------------------*/
 
 //setting screen width and height
-int const winWIDTH{1080}, winHEIGHT{600};
+int const winLENGTH{1080}, winHEIGHT{600};
 
 extern s8 fontID = 0;
 extern s8 text = 1;
@@ -49,10 +49,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	------------------------------------------------------------*/
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, winWIDTH, winHEIGHT, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, winLENGTH, winHEIGHT, 1, 60, true, NULL);
 
 	// Changing the window title
-	AESysSetWindowTitle("Winx Demo!");
+	AESysSetWindowTitle("Up For Orbital!");
 
 
 	// reset the system modules
@@ -98,13 +98,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			//if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
 				//next_state = QUIT;
 
-			if (AEInputCheckReleased(AEVK_ESCAPE) && curr_state != MENU && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
-				game_paused = (game_paused == true) ? false : true;
 
-				//if (prev_state != PAUSE || curr_state == MENU) {
-				//fpUpdate();
-				//fpDraw();
-				//}
+			//pause game
+			if (AEInputCheckReleased(AEVK_ESCAPE) && curr_state != MENU && curr_state != TUT && curr_state != LOSE_BOTHPLAYERS && curr_state != WIN_BOTHPLAYERS && curr_state != ENDGAME) {
+				game_paused = (game_paused == true) ? false : true;
+			}
+
+			/*-----------------
+			* for testing
+			-----------------*/
+			if (AEInputCheckCurr(AEVK_1)) {
+				next_state = PUZZLE;
+			}
+			if (AEInputCheckCurr(AEVK_2)) {
+				next_state = RACING;
+			}
+			if (AEInputCheckCurr(AEVK_3)) {
+				next_state = BOSS;
+			}
+			if (AEInputCheckCurr(AEVK_Q)) {
+				next_state = QUIT;
 			}
 		
 			AESysFrameEnd();

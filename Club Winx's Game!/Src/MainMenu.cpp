@@ -120,6 +120,14 @@ bool backmode_click = false;
 // ----- ENUM CONTROLLER ----- //
 int toggle;
 
+
+//Credits text
+BG credits_text;
+float credits_height_scale = 1.5f;
+float scroll_time = 0.0f;
+float scroll_speed = 0.05f;
+
+
 /*------------------------------------------------------------
 LOADS ASSETS NEEDED FOR MAIN MENU
 ------------------------------------------------------------*/
@@ -129,7 +137,7 @@ void MainMenu_Load()
 	Main_Menu_BG = AEGfxTextureLoad("Assets/MAIN_MENU.png");
 	AE_ASSERT_MESG(Main_Menu_BG, "Failed to create Main_Menu_BG!!");
 
-	Plain_BG = AEGfxTextureLoad("Assets/MAIN_MENU_PLAIN_BG.png");
+	Plain_BG = AEGfxTextureLoad("Assets/MAIN_MENU_SKY.png");
 	AE_ASSERT_MESG(Plain_BG, "Failed to create Plain_BG!!");
 
 	Start_Button = AEGfxTextureLoad("Assets/START_BUTTON.png");
@@ -175,39 +183,11 @@ void MainMenu_Load()
 	------------------------------------------------------------*/
 	mainmenu_bgm.audio = AEAudioLoadSound("Assets/Audio/mainmenuMusic.wav");
 	mainmenu_bgm.aGroup = AEAudioCreateGroup();
-}
 
-/*------------------------------------------------------------
-INITIALISE BUTTONS AND VARIABLES FOR MAIN MENU
-------------------------------------------------------------*/
-void MainMenu_Init()
-{
-	toggle = MAINMENU; //start at main menu page
 
-	// Buttons on Main Menu
-	start_pos_x = -160.0f, start_pos_y = -60.0f;
-	tutorial_pos_x = 160.0f, tutorial_pos_y = -60.0f;
-	options_pos_x = -160.0f, options_pos_y = -145.0f;
-	credits_pos_x = 160.0f, credits_pos_y = -145.0f;
-	quit_pos_x = 0.0f, quit_pos_y = -230.0f;
-
-	// Buttons on Mode Selection Page
-	story_pos_x = -165.0f, story_pos_y = -75.0f;
-	arcade_pos_x = 165.0f, arcade_pos_y = -75.0f;
-	back_pos_x = 0.0f, back_pos_y = -200.0f;
-
-	// Buttons on Level Selection Page
-	racing_pos_x = -165.0f, racing_pos_y = -75.0f;
-	puzzle_pos_x = 165.0f, puzzle_pos_y = -75.0f;
-	boss_pos_x = -165.0f, boss_pos_y = -200.0f;
-	backmode_pos_x = 165.0f, backmode_pos_y = -200.0f;
-
-	// Booleans
-	start_click = false, tutorial_click = false, options_click = false, credits_click = false, quit_click = false;
-	hover_start = false, hover_tutorial = false, hover_options = false, hover_credits = false, hover_quit = false;
-	hover_story = false, hover_arcade = false, hover_back = false;
-	hover_racing = false, hover_puzzle = false, hover_boss = false, hover_backmode = false;
-
+	/*------------------------------------------------------------
+	// LOAD MESHES
+	------------------------------------------------------------*/
 	//Load background mesh
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -246,10 +226,54 @@ void MainMenu_Init()
 	AEGfxTriAdd(
 		(float)(MODE_SELECTION_BUTTON_W / 2), (float)(-MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 1.0f,
 		(float)(MODE_SELECTION_BUTTON_W / 2), (float)(MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 1.0f, 0.0f,
-		(float)(- MODE_SELECTION_BUTTON_W / 2), (float)(MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
+		(float)(-MODE_SELECTION_BUTTON_W / 2), (float)(MODE_SELECTION_BUTTON_H / 2), 0x00FFFFFF, 0.0f, 0.0f);
 
 	MS_Button_Mesh = AEGfxMeshEnd();
 	AE_ASSERT_MESG(MS_Button_Mesh, "Failed to create MS_Button_Mesh!!");
+
+
+	//Credits text
+	SquareMesh(&credits_text.bgMesh, 0);
+	credits_text.bgTex = AEGfxTextureLoad("Assets/Credits_text.png");
+	
+}
+
+/*------------------------------------------------------------
+INITIALISE BUTTONS AND VARIABLES FOR MAIN MENU
+------------------------------------------------------------*/
+void MainMenu_Init()
+{
+	toggle = MAINMENU; //start at main menu page
+
+	// Buttons on Main Menu
+	start_pos_x = -160.0f, start_pos_y = -60.0f;
+	tutorial_pos_x = 160.0f, tutorial_pos_y = -60.0f;
+	options_pos_x = -160.0f, options_pos_y = -145.0f;
+	credits_pos_x = 160.0f, credits_pos_y = -145.0f;
+	quit_pos_x = 0.0f, quit_pos_y = -230.0f;
+
+	// Buttons on Mode Selection Page
+	story_pos_x = -165.0f, story_pos_y = -75.0f;
+	arcade_pos_x = 165.0f, arcade_pos_y = -75.0f;
+	back_pos_x = 0.0f, back_pos_y = -200.0f;
+
+	// Buttons on Level Selection Page
+	racing_pos_x = -165.0f, racing_pos_y = -75.0f;
+	puzzle_pos_x = 165.0f, puzzle_pos_y = -75.0f;
+	boss_pos_x = -165.0f, boss_pos_y = -200.0f;
+	backmode_pos_x = 165.0f, backmode_pos_y = -200.0f;
+
+	//Credits Text
+	credits_text.bgCoord = { 0.0f, -200.0f };
+	credits_text.height = (f32)winHEIGHT * credits_height_scale;
+	credits_text.length = (f32)winLENGTH;
+
+
+	// Booleansf
+	start_click = false, tutorial_click = false, options_click = false, credits_click = false, quit_click = false;
+	hover_start = false, hover_tutorial = false, hover_options = false, hover_credits = false, hover_quit = false;
+	hover_story = false, hover_arcade = false, hover_back = false;
+	hover_racing = false, hover_puzzle = false, hover_boss = false, hover_backmode = false;
 	
 	AEAudioPlay(mainmenu_bgm.audio, mainmenu_bgm.aGroup, 0.75, 1, -1);
 }
@@ -262,19 +286,6 @@ void MainMenu_Update()
 	//AEInputUpdate();
 	AEInputGetCursorPosition(&mouseInput_x, &mouseInput_y);
 	//std::cout << mouseInput_x << ", " << mouseInput_y << std::endl;
-
-	if (AEInputCheckCurr(AEVK_1)) {
-		next_state = PUZZLE;
-	}
-	if (AEInputCheckCurr(AEVK_2)) {
-		next_state = RACING;
-	}
-	if (AEInputCheckCurr(AEVK_3)) {
-		next_state = BOSS;
-	}
-	if (AEInputCheckCurr(AEVK_Q)) {
-		next_state = QUIT;
-	}
 	
 
 	// ----- Menu Buttons State Manager ----- //
@@ -449,6 +460,23 @@ void MainMenu_Update()
 			racing_click = false, puzzle_click = false, boss_click = false, backmode_click = false;
 		}
 	}
+
+	else if (toggle == CREDITS)
+	{
+		//update y pos acc to time
+		credits_text.bgCoord.y += 30.0f * scroll_speed;
+
+		//go back to main menu
+		if ((credits_text.bgCoord.y - credits_text.height / 2.0f) >= AEGfxGetWinMaxY())
+		{
+			toggle = MAINMENU;
+			credits_text.bgCoord = { 0.0f, -200.0f };
+		}
+
+		//matrix calc
+		MatrixCalc(credits_text.transform, credits_text.length, credits_text.height, 0.0f, credits_text.bgCoord);
+	}
+
 	else if (toggle == QUITGAME)
 	{
 		next_state = QUIT;
@@ -548,6 +576,17 @@ void MainMenu_Draw()
 		// Back to Mode Selection
 		drawButtons(backmode_pos_x, backmode_pos_y, Back_Mode_Button, MS_Button_Mesh);
 	}
+
+	if (toggle == CREDITS)
+	{
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransform(credits_text.transform.m);
+		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(credits_text.bgTex, 0, 0);
+		AEGfxMeshDraw(credits_text.bgMesh, AE_GFX_MDM_TRIANGLES);
+	}
 }
 
 /*------------------------------------------------------------
@@ -558,6 +597,7 @@ void MainMenu_Free()
 	AEGfxMeshFree(Main_Menu_Mesh);
 	AEGfxMeshFree(MM_Button_Mesh);
 	AEGfxMeshFree(MS_Button_Mesh);
+	AEGfxMeshFree(credits_text.bgMesh);
 }
 
 /*------------------------------------------------------------
@@ -580,6 +620,8 @@ void MainMenu_Unload()
 	AEGfxTextureUnload(Puzzle_Button);
 	AEGfxTextureUnload(Boss_Button);
 	AEGfxTextureUnload(Back_Mode_Button);
+
+	AEGfxTextureUnload(credits_text.bgTex);
 
 	/*------------------------------------------------------------
 	// Exit Audio
