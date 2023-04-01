@@ -42,7 +42,6 @@ AEGfxTexture* Main_Menu_BG;
 AEGfxTexture* Plain_BG; //BG used for tutorial, options & credits page
 AEGfxTexture* Start_Button;
 AEGfxTexture* Tutorial_Button;
-//AEGfxTexture* Options_Button;
 AEGfxTexture* Credits_Button;
 AEGfxTexture* Quit_Button;
 
@@ -65,7 +64,6 @@ int mouseInput_y = 0;
 // Buttons on Main Menu
 float start_pos_x, start_pos_y;
 float tutorial_pos_x, tutorial_pos_y;
-//float options_pos_x, options_pos_y;
 float credits_pos_x, credits_pos_y;
 float quit_pos_x, quit_pos_y;
 
@@ -84,7 +82,6 @@ float backmode_pos_x, backmode_pos_y;
 // Hovering Buttons on Main Menu
 bool hover_start;
 bool hover_tutorial;
-//bool hover_options;
 bool hover_credits;
 bool hover_quit;
 
@@ -102,7 +99,6 @@ bool hover_backmode;
 // Clicked Buttons on Main Menu
 bool start_click;
 bool tutorial_click;
-//bool options_click;
 bool credits_click;
 bool quit_click;
 
@@ -120,13 +116,11 @@ bool backmode_click = false;
 // ----- ENUM CONTROLLER ----- //
 int toggle;
 
-
 //Credits text
 BG credits_text;
 float credits_height_scale = 1.5f;
 float scroll_time = 0.0f;
 float scroll_speed = 0.005f;
-
 
 /*------------------------------------------------------------
 LOADS ASSETS NEEDED FOR MAIN MENU
@@ -145,9 +139,6 @@ void MainMenu_Load()
 
 	Tutorial_Button = AEGfxTextureLoad("Assets/TUTORIAL_BUTTON.png");
 	AE_ASSERT_MESG(Tutorial_Button, "Failed to create Tutorial_Button!!");
-
-	//Options_Button = AEGfxTextureLoad("Assets/OPTIONS_BUTTON.png");
-	//AE_ASSERT_MESG(Options_Button, "Failed to create Options_Button!!");
 
 	Credits_Button = AEGfxTextureLoad("Assets/CREDITS_BUTTON.png");
 	AE_ASSERT_MESG(Credits_Button, "Failed to create Credits_Button!!");
@@ -245,7 +236,6 @@ void MainMenu_Init()
 	// Buttons on Main Menu
 	start_pos_x = -160.0f, start_pos_y = -60.0f;
 	tutorial_pos_x = 160.0f, tutorial_pos_y = -60.0f;
-	//options_pos_x = -160.0f, options_pos_y = -145.0f;
 	credits_pos_x = -160.0f, credits_pos_y = -145.0f;
 	quit_pos_x = 160.0f, quit_pos_y = -145.0f;
 
@@ -265,8 +255,7 @@ void MainMenu_Init()
 	credits_text.height = (f32)winHEIGHT * credits_height_scale;
 	credits_text.length = (f32)winLENGTH;
 
-
-	// Booleansf
+	// Booleans
 	start_click = false, tutorial_click = false, credits_click = false, quit_click = false;
 	hover_start = false, hover_tutorial = false, hover_credits = false, hover_quit = false;
 	hover_story = false, hover_arcade = false, hover_back = false;
@@ -280,11 +269,8 @@ INITIALISE BUTTONS AND VARIABLES FOR MAIN MENU
 ------------------------------------------------------------*/
 void MainMenu_Update()
 {
-	//AEInputUpdate();
 	AEInputGetCursorPosition(&mouseInput_x, &mouseInput_y);
-	//std::cout << mouseInput_x << ", " << mouseInput_y << std::endl;
 	
-
 	// ----- Menu Buttons State Manager ----- //
 	if (toggle == MAINMENU)
 	{
@@ -292,48 +278,28 @@ void MainMenu_Update()
 		if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, start_pos_x, start_pos_y))
 		{
 			hover_start = true;
-			//std::cout << "start hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
 				start_click = true;
 				toggle = MODESELECTIONPAGE;
-				//std::cout << "start click" << std::endl;
-
 			}
 		}
 		//Tutorial button
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, tutorial_pos_x, tutorial_pos_y))
 		{
 			hover_tutorial = true;
-			//std::cout << "tutorial hover" << std::endl;
 
 			if (AEInputCheckReleased(AEVK_LBUTTON))
 			{
 				tutorial_click = true;
-				/*toggle = TUTORIAL;*/
-
-				// adding tutorial
 				next_state = TUT;
 			}
 		}
-		//Options button
-		//else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, options_pos_x, options_pos_y))
-		//{
-		//	hover_options = true;
-		//	//std::cout << "options hover" << std::endl;
-
-		//	if (AEInputCheckTriggered(AEVK_LBUTTON))
-		//	{
-		//		options_click = true;
-		//		toggle = OPTIONS;
-		//	}
-		//}
 		//Credits button
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, credits_pos_x, credits_pos_y))
 		{
 			hover_credits = true;
-			//std::cout << "credit hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
@@ -345,7 +311,6 @@ void MainMenu_Update()
 		else if (checkHovering(mouseInput_x, mouseInput_y, MAIN_MENU_BUTTON_W, MAIN_MENU_BUTTON_H, quit_pos_x, quit_pos_y))
 		{
 			hover_quit = true;
-			//std::cout << "quit hover" << std::endl;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
@@ -402,7 +367,6 @@ void MainMenu_Update()
 				back_click = true;
 				toggle = MAINMENU;
 			}
-
 		}
 	}
 	else if (toggle == LEVELSELECTIONPAGE)
@@ -514,9 +478,6 @@ void MainMenu_Draw()
 	case TUTORIAL:
 		AEGfxTextureSet(Plain_BG, 0.0f, 0.0f);
 		break;
-	/*case OPTIONS:
-		AEGfxTextureSet(Plain_BG, 0.0f, 0.0f);
-		break;*/
 	case CREDITS:
 		AEGfxTextureSet(Plain_BG, 0.0f, 0.0f);
 		break;
@@ -536,9 +497,6 @@ void MainMenu_Draw()
 
 		// Tutorial
 		drawButtons(tutorial_pos_x, tutorial_pos_y, Tutorial_Button, MM_Button_Mesh);
-
-		// Options
-		//drawButtons(options_pos_x, options_pos_y, Options_Button, MM_Button_Mesh);
 
 		// Credits
 		drawButtons(credits_pos_x, credits_pos_y, Credits_Button, MM_Button_Mesh);
@@ -605,7 +563,6 @@ void MainMenu_Unload()
 	AEGfxTextureUnload(Main_Menu_BG);
 	AEGfxTextureUnload(Start_Button);
 	AEGfxTextureUnload(Tutorial_Button);
-	//AEGfxTextureUnload(Options_Button);
 	AEGfxTextureUnload(Credits_Button);
 	AEGfxTextureUnload(Quit_Button);
 
