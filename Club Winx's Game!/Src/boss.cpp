@@ -202,6 +202,7 @@ bool mobs_stop = false;
 bool mobs_spawn = false;
 f32 mobsHitTimer = 0.0f;
 bool mobsHit = false;
+bool mobs_moving = false;
 /*------------------------------------------------------------
 FUNCTIONS
 ------------------------------------------------------------*/
@@ -319,6 +320,7 @@ void boss_init()
 	mobs.HP = MOBS_MAX_HP;
 	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
 	mobsHit = false;
+	mobs_moving = false;
 
 	potion_stop = false;
     potion.vector = { potion_start_positonX, potion_start_positonY};
@@ -643,14 +645,14 @@ void boss_update()
 			}
 				
 			//Shoot MOBS
-			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].bVel, mobs.boundingBox, mobs.MobsVelocity)&& mobs_moving == true) //if player1 or player2 bullet collide with boss && boss is alive
 			{
 				mobs.HP -= PLAYERDMG;
 				bullets1[i].shot = false;
 				mobsHit = true;
 
 			}
-			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
+			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity) && mobs_moving == true) //if player1 or player2 bullet collide with boss && boss is alive
 			{
 				mobs.HP -= PLAYERDMG;
 				bullets2[i].shot = false;
@@ -664,16 +666,21 @@ void boss_update()
 			//update bounding box
 			BoundingBoxUpdate(bossbullets1[i].boundingBox, bossbullets1[i].coords, bossbullets1[i].size, bossbullets1[i].size);
 
-			if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
-			{
-				player1.HP -= BOSSATTACK_1_DMG;
-				bossbullets1[i].shot = false;
+			if (mobs_stop == true) {
+
+				if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player1.boundingBox, player1.pVel) && player1.alive)// if bullet hit player 1 && player alive
+				{
+					player1.HP -= BOSSATTACK_1_DMG;
+					bossbullets1[i].shot = false;
+				}
+				if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player2.boundingBox, player2.pVel) && player2.alive)// if bullet hit player 1 && player alive
+				{
+					player2.HP -= BOSSATTACK_1_DMG;
+					bossbullets1[i].shot = false;
+				}
+
 			}
-			if (CollisionIntersection_RectRect(bossbullets1[i].boundingBox, bossbullets1[i].velocity, player2.boundingBox, player2.pVel) && player2.alive)// if bullet hit player 1 && player alive
-			{
-				player2.HP -= BOSSATTACK_1_DMG;
-				bossbullets1[i].shot = false;
-			}
+			
 		}
 
 		/*------------------------------------------------------------
@@ -740,15 +747,22 @@ void boss_update()
 		if (tut_viewed == true) {
 			mobs_position(mobs.vector.x, mobs.vector.y, mobs_spawn, mobscheck, mobs_stop, timer);
 
+			//collision for mobs that are movinf
+			if (player1.pCoord.x <= MOBS_start_positonX) {
+				mobs_moving = true;
+			}
+			if (player2.pCoord.x <= MOBS_start_positonX) {
+				mobs_moving = true;
+			}
 			if (mobs_stop != true) {
 
 				if (mobs_spawn == true) {
 
-					if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+					if (CollisionIntersection_RectRect(player2.boundingBox, player2.pVel, mobs.boundingBox, mobs.MobsVelocity) &&mobs_moving == true) {
 						player2.HP -= MOBSATTACK_DMG;
 
 					}
-					if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity)) {
+					if (CollisionIntersection_RectRect(player1.boundingBox, player1.pVel, mobs.boundingBox, mobs.MobsVelocity) && mobs_moving == true) {
 						player1.HP -= MOBSATTACK_DMG;
 
 					}
