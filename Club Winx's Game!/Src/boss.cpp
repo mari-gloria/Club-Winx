@@ -23,7 +23,7 @@
 CONSTANTS
 ------------------------------------------------------------*/
 int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
-const f32 BULLETSPEED = 12.0f; // speed of players bullet
+const f32 BULLETSPEED = 15.0f; // speed of players bullet
 const f32 PLAYERDMG = 5.5f; //Player's hit
 const f32 BOSS_MAX_HP = 600.f; //  boss hp
 const f32 PLAYER_MAX_HP = 100.f; // players hp
