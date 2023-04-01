@@ -2,8 +2,11 @@
 // Include these Header files
 #include "General.h"
 
+// Variables
 static AEVec2 title, description;
 
+
+// General Tutorial
 void Tutorial_Load()
 {
 	/*------------------------------------------------------------
@@ -125,3 +128,114 @@ void Tutorial_Unload()
 
 	return;
 }
+
+// Variables
+struct game_tut
+{
+	f32 length{ 425.0f };
+	f32 height{ 425.0f };
+
+	AEVec2 coord;
+	AEGfxVertexList* mesh{ nullptr };
+	AEGfxTexture* texture{ nullptr };
+	AEMtx33	transform{};
+};
+
+game_tut TUT_game;
+
+static int mouse_x, mouse_y;
+bool tut_viewed = false;
+
+// Individual Game Tutorial
+void GameTutorial_Load()
+{
+	
+	// tutorial game mesh
+	SquareMesh(&TUT_game.mesh, 0);
+
+	// load tutorial texture according to what state it is & if tut has been viewed or not
+		switch (curr_state)
+		{
+		case PUZZLE:
+			TUT_game.texture = AEGfxTextureLoad("Assets/TUT_puzzle.png");
+			break;
+		case RACING:
+			TUT_game.texture = AEGfxTextureLoad("Assets/TUT_racing.png");
+			break;
+		case BOSS:
+			TUT_game.texture = AEGfxTextureLoad("Assets/TUT_boss.png");
+			break;
+		}
+
+
+	return;
+}
+
+void GameTutorial_Init(f32 CamX, f32 CamY)
+{
+	TUT_game.coord.x = (AEGfxGetWinMaxX() - AEGfxGetWinMinX()) / 4;
+	TUT_game.coord.y = (AEGfxGetWinMaxY() - AEGfxGetWinMinY()) / 4;
+
+	if (curr_state == RACING)
+	{
+		TUT_game.coord.x = CamX;
+		TUT_game.coord.y = CamY - 100.0f;
+	}
+
+	return;
+}
+
+void GameTutorial_Update()
+{
+	//update mouse coord
+	AEInputGetCursorPosition(&mouse_x, &mouse_y);
+
+	// if player clicks on tutorial page, tutorial continue
+	// when you load in a game the tut will 
+	if (checkHovering(mouse_x, mouse_y, TUT_game.length, TUT_game.height, TUT_game.coord.x, TUT_game.coord.y) && AEInputCheckReleased(AEVK_LBUTTON))
+	{
+		tut_viewed = true;
+	}
+
+	//update matrix
+	MatrixCalc(TUT_game.transform, TUT_game.length, TUT_game.height, 0.0f, TUT_game.coord);
+
+	
+	return;
+}
+
+void GameTutorial_Draw()
+{
+
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetTransform(TUT_game.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(TUT_game.texture, 0, 0);
+	AEGfxMeshDraw(TUT_game.mesh, AE_GFX_MDM_TRIANGLES);
+
+	char strBuffer[100];
+	memset(strBuffer, 0, 100 * sizeof(char));
+
+	sprintf_s(strBuffer, "click here to start");
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxPrint(text, strBuffer, -0.3f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
+	
+	return;
+}
+
+void GameTutorial_Free()
+{
+	// free mesh
+	AEGfxMeshFree(TUT_game.mesh);
+	return;
+}
+
+void GameTutorial_Unload()
+{
+	// free textures
+	AEGfxTextureUnload(TUT_game.texture);
+	return;
+}
+

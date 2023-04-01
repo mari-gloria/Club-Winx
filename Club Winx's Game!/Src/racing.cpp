@@ -105,6 +105,9 @@ void racing_load()
 	//load pause screen
 	pause_load();
 
+	// load tut screen
+	GameTutorial_Load();
+
 
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
@@ -124,6 +127,8 @@ void racing_load()
 
 	racing_bgm.audio = AEAudioLoadSound("Assets/Audio/racingMusic.wav");
 	racing_bgm.aGroup = AEAudioCreateGroup();
+
+	tut_viewed = false;
 
 	return;
 }
@@ -208,9 +213,20 @@ void racing_init()
 	------------------------------------------------------------*/
 	AEAudioPlay(racing_bgm.audio, racing_bgm.aGroup, 0.75, 1, -1);
 
-	//init pause screen
+	/*------------------------------------------------------------
+	// INIT PAUSE
+	------------------------------------------------------------*/
 	pause_init();
 
+	/*------------------------------------------------------------
+	// INIT TUT_game
+	------------------------------------------------------------*/
+	//tut_viewed = false;
+	GameTutorial_Init(CamX, CamY);
+
+	/*------------------------------------------------------------
+	// Others
+	------------------------------------------------------------*/
 	bgspeed = 0.05f;
 	return;
 }
@@ -224,6 +240,13 @@ void racing_update()
 
 	else
 	{
+		if (tut_viewed == false)
+		{
+			GameTutorial_Update();
+			AEAudioPauseGroup(racing_bgm.aGroup);
+		}
+		else AEAudioResumeGroup(racing_bgm.aGroup);
+		
 		//std::cout << "CONTINUE\n";
 		/*------------------------------------------------------------
 		// CHANGE STATE CONDITIONS
@@ -258,20 +281,23 @@ void racing_update()
 		/*------------------------------------------------------------
 		// TIMER
 		------------------------------------------------------------*/
-		racingTime.minute -= AEFrameRateControllerGetFrameTime();
-		racingTime.second -= AEFrameRateControllerGetFrameTime();
-		racingMinute = (int)racingTime.minute / 60;
-		//std::cout << racingTime.minute << ":" << racingMinute << ":" << racingTime.second << std::endl;
+		if (tut_viewed == true) {
+			racingTime.minute -= AEFrameRateControllerGetFrameTime();
+			racingTime.second -= AEFrameRateControllerGetFrameTime();
+			racingMinute = (int)racingTime.minute / 60;
+			//std::cout << racingTime.minute << ":" << racingMinute << ":" << racingTime.second << std::endl;
 
-		if (racingTime.second < 0.0f)
-		{
-			racingTime.second = 60.0f;
-
-			if (racingTime.minute < 0.0f)
+			if (racingTime.second < 0.0f)
 			{
-				//game stops
-				next_state = LOSE_BOTHPLAYERS;
+				racingTime.second = 60.0f;
+
+				if (racingTime.minute < 0.0f)
+				{
+					//game stops
+					next_state = LOSE_BOTHPLAYERS;
+				}
 			}
+
 		}
 
 		/*------------------------------------------------------------
@@ -624,6 +650,7 @@ void racing_draw()
 
 	else
 	{
+		
 		//std::cout << "racing:Draw\n";
 		/*------------------------------------------------------------
 		DRAWING BACKGROUND
@@ -726,6 +753,12 @@ void racing_draw()
 		memset(strBuf, 0, 1000 * sizeof(char));
 		sprintf_s(strBuf, "Time Left: %d:%.0f", racingMinute, racingTime.second);
 		AEGfxPrint(text, strBuf, racingTime.timeleft.x, racingTime.timeleft.y, 0.7f, 1.0f, 1.0f, 1.0f);
+
+		/*------------------------------------------------------------
+		// DRAWING TUTORIAL
+		------------------------------------------------------------*/
+		if (tut_viewed == false) GameTutorial_Draw();
+
 	}
 }
 
@@ -740,6 +773,8 @@ void racing_free()
 	AEGfxSetCamPosition(CamX, CamY);
 
 	pause_free();
+	GameTutorial_Free();
+
 }
 
 void racing_unload()
@@ -789,5 +824,6 @@ void racing_unload()
 	AEAudioStopGroup(racing_bgm.aGroup);
 
 	pause_unload();
+	GameTutorial_Unload();
 
 }

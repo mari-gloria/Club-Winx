@@ -15,3 +15,9 @@ void Tutorial_Draw();
 void Tutorial_Free();
 void Tutorial_Unload();
 
+void GameTutorial_Load();
+void GameTutorial_Init(f32 CamX, f32 CamY);
+void GameTutorial_Update();
+void GameTutorial_Draw();
+void GameTutorial_Free();
+void GameTutorial_Unload();
