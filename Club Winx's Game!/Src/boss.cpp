@@ -37,6 +37,7 @@ const f32 bossSpeed = 50.f; // speed of boss
 const f32 knockBackDistance = 50.0f; // boss knockback when hit 
 const f32 knockBackDuration = 0.2f;
 const f32 healAmount = 0.3f; // potion heal percentage of MAX HP 
+
 /*------------------------------------------------------------
 PLAYER BULLETS
 ------------------------------------------------------------*/
@@ -44,14 +45,19 @@ struct Bullet {
 	AEVec2 bCoord{ 0.0f,0.0f };
 	bool shot{ FALSE };
 	AEMtx33 transform{};
-	f32 length{ 10.0f };
-	f32 height{ 5.0f };
+	f32 length{ 20.0f };
+	f32 height{ 15.0f };
 	AABB boundingBox;
 	AEVec2 bVel;
+	
 };
 
 Bullet bullets1[MAX_BULLETS], bullets2[MAX_BULLETS];
-AEGfxVertexList* pBullet{ nullptr };
+
+AEGfxTexture* TexBullet1{};
+AEGfxVertexList* pBullet1{ nullptr };
+AEGfxTexture* TexBullet2{};
+AEGfxVertexList* pBullet2{ nullptr };
 f64 bulletTimeElapsed = 0.0;
 /*-----------------------------------------------------------*/
 
@@ -89,13 +95,13 @@ struct bosspew {
 	bool shot{ FALSE };
 	f32 direction{ 30.0f };
 	f32 speed{ 100.f };
-	f32 size{ 25.f };
+	f32 size{ 30.f };
 	AABB boundingBox;
 };
 
 bosspew bossbullets1[MAXWAVE], bossbullets2[MAXWAVE];
 AEGfxVertexList* pbossbullet{ nullptr };
-
+AEGfxTexture* TexBossBullet{};
 const f32 gravity = 9.8f;
 f64 bossTimeElapsed = 0.0f;
 bool bossSwitch;
@@ -111,6 +117,8 @@ struct Boss { // initialise in each game mode before use
 
 	AEGfxVertexList*	pMesh1{ nullptr };			// mesh 
 	AEGfxTexture*		pTex{ nullptr };			// texture
+	AEGfxTexture*		hitpTex{};
+	AEGfxVertexList*	hitpMesh{};
 	AEMtx33				transform{};				// transform mtx 
 
 	AEVec2				Bcoord{ 380.0f, -30.f };	// position of boss
@@ -168,6 +176,9 @@ struct Mobs {
 
 	AEGfxVertexList* pMesh{ nullptr }; // mesh 
 	AEGfxTexture* pTex{ nullptr };			// texture
+
+	AEGfxVertexList* HitpMesh{ nullptr }; // mesh 
+	AEGfxTexture* HitpTex{ nullptr };			// texture
 	AEMtx33				MobsTransform{};
 	f32					size{ 60.0f };
 	AEVec2				vector{ 700.0f,0 };
@@ -189,7 +200,8 @@ int max_mobs = 4; //number of max mobs produce
 bool mobscheck = false;
 bool mobs_stop = false;
 bool mobs_spawn = false;
-
+f32 mobsHitTimer = 0.0f;
+bool mobsHit = false;
 /*------------------------------------------------------------
 FUNCTIONS
 ------------------------------------------------------------*/
@@ -210,34 +222,29 @@ void boss_load()
 	CREATING OBJECTS AND SHAPES
 	------------------------------------------------------------*/
 	// player 1 mesh 
-	//SquareMesh(&player1.pMesh, player1.size, player1.size, 0xFFB62891);
-	SquareMesh(&player1.pMesh, 0xFFB62891); //0xFFB62891
+	SquareMesh(&player1.pMesh, 0xFFB62891);
 	// player 2 mesh
-	//SquareMesh(&player2.pMesh, player2.size, player2.size, 0xFFFF00FF);
 	SquareMesh(&player2.pMesh, 0xFFFF00FF);
-
 	//creating bullet mesh
-	SquareMesh(&pBullet, 0xFFFFFFFF);
+	SquareMesh(&pBullet1, 0xFFFFFFFF);
+	SquareMesh(&pBullet2, 0xFFFFFFFF);
 
+	//boss mesh
 	SquareMesh(&boss.pMesh1, 0xFFFFFF00);
+	SquareMesh(&boss.hitpMesh, 0);
 	//Creating Health Mesh
-	//SquareMesh(&health.pMesh1,0x00FF0000);
-	//SquareMesh(&health2.pMesh, 0x00999999);
 	SquareMesh(&boss.Bhealth.pMesh, 0x00FF0000);
-
-	//PLeyar Meash
+	//PLayer health mesh
 	SquareMesh(&p1health.pMesh, 0x00FF0000);
 	SquareMesh(&p2health.pMesh, 0x00FF0000);
 
 	// boss bullet mesh 
 	SquareMesh(&pbossbullet, 0x00FF0000);
-
 	//Creating Potion
 	SquareMesh(&potion.pMesh, 0x00FFFFFF);
-
 	//mobs mesh
 	SquareMesh(&mobs.pMesh, 0x003333FF);
-
+	SquareMesh(&mobs.HitpMesh, 0x003333FF);
 	/*------------------------------------------------------------
 	LOADING TEXTIRES (IMAGES)
 	------------------------------------------------------------*/
@@ -246,8 +253,11 @@ void boss_load()
 	boss.pTex = AEGfxTextureLoad("Assets/BOSS.png");
 	potion.pTex = AEGfxTextureLoad("Assets/potion.png");
 	mobs.pTex = AEGfxTextureLoad("Assets/MONSTER.png");
-
-
+	mobs.HitpTex = AEGfxTextureLoad("Assets/MONSTER_ATTACKED.png");
+	TexBullet1 = AEGfxTextureLoad("Assets/p1_bullet.png");
+	TexBullet2 = AEGfxTextureLoad("Assets/p2_bullet.png");
+	boss.hitpTex = AEGfxTextureLoad("Assets/BOSS_ATTACKED.png");
+	TexBossBullet = AEGfxTextureLoad("Assets/BOSS_BULLET.png");
 	/*------------------------------------------------------------
 	LOAD SOUND EFFECTS/AUDIO
 	------------------------------------------------------------*/
@@ -285,10 +295,12 @@ void boss_init()
 	boss.Bcoord = { 380.f, -30.f }; // 380, -30.f
 	originalX = boss.Bcoord.x;
 	isKnockedBack = false;
+
 	//counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
 	knockBackTimer = 0.0f;
+	mobsHitTimer = 0.0f;
 
 	bossSwitch = false;
 	for (int i = 0; i < MAXWAVE; i++)
@@ -303,6 +315,8 @@ void boss_init()
 	max_mobs = 4;
 	mobs.HP = MOBS_MAX_HP;
 	mobs.vector = { MOBS_start_positonX,MOBS_start_positonY};
+	mobsHit = false;
+
 	potion_stop = false;
     potion.vector = { potion_start_positonX, potion_start_positonY};
 
@@ -324,6 +338,7 @@ void boss_init()
 
 void boss_update()
 {
+
 	if (game_paused)
 	{
 		pause_update();
@@ -331,6 +346,10 @@ void boss_update()
 
 	else
 	{
+		if (arcadeMode)
+		{
+			tut_viewed = true;
+		}
 		// Game Tutorial
 		if (tut_viewed == false)
 		{
@@ -344,7 +363,7 @@ void boss_update()
 		// TIME COUNTER 
 		bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
 		bossTimeElapsed += AEFrameRateControllerGetFrameTime();
-
+		
 		/*------------------------------------------------------------
 		CHANGE STATE CONDITION
 		------------------------------------------------------------*/
@@ -406,7 +425,18 @@ void boss_update()
 			//mobs.alive = FALSE; //MOBS DIES	
 
 		}
-
+		if (mobsHit)
+		{
+			if (mobsHitTimer < knockBackDuration)
+			{
+				mobsHitTimer += g_dt;
+			}
+			else
+			{
+				mobsHit = false;
+				mobsHitTimer = 0.0f;
+			}
+		}
 
 		/*------------------------------------------------------------
 		BULLET MOVEMENT
@@ -612,12 +642,14 @@ void boss_update()
 			{
 				mobs.HP -= PLAYERDMG;
 				bullets1[i].shot = false;
+				mobsHit = true;
 
 			}
 			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].bVel, mobs.boundingBox, mobs.MobsVelocity)) //if player1 or player2 bullet collide with boss && boss is alive
 			{
 				mobs.HP -= PLAYERDMG;
 				bullets2[i].shot = false;
+				mobsHit = true;
 
 			}
 
@@ -881,17 +913,23 @@ void boss_draw()
 		for (int i = 0; i < MAX_BULLETS; i++) {
 			if (bullets1[i].shot && player1.alive)
 			{
-				//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 				AEGfxSetTransform(bullets1[i].transform.m);
-				AEGfxTextureSet(NULL, 0, 0);
-				AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxTextureSet(TexBullet1, 0, 0);
+				AEGfxMeshDraw(pBullet1, AE_GFX_MDM_TRIANGLES);
 			}
 			if (bullets2[i].shot && player2.alive)
 			{
-				//AEGfxSetPosition(bullets2[i].bCoord.x, bullets2[i].bCoord.y);
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxTextureSet(TexBullet2, 0, 0);
 				AEGfxSetTransform(bullets2[i].transform.m);
-				AEGfxTextureSet(NULL, 0, 0);
-				AEGfxMeshDraw(pBullet, AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(pBullet2, AE_GFX_MDM_TRIANGLES);
 			}
 
 		}
@@ -901,9 +939,12 @@ void boss_draw()
 		for (int i = 0; i < MAXWAVE; i++) {
 			if (bossbullets1[i].shot && boss.alive)
 			{
-				//AEGfxSetPosition(bullets1[i].bCoord.x, bullets1[i].bCoord.y);
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 				AEGfxSetTransform(bossbullets1[i].transform.m);
-				AEGfxTextureSet(NULL, 0, 0);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxTextureSet(TexBossBullet, 0, 0);
 				AEGfxMeshDraw(pbossbullet, AE_GFX_MDM_TRIANGLES);
 			}
 		}
@@ -912,14 +953,26 @@ void boss_draw()
 		if (mobs_stop == false) {
 
 			//Render Mobs
-
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			AEGfxSetTransform(mobs.MobsTransform.m);
-			AEGfxTextureSet(mobs.pTex, 0, 0);
-			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			AEGfxSetTransparency(1.0f);
-			AEGfxMeshDraw(mobs.pMesh, AE_GFX_MDM_TRIANGLES);
+			if (mobsHit)
+			{
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTransform(mobs.MobsTransform.m);
+				AEGfxTextureSet(mobs.HitpTex, 0, 0);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxMeshDraw(mobs.HitpMesh, AE_GFX_MDM_TRIANGLES);
+			}
+			else
+			{
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTransform(mobs.MobsTransform.m);
+				AEGfxTextureSet(mobs.pTex, 0, 0);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxMeshDraw(mobs.pMesh, AE_GFX_MDM_TRIANGLES);
+			}
 
 		}
 
@@ -929,13 +982,26 @@ void boss_draw()
 		if (boss.alive) {
 
 			// drawing boss
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			AEGfxSetTransform(boss.transform.m);
-			AEGfxTextureSet(boss.pTex, 0, 0);
-			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			AEGfxSetTransparency(1.0f);
-			AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+			if(isKnockedBack)
+			{
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTransform(boss.transform.m);
+				AEGfxTextureSet(boss.hitpTex, 0, 0);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxMeshDraw(boss.hitpMesh, AE_GFX_MDM_TRIANGLES);
+			}
+			else
+			{
+				AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+				AEGfxSetTransform(boss.transform.m);
+				AEGfxTextureSet(boss.pTex, 0, 0);
+				AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+				AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+				AEGfxSetTransparency(1.0f);
+				AEGfxMeshDraw(boss.pMesh1, AE_GFX_MDM_TRIANGLES);
+			}
 			// drawing Current boss.Bhealth
 			AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 			AEGfxSetTransform(boss.Bhealth.transform.m);
@@ -989,22 +1055,41 @@ void boss_unload()
 	AEGfxMeshFree(bgBoss.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgBoss.bgTex); // Unload Texture
 
+	//PLAYERS 
 	AEGfxMeshFree(player1.pMesh);
 	AEGfxTextureUnload(player1.pTex);
 	AEGfxTextureUnload(player2.pTex);
 	AEGfxMeshFree(player2.pMesh);
+
+	// HEALTH BARS
 	AEGfxMeshFree(boss.Bhealth.pMesh);
 	AEGfxMeshFree(p1health.pMesh);
 	AEGfxMeshFree(p2health.pMesh);
-	AEGfxMeshFree(pbossbullet);
-	AEGfxTextureUnload(mobs.pTex);
-	AEGfxTextureUnload(potion.pTex);
-	AEGfxMeshFree(mobs.pMesh);
-	AEGfxMeshFree(potion.pMesh);
 
+	//boss bullet
+	AEGfxMeshFree(pbossbullet);
+	AEGfxTextureUnload(TexBossBullet);
+
+	// MOBS 
+	AEGfxTextureUnload(mobs.pTex);
+	AEGfxMeshFree(mobs.pMesh);
+	AEGfxTextureUnload(mobs.HitpTex);
+	AEGfxMeshFree(mobs.HitpMesh);
+
+	AEGfxMeshFree(potion.pMesh);
+	AEGfxTextureUnload(potion.pTex);
+	// BOSS
 	AEGfxMeshFree(boss.pMesh1);
+	AEGfxMeshFree(boss.hitpMesh);
 	AEGfxTextureUnload(boss.pTex);
-	AEGfxMeshFree(pBullet);
+	AEGfxTextureUnload(boss.hitpTex);
+
+	//PLAYERS BULLETS
+	AEGfxMeshFree(pBullet1);
+	AEGfxMeshFree(pBullet2);
+	AEGfxTextureUnload(TexBullet1);
+	AEGfxTextureUnload(TexBullet2);
+
 	AEAudioExit();
 
 	/*------------------------------------------------------------

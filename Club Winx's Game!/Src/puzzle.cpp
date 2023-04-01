@@ -277,6 +277,10 @@ void puzzle_update()
 
 	else
 	{
+		if (arcadeMode)
+		{
+			tut_viewed = true;
+		}
 		// Game Tutorial
 		if (tut_viewed == false)
 		{

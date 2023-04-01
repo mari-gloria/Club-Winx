@@ -211,7 +211,10 @@ void racing_init()
 	// INIT TUT_game
 	------------------------------------------------------------*/
 	tut_viewed = false;
+	
 	GameTutorial_Init(CamX, CamY);
+	
+	
 
 	/*------------------------------------------------------------
 	// Others
@@ -229,6 +232,10 @@ void racing_update()
 
 	else
 	{
+		if (arcadeMode)
+		{
+			tut_viewed = true;
+		}
 		// Game Tutorial
 		if (tut_viewed == false)
 		{
