@@ -341,18 +341,6 @@ void boss_update()
 			next_state = LOSE_BOTHPLAYERS;
 		}
 
-
-		//for testing
-		if (AEInputCheckCurr(AEVK_1)) {
-			next_state = PUZZLE;
-		}
-		if (AEInputCheckCurr(AEVK_2)) {
-			next_state = RACING;
-		}
-		if (AEInputCheckCurr(AEVK_Q)) {
-			next_state = QUIT;
-		}
-
 		/*------------------------------------------------------------
 		PLAYER UPDATE
 		------------------------------------------------------------*/

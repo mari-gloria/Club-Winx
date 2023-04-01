@@ -70,7 +70,7 @@ void racing_load()
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	bgRacing.bgTex = AEGfxTextureLoad("Assets/Racing_BG.png");		// BG Texture
 	SquareMesh(&bgRacing.bgMesh, 0);							// BG Mesh
-	bgRacing.length = (f32)winWIDTH;
+	bgRacing.length = (f32)winLENGTH;
 	bgRacing.height = (f32)winHEIGHT;
 
 
@@ -237,22 +237,6 @@ void racing_update()
 		case 2:
 			Racing_Win(2);
 			break;
-		}
-
-
-
-		//for testing
-		if (AEInputCheckCurr(AEVK_1)) {
-			next_state = PUZZLE;
-		}
-		if (AEInputCheckCurr(AEVK_3)) {
-			next_state = BOSS;
-		}
-		if (AEInputCheckCurr(AEVK_Q)) {
-			next_state = QUIT;
-		}
-		if (AEInputCheckCurr(AEVK_BACK)) {
-			next_state = RESTART;
 		}
 
 		/*------------------------------------------------------------
@@ -739,6 +723,24 @@ void racing_free()
 	CamY = 0.f;
 	AEGfxSetCamPosition(CamX, CamY);
 
+	/*------------------------------------------------------------
+	// Free Background Meshes & Texture
+	------------------------------------------------------------*/
+	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
+	AEGfxMeshFree(bgWaves.bgMesh);
+	AEGfxMeshFree(bgRacingGround.bgMesh);
+
+	/*------------------------------------------------------------
+	// Free Player Meshes
+	------------------------------------------------------------*/
+	AEGfxMeshFree(player1.pMesh);
+	AEGfxMeshFree(player2.pMesh);
+
+	/*------------------------------------------------------------
+	// Free Win Meshes
+	------------------------------------------------------------*/
+	AEGfxMeshFree(winRacing.bgMesh);
+
 	pause_free();
 }
 
@@ -748,21 +750,15 @@ void racing_unload()
 	/*------------------------------------------------------------
 	// Unload Background Meshes & Texture
 	------------------------------------------------------------*/
-	AEGfxMeshFree(bgRacing.bgMesh); // free BG Mesh
 	AEGfxTextureUnload(bgRacing.bgTex); // Unload Texture
 
-	AEGfxMeshFree(bgWaves.bgMesh);
 	AEGfxTextureUnload(bgWaves.bgTex);
 
-	AEGfxMeshFree(bgRacingGround.bgMesh);
 	AEGfxTextureUnload(bgRacingGround.bgTex);
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes
 	------------------------------------------------------------*/
-	AEGfxMeshFree(player1.pMesh);
-	AEGfxMeshFree(player2.pMesh);
-
 	AEGfxTextureUnload(player1.pTex);
 	AEGfxTextureUnload(player2.pTex);
 
@@ -777,9 +773,8 @@ void racing_unload()
 	splitscreen_unload();
 
 	/*------------------------------------------------------------
-	// Unload Player Meshes
+	// Unload Win Meshes
 	------------------------------------------------------------*/
-	AEGfxMeshFree(winRacing.bgMesh);
 	AEGfxTextureUnload(winRacing.bgTex);
 
 	/*------------------------------------------------------------
@@ -789,5 +784,4 @@ void racing_unload()
 	AEAudioStopGroup(racing_bgm.aGroup);
 
 	pause_unload();
-
 }
