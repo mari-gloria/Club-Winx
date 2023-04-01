@@ -138,6 +138,9 @@ void puzzle_load()
 	//load pause screen
 	pause_load();
 
+	// load tut screen
+	GameTutorial_Load();
+
 	//Compute the matrix of the binary map
 	AEMtx33 scale, trans;// , flip;
 	//AEMtx33Scale(&flip, 1.0f, -1.0f);
@@ -197,6 +200,13 @@ void puzzle_init()
 
 	//init pause screen
 	pause_init();
+
+	/*------------------------------------------------------------
+	// INIT TUT_game
+	------------------------------------------------------------*/
+	tut_viewed = false;
+	GameTutorial_Init(0.0f, 0.0f);
+
 }
 
 void puzzle_update()
@@ -208,23 +218,36 @@ void puzzle_update()
 
 	else
 	{
+		// Game Tutorial
+		if (tut_viewed == false)
+		{
+			GameTutorial_Update();
+			AEAudioPauseGroup(puzzle_bgm.aGroup);
+		}
+		else
+			AEAudioResumeGroup(puzzle_bgm.aGroup);
+
+		
 		/*------------------------------------------------------------
 		// TIMER
 		------------------------------------------------------------*/
-		puzzleTime.minute -= AEFrameRateControllerGetFrameTime();
-		puzzleTime.second -= AEFrameRateControllerGetFrameTime();
-		puzzleMinute = (int)puzzleTime.minute / 60;
-		//std::cout << puzzleTime.minute << ":" << puzzleMinute << ":" << puzzleTime.second << std::endl;
+		if (tut_viewed == true) {
+			puzzleTime.minute -= AEFrameRateControllerGetFrameTime();
+			puzzleTime.second -= AEFrameRateControllerGetFrameTime();
+			puzzleMinute = (int)puzzleTime.minute / 60;
+			//std::cout << puzzleTime.minute << ":" << puzzleMinute << ":" << puzzleTime.second << std::endl;
 
-		if (puzzleTime.second < 0.0f)
-		{
-			puzzleTime.second = 60.0f;
-
-			if (puzzleTime.minute < 0.0f)
+			if (puzzleTime.second < 0.0f)
 			{
-				//game stops
-				next_state = LOSE_BOTHPLAYERS;
+				puzzleTime.second = 60.0f;
+
+				if (puzzleTime.minute < 0.0f)
+				{
+					//game stops
+					next_state = LOSE_BOTHPLAYERS;
+				}
 			}
+
 		}
 
 		/*------------------------------------------------------------
@@ -462,6 +485,12 @@ void puzzle_draw()
 		AEGfxPrint(text, strBuf, numberofkeys.x, numberofkeys.y, 0.7f, 1.0f, 1.0f, 1.0f);
 
 
+		/*------------------------------------------------------------
+		// DRAWING TUTORIAL
+		------------------------------------------------------------*/
+		if (tut_viewed == false)
+			GameTutorial_Draw();
+
 
 	}
 }
@@ -487,6 +516,9 @@ void puzzle_free()
 
 	//free pause screen
 	pause_free();
+	//free game tut
+	GameTutorial_Free();
+
 }
 
 void puzzle_unload()
@@ -507,5 +539,8 @@ void puzzle_unload()
 
 	//unload pause
 	pause_unload();
+
+	//unload tutorial
+	GameTutorial_Unload();
 }
 

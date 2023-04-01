@@ -173,14 +173,21 @@ void GameTutorial_Load()
 
 void GameTutorial_Init(f32 CamX, f32 CamY)
 {
-	TUT_game.coord.x = (AEGfxGetWinMaxX() - AEGfxGetWinMinX()) / 4;
-	TUT_game.coord.y = (AEGfxGetWinMaxY() - AEGfxGetWinMinY()) / 4;
+	//TUT_game.coord.x = (AEGfxGetWinMaxX() - AEGfxGetWinMinX()) / 4;
+	//TUT_game.coord.y = (AEGfxGetWinMaxY() - AEGfxGetWinMinY()) / 4;
 
 	if (curr_state == RACING)
 	{
 		TUT_game.coord.x = CamX;
 		TUT_game.coord.y = CamY - 100.0f;
 	}
+	else {
+		TUT_game.coord.x = CamX;
+		TUT_game.coord.y = CamY;
+		AEGfxSetCamPosition(CamX, CamY);
+	}
+
+
 
 	return;
 }

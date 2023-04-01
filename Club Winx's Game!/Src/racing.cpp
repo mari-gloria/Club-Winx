@@ -124,7 +124,6 @@ void racing_load()
 	racing_bgm.audio = AEAudioLoadSound("Assets/Audio/racingMusic.wav");
 	racing_bgm.aGroup = AEAudioCreateGroup();
 
-	tut_viewed = false;
 
 	return;
 }
@@ -211,7 +210,7 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT TUT_game
 	------------------------------------------------------------*/
-	// tut_viewed = false;
+	tut_viewed = false;
 	GameTutorial_Init(CamX, CamY);
 
 	/*------------------------------------------------------------
@@ -230,6 +229,7 @@ void racing_update()
 
 	else
 	{
+		// Game Tutorial
 		if (tut_viewed == false)
 		{
 			GameTutorial_Update();
