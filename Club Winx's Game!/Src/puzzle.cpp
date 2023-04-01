@@ -378,7 +378,6 @@ void puzzle_update()
 		------------------------------------------------------------*/
 		Map_Player_CollisionUpdate(&player1);
 		Map_Player_CollisionUpdate(&player2);
-		//std::cout << player1.pFlag << '\n';
 
 		/*------------------------------------------------------------
 		MATRIX CALCULATION
@@ -429,7 +428,7 @@ void puzzle_update()
 		COLLISION BETWEEN KEYS AND PLAYER
 		------------------------------------------------------------*/
 		if (CollisionIntersection_RectRect(item1.boundingBox, item1.Velocity, player1.boundingBox, player1.pVel)) {
-			std::cout << "item 1 collide" << std::endl;
+			//std::cout << "item 1 collide" << std::endl;
 			item1.vector = { -1000,1000 };
 			counter = counter + 1;
 			AEAudioPlay(collectKey.audio, collectKey.aGroup, 0.85, 1, 0);
@@ -437,7 +436,7 @@ void puzzle_update()
 
 		if (CollisionIntersection_RectRect(item2.boundingBox2, item2.vector2, player1.boundingBox, player1.pVel))
 		{
-			std::cout << "item 2 collide" << std::endl;
+			//std::cout << "item 2 collide" << std::endl;
 			item2.vector2 = { -1000,1000 };
 			counter = counter + 1;
 			AEAudioPlay(collectKey.audio, collectKey.aGroup, 0.85, 1, 0);
@@ -445,7 +444,7 @@ void puzzle_update()
 
 		if (CollisionIntersection_RectRect(item3.boundingBox3, item3.vector3, player1.boundingBox, player1.pVel))
 		{
-			std::cout << "item 3 collide" << std::endl;
+			//std::cout << "item 3 collide" << std::endl;
 			item3.vector3 = { -1000,1000 };
 			counter = counter + 1;
 			AEAudioPlay(collectKey.audio, collectKey.aGroup, 0.85, 1, 0);
@@ -455,56 +454,35 @@ void puzzle_update()
 		COLLISION BETWEEN TRAPS AND PLAYER
 		//Player that touches the trap will be sent back to original position
 		------------------------------------------------------------*/
-		/*
+		
 		//TRAP 1
 		if (CollisionIntersection_RectRect(trap1.boundingBox, trap1.Velocity, player1.boundingBox, player1.pVel)) {
 			player1.pCoord = { 1.5,1.5 };
 		}
 
 		if (CollisionIntersection_RectRect(trap1.boundingBox, trap1.Velocity, player2.boundingBox, player2.pVel)) {
-			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+			player2.pCoord = { 1.5,1.5 }; //{ player1.pCoord.x + 1, player1.pCoord.y };
 		}
 		
 		//TRAP 2
-		if (CollisionIntersection_RectRect(trap2.boundingBox, trap2.Velocity, player1.boundingBox, player1.pVel)) {
+		if (CollisionIntersection_RectRect(trap2.boundingBox2, trap2.Velocity, player1.boundingBox, player1.pVel)) {
 			player1.pCoord = { 1.5,1.5 };
 		}
 
-		if (CollisionIntersection_RectRect(trap2.boundingBox, trap2.Velocity, player2.boundingBox, player2.pVel)) {
-			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
-			std::cout << "player 2 at TRAP 2" << std::endl;
+		if (CollisionIntersection_RectRect(trap2.boundingBox2, trap2.Velocity, player2.boundingBox, player2.pVel)) {
+			player2.pCoord = { 1.5,1.5 }; //{ player1.pCoord.x + 1, player1.pCoord.y };
+			//std::cout << "player 2 at TRAP 2" << std::endl;
 		}
 
 		//TRAP 3
-		if (CollisionIntersection_RectRect(trap3.boundingBox, trap3.Velocity, player1.boundingBox, player1.pVel)) {
+		if (CollisionIntersection_RectRect(trap3.boundingBox3, trap3.Velocity, player1.boundingBox, player1.pVel)) {
 			player1.pCoord = { 1.5,1.5 };
 		}
 
-		if (CollisionIntersection_RectRect(trap3.boundingBox, trap3.Velocity, player2.boundingBox, player2.pVel)) {
-			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
-		}*/
-
-		
-		if (CollisionIntersection_RectRect(trap1.boundingBox, trap1.Velocity, player2.boundingBox, player2.pVel) ||
-			CollisionIntersection_RectRect(trap1.boundingBox, trap1.Velocity, player1.boundingBox, player1.pVel)) {
-			//player render back to original position
-			player1.pCoord = { 1.5,1.5 };
-			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
+		if (CollisionIntersection_RectRect(trap3.boundingBox3, trap3.Velocity, player2.boundingBox, player2.pVel)) {
+			player2.pCoord = { 1.5,1.5 }; //{ player1.pCoord.x + 1, player1.pCoord.y };
 		}
 
-		if (CollisionIntersection_RectRect(trap2.boundingBox2, trap2.Velocity, player2.boundingBox, player2.pVel) ||
-			CollisionIntersection_RectRect(trap2.boundingBox2, trap2.Velocity, player1.boundingBox, player1.pVel)) {
-			//player render back to original position
-			player1.pCoord = { 1.5,1.5 };
-			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
-		}
-
-		if (CollisionIntersection_RectRect(trap3.boundingBox3, trap3.Velocity, player2.boundingBox, player2.pVel) ||
-			CollisionIntersection_RectRect(trap3.boundingBox3, trap3.Velocity, player1.boundingBox, player1.pVel)) {
-			//player render back to original position
-			player1.pCoord = { 1.5,1.5 };
-			player2.pCoord = { player1.pCoord.x + 1, player1.pCoord.y };
-		}
 
 		/*------------------------------------------------------------
 		COLLISION BETWEEN GATE AND PLAYER

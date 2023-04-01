@@ -524,7 +524,63 @@ void input_handle()
 		/*------------------------------------------------------------
 		END OF PUZZLE
 		------------------------------------------------------------*/
+		break;
+	case TUT:
+		/*----------------------------------------------------------------------------------
+		 player 1 movement controls
 
+		 W -> move up
+		 S -> move down
+		 A -> move left
+		 D -> move right
+		-----------------------------------------------------------------------------------*/
+		if (AEInputCheckCurr(AEVK_W) && player1.pCoord.y <= AEGfxGetWinMaxY() - player1.size / 2.f)
+			player1.pVel.y = PLAYER_MOVE;
+
+		else if (AEInputCheckCurr(AEVK_S) && player1.pCoord.y >= AEGfxGetWinMinY() + player1.size / 2.f)
+			player1.pVel.y = -PLAYER_MOVE;
+
+		else
+			player1.pVel.y = 0;
+
+		if (AEInputCheckCurr(AEVK_A) && player1.pCoord.x >= AEGfxGetWinMinX() + player1.size / 2.f)
+			player1.pVel.x = -PLAYER_MOVE;
+
+		else if (AEInputCheckCurr(AEVK_D) && player1.pCoord.x <= AEGfxGetWinMaxX() - player1.size/ 2.f)
+			player1.pVel.x = PLAYER_MOVE;
+
+		else
+			player1.pVel.x = 0;
+
+		/*----------------------------------------------------------------------------------
+		 player 2 movement controls
+
+		 up		-> move up
+		 down	-> move down
+		 left	-> move left
+		 right	-> move right
+		-----------------------------------------------------------------------------------*/
+		if (AEInputCheckCurr(AEVK_UP) && player2.pCoord.y <= AEGfxGetWinMaxY() - player2.size / 2.f)
+			player2.pVel.y = PLAYER_MOVE;
+
+		else if (AEInputCheckCurr(AEVK_DOWN) && player2.pCoord.y >= AEGfxGetWinMinY() + player2.size / 2.f)
+			player2.pVel.y = -PLAYER_MOVE;
+
+		else
+			player2.pVel.y = 0;
+
+		if (AEInputCheckCurr(AEVK_LEFT) && player2.pCoord.x >= AEGfxGetWinMinX() + player2.size / 2.f)
+			player2.pVel.x = -PLAYER_MOVE;
+
+		else if (AEInputCheckCurr(AEVK_RIGHT) && player2.pCoord.x <= AEGfxGetWinMaxX() - player2.size / 2.f)
+			player2.pVel.x = PLAYER_MOVE;
+
+		else
+			player2.pVel.x = 0;
+
+		/*------------------------------------------------------------
+		END OF TUTORIAL 
+		------------------------------------------------------------*/
 
 	case RESTART:
 		break;
