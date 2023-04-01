@@ -40,3 +40,14 @@ void drawButtons(float xPos, float yPos, AEGfxTexture* texture, AEGfxVertexList*
 	AEGfxTextureSet(texture, 0.0f, 0.0f);
 	AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
 }
+
+//draw func w set transform
+void draw_button_withTrans(buttons button)
+{
+	AEGfxSetTransform(button.transform.m);
+	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+	AEGfxTextureSet(button.texture, 0, 0);
+	AEGfxMeshDraw(button.mesh, AE_GFX_MDM_TRIANGLES);
+}

@@ -7,7 +7,7 @@
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, Jump logic
-*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision Intersection, Timer
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision Intersection
 ==================================================================================*/
 
 //---------------------------------------------------------------------------
@@ -25,12 +25,15 @@ Defines
 float	 g_dt;
 double	 g_appTime;
 
+
+
 //declaring structs: BG, player, scoreboard, racingitems, platform, line, boss, health, puzzle
 
 BG			bgRacing, bgPuzzle, bgBoss, bgWin, bgTut;
 BG			winRacing, bgWaves, winPuzzle, winBoss, bgRacingGround;
 
-Audio		jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm, collectKey, walk, shoot;
+
+Audio		jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm;
 
 Timer		puzzleTime, racingTime;
 
@@ -56,7 +59,6 @@ const float		PLAYER_JUMP{ 8.0f };
 const float		JUMP_HEIGHT_MAX{ 100.0f };
 const float		PLAYER_MOVE_MAX{ 100.0f };
 
-bool			playerWalking = { false };
 
 void BoundingBoxUpdate(AABB & boundingbox, AEVec2 const &coords, f32 const length, f32 const height)
 {
@@ -80,6 +82,9 @@ void MatrixCalc(AEMtx33 & transform, const f32 length, const f32 height, const f
 	AEMtx33Concat(&transform, &rot, &scale);
 	AEMtx33Concat(&transform, &trans, &transform);
 }
+
+
+
 
 
 bool CollisionIntersection_RectRect(const AABB& aabb1, const AEVec2& vel1,
@@ -180,6 +185,9 @@ bool CollisionIntersection_RectRect(const AABB& aabb1, const AEVec2& vel1,
 	return 0;
 }
 
+
+
+
 COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& aabb2, const AEVec2& vel2)
 {
 
@@ -215,6 +223,9 @@ COLLISION get_collision_flag(const AABB& aabb1, const AEVec2& vel1, const AABB& 
 
 	return COLLISION_INVALID;
 }
+
+
+
 
 
 void input_handle()
@@ -513,13 +524,6 @@ void input_handle()
 
 		else
 			player2.pVel.x = 0;
-
-		/*
-		if (AEInputCheckCurr(AEVK_W) || AEInputCheckCurr(AEVK_S) || AEInputCheckCurr(AEVK_A) || AEInputCheckCurr(AEVK_D) ||
-			AEInputCheckCurr(AEVK_UP) || AEInputCheckCurr(AEVK_DOWN) || AEInputCheckCurr(AEVK_LEFT) || AEInputCheckCurr(AEVK_RIGHT))
-		{
-			AEAudioPlay(walk.audio, walk.aGroup, 1, 1, 0);
-		}*/
 
 		/*------------------------------------------------------------
 		END OF PUZZLE

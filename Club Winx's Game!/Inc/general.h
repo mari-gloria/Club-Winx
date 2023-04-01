@@ -39,6 +39,10 @@
 #include <chrono>
 // ---------------------------------------------------------------------------
 
+
+
+
+
 /*--------------------------------------------------------------------------
 Defines
 ---------------------------------------------------------------------------*/
@@ -47,21 +51,25 @@ extern int const	winLENGTH, winHEIGHT;
 extern float		g_dt;
 extern double		g_appTime;
 extern s8			fontID, text;
-extern bool			game_paused;
+extern bool game_paused;
+
 
 //from general.cpp
 extern const float	JUMP_HEIGHT_MAX;
 extern const float	GRAVITY;
 extern const float	PLAYER_JUMP;
 
+//from mainmenu.cpp
+extern int mouseInput_x, mouseInput_y;
+
 //racing.cpp
-extern f32			CamY;
+extern f32 CamY;
 
 //for game 
-extern bool			arcadeMode;
+extern bool arcadeMode;
 
 //Tutorial.cpp
-extern bool			tut_viewed; 
+extern bool tut_viewed; 
 
 /*--------------------------------------------------------------------------
 Structs
@@ -79,7 +87,10 @@ enum COLLISION
 	COLLISION_RIGHT = 0x00000002,
 	COLLISION_TOP = 0x00000004,
 	COLLISION_BOTTOM = 0x00000008
+	
 };
+
+
 
 
 /*--------------------------------------------------------------------------
@@ -100,6 +111,12 @@ struct BG {
 
 extern BG bgRacing, bgPuzzle, bgBoss, bgWin, winPuzzle, winRacing, bgWaves, bgTut, winBoss, bgRacingGround;
 
+
+
+
+
+
+
 /*--------------------------------------------------------------------------
 AUDIO
 ---------------------------------------------------------------------------*/
@@ -107,7 +124,7 @@ struct Audio {
 	AEAudio			audio	{ nullptr };
 	AEAudioGroup	aGroup	{ nullptr };
 };
-extern Audio jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm, collectKey, walk, shoot;
+extern Audio jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm;;
 
 /*--------------------------------------------------------------------------
 TIMER
@@ -119,9 +136,13 @@ struct Timer {
 };
 extern Timer puzzleTime, racingTime;
 
+
+
 /*--------------------------------------------------------------------------
 Players
 ---------------------------------------------------------------------------*/
+
+
 //struct for players 
 struct Player { // initialise in each game mode before use 
 	AEVec2				pCoord{ 0.0f, 0.0f };	// player x,y coordinates

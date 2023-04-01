@@ -155,12 +155,6 @@ void puzzle_load()
 	------------------------------------------------------------*/
 	puzzle_bgm.audio = AEAudioLoadSound("Assets/Audio/puzzleMusic.wav");
 	puzzle_bgm.aGroup = AEAudioCreateGroup();
-	
-	collectKey.audio = AEAudioLoadSound("Assets/Audio/collectKey.wav");
-	collectKey.aGroup = AEAudioCreateGroup();
-	
-	walk.audio = AEAudioLoadSound("Assets/Audio/walk.wav");
-	walk.aGroup = AEAudioCreateGroup();
 
 	/*------------------------------------------------------------
 	CREATING OBJECTS AND SHAPES
@@ -299,6 +293,7 @@ void puzzle_update()
 		}
 		else
 			AEAudioResumeGroup(puzzle_bgm.aGroup);
+
 		
 		/*------------------------------------------------------------
 		// TIMER
@@ -432,7 +427,6 @@ void puzzle_update()
 			std::cout << "item 1 collide" << std::endl;
 			item1.vector = { -1000,1000 };
 			counter = counter + 1;
-			AEAudioPlay(collectKey.audio, collectKey.aGroup, 0.85, 1, 0);
 		}
 
 		if (CollisionIntersection_RectRect(item2.boundingBox2, item2.vector2, player1.boundingBox, player1.pVel))
@@ -440,7 +434,6 @@ void puzzle_update()
 			std::cout << "item 2 collide" << std::endl;
 			item2.vector2 = { -1000,1000 };
 			counter = counter + 1;
-			AEAudioPlay(collectKey.audio, collectKey.aGroup, 0.85, 1, 0);
 		}
 
 		if (CollisionIntersection_RectRect(item3.boundingBox3, item3.vector3, player1.boundingBox, player1.pVel))
@@ -448,7 +441,6 @@ void puzzle_update()
 			std::cout << "item 3 collide" << std::endl;
 			item3.vector3 = { -1000,1000 };
 			counter = counter + 1;
-			AEAudioPlay(collectKey.audio, collectKey.aGroup, 0.85, 1, 0);
 		}
 
 		/*------------------------------------------------------------
@@ -510,7 +502,7 @@ void puzzle_update()
 		COLLISION BETWEEN GATE AND PLAYER
 		------------------------------------------------------------*/
 		if (CollisionIntersection_RectRect(gate.boundingBox, gate.Velocity, player1.boundingBox, player1.pVel)) {
-			//std::cout << "player 1 at gate" << std::endl;
+			std::cout << "player 1 at gate" << std::endl;
 			player1AtGate = true;
 		}
 		else
@@ -519,7 +511,7 @@ void puzzle_update()
 		}
 
 		if (CollisionIntersection_RectRect(gate.boundingBox, gate.Velocity, player2.boundingBox, player2.pVel)) {
-			//std::cout << "player 2 at gate" << std::endl;
+			std::cout << "player 2 at gate" << std::endl;
 			player2AtGate = true;
 		}
 		else 
@@ -789,8 +781,6 @@ void puzzle_unload()
 	// Exit Audio
 	------------------------------------------------------------*/
 	AEAudioStopGroup(puzzle_bgm.aGroup);
-	AEAudioStopGroup(collectKey.aGroup);
-	AEAudioStopGroup(walk.aGroup);
 
 	//unload pause
 	pause_unload();

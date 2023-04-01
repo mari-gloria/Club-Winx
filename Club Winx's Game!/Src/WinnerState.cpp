@@ -13,7 +13,8 @@ CamY{ 0.0f };	// Camera's X & Y Positions
 static float v = 0, w = 0, bgspeed = 0.05f;
 
 // Text
-static AEVec2 state = {-0.25f, 0.2f}, instruction = {-0.45f, -0.2f};
+static AEVec2 state = { -0.2f, 0.2f }, instruction = { -0.5f, -0.2f };
+static AEVec2 state_end = { -0.275f, 0.2f }, instruction_end = { -0.5f, -0.2f };
 
 
 // ============================ BOTH PLAYERS WIN ============================ //
@@ -66,7 +67,7 @@ void WIN_BOTHPLAYERS_update()
 		else {
 			next_state = prev_state == RACING ? BOSS : (PUZZLE ? RACING : MENU);
 		}
-		
+
 	}
 
 	/*------------------------------------------------------------
@@ -220,7 +221,7 @@ void LOSE_BOTHPLAYERS_draw()
 	------------------------------------------------------------*/
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	char strBuffer[300];
-	
+
 	// general tutorial 
 	sprintf_s(strBuffer, "You Lose!");
 	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
@@ -325,7 +326,7 @@ void ENDGAME_draw()
 
 	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
 	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
-	
+
 	/*------------------------------------------------------------
 	DRAWING TEXT
 	------------------------------------------------------------*/
@@ -334,9 +335,9 @@ void ENDGAME_draw()
 
 	// general tutorial 
 	sprintf_s(strBuffer, "You Escaped!");
-	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	AEGfxPrint(text, strBuffer, state_end.x, state_end.y, 1.25f, 0.5f, 0.5f, 1.0f);
 	sprintf_s(strBuffer, "Press space to go to menu");
-	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(text, strBuffer, instruction_end.x, instruction_end.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	return;

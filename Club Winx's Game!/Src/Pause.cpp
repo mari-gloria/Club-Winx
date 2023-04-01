@@ -5,7 +5,7 @@
 * Group Name : Club Winx
 * Primary Author : Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 * Secondary Authors :
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> debug
+*
 *
 ==================================================================================*/
 
@@ -14,48 +14,8 @@
 
 #include "General.h"
 
-// ---------------------------------------------------------------------------
-
-
-
-// ---------------------------------------------------------------------------
-// struct
-
-struct pause_buttons
-{
-	f32 length{ 200.0f };
-	f32 height{ 50.0f };
-
-	AEVec2 coord;
-
-	AEGfxVertexList* mesh{nullptr};
-	AEGfxTexture* texture{nullptr};
-
-	AEMtx33	transform{};
-};
-pause_buttons continue_button, back_button;
-// ---------------------------------------------------------------------------
-
-
-
-
-// ---------------------------------------------------------------------------
-//helper functions
-void draw_pause_buttons(pause_buttons button)
-{
-	AEGfxSetTransform(button.transform.m);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(button.texture, 0, 0);
-	AEGfxMeshDraw(button.mesh, AE_GFX_MDM_TRIANGLES);
-}
-
-// ---------------------------------------------------------------------------
-
-
-//variables
-int mouse_x, mouse_y;
+//declare buttons
+buttons continue_button, back_button;
 
 
 
@@ -94,21 +54,23 @@ void pause_update()
 	}
 
 	//update mouse coord
-	AEInputGetCursorPosition(&mouse_x, &mouse_y);
+	AEInputGetCursorPosition(&mouseInput_x, &mouseInput_y);
+
+	//reset cam position
 	AEGfxSetCamPosition(0, 0);
-	
-	if (checkHovering(mouse_x, mouse_y, continue_button.length, continue_button.height, continue_button.coord.x, continue_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
+
+	if (checkHovering(mouseInput_x, mouseInput_y, continue_button.length, continue_button.height, continue_button.coord.x, continue_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
 		//std::cout << " hover \n";
 		game_paused = false;
 	}
 
-	if (checkHovering(mouse_x, mouse_y, back_button.length, back_button.height, back_button.coord.x, back_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
+	if (checkHovering(mouseInput_x, mouseInput_y, back_button.length, back_button.height, back_button.coord.x, back_button.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
 	{
 		game_paused = false;
 		next_state = MENU;
 	}
-	                  
+
 
 	//update matrix
 	MatrixCalc(continue_button.transform, continue_button.length, continue_button.height, 0.0f, continue_button.coord);
@@ -121,8 +83,8 @@ void pause_draw()
 	//std::cout << "pause:Draw\n";
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
-	draw_pause_buttons(continue_button);
-	draw_pause_buttons(back_button);
+	draw_button_withTrans(continue_button);
+	draw_button_withTrans(back_button);
 	/*------------------------------------------------------------
 	"GAME PAUSED" TEXT
 	------------------------------------------------------------*/
@@ -136,7 +98,7 @@ void pause_draw()
 	/*------------------------------------------------------------
 	draw buttons
 	------------------------------------------------------------*/
-	
+
 }
 
 void pause_free()
