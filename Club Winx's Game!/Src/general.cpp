@@ -57,7 +57,7 @@ const float		GRAVITY{ -8.0f };
 const float		PLAYER_JUMP{ 8.0f };
 
 const float		JUMP_HEIGHT_MAX{ 100.0f };
-const float		PLAYER_MOVE_MAX{ 150.0f };
+const float		PLAYER_MOVE_MAX{ 100.0f };
 
 
 void BoundingBoxUpdate(AABB & boundingbox, AEVec2 const &coords, f32 const length, f32 const height)
