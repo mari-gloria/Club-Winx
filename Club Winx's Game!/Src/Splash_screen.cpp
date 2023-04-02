@@ -66,7 +66,7 @@ void Splash_Update()
 {
 	AEInputUpdate();
 
-	if (counter <= 0.0f || AEInputCheckCurr(AEVK_SPACE) || AEInputCheckTriggered(AEVK_ESCAPE))
+	if (counter <= 0.0f || AEInputCheckCurr(AEVK_ESCAPE) || AEInputCheckCurr(AEVK_SPACE) || AEInputCheckCurr(AEVK_LBUTTON) || AEInputCheckCurr(AEVK_RBUTTON))
 	{
 		next_state = MENU;
 	}
