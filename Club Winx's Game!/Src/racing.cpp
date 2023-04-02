@@ -10,8 +10,8 @@
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) ->move backgrounds, set camera limit, flipping of characters, arcade 
 * 
 * Secondary Authors:
-*	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload)
-*   Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Collision checks (player-platform, player-item)
+*	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload), win/lose condition
+*   Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Collision checks (player-platform, player-item), boost logic, update players
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
