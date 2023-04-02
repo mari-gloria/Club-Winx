@@ -66,6 +66,8 @@ void pause_init()
 
 void pause_update()
 {
+	AEInputShowCursor(true);
+
 	if (AEInputCheckTriggered(AEVK_ESCAPE))
 	{
 		//next_state = MENU;

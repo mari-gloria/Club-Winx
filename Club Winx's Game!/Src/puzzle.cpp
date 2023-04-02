@@ -342,6 +342,7 @@ void puzzle_update()
 		{
 			tut_viewed = true;
 		}
+
 		// Game Tutorial
 		if (tut_viewed == false)
 		{
@@ -349,7 +350,11 @@ void puzzle_update()
 			AEAudioPauseGroup(puzzle_bgm.aGroup);
 		}
 		else
+		{
 			AEAudioResumeGroup(puzzle_bgm.aGroup);
+			input_handle();
+		}
+			
 		
 		/*------------------------------------------------------------
 		// TIMER
@@ -375,7 +380,6 @@ void puzzle_update()
 		/*------------------------------------------------------------
 		PLAYER MOVEMENT
 		------------------------------------------------------------*/
-		input_handle();
 		AEInputShowCursor(false);
 
 		if (AEInputCheckTriggered(AEVK_A)) {

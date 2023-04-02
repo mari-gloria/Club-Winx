@@ -425,17 +425,19 @@ void boss_update()
 			AEAudioPauseGroup(boss_bgm.aGroup);
 		}
 		else
+		{
 			AEAudioResumeGroup(boss_bgm.aGroup);
+			input_handle();
+		}
+			
 
-		//std::cout << "boss:Update\n";
 		// TIME COUNTER 
-		bulletTimeElapsed += AEFrameRateControllerGetFrameTime();
-		bossTimeElapsed += AEFrameRateControllerGetFrameTime();
+		bulletTimeElapsed += g_dt;
+		bossTimeElapsed += g_dt;
 		
 		/*------------------------------------------------------------
 		CHANGE STATE CONDITION
 		------------------------------------------------------------*/
-		//NOT DONE!! still testing
 		//players win
 		if (!boss.alive && boss.HP <=0)
 		{
@@ -451,9 +453,7 @@ void boss_update()
 		/*------------------------------------------------------------
 		PLAYER UPDATE
 		------------------------------------------------------------*/
-		input_handle();
 		AEInputShowCursor(false);
-		//AEAudioUpdate();
 
 		if (player1.HP < 0)
 		{
@@ -462,7 +462,6 @@ void boss_update()
 		if (player2.HP < 0)
 		{
 			player2.alive = false;
-			//std::cout << "player 2 dead \n";
 		}
 		/*------------------------------------------------------------
 		BOSS UPDATE
@@ -533,8 +532,6 @@ void boss_update()
 					{
 						bullets1[i].velocity.x = BULLETSPEED; // bullet speed 
 						bullets1[i].coord.x += bullets1[i].velocity.x;
-						//std::cout << "bullets 1 no. " << i << " launched \n";
-						//AEAudioPlay(shoot.audio, shoot.aGroup, 0.02, 1, -1);
 					}
 					else
 					{
@@ -557,8 +554,6 @@ void boss_update()
 					{
 						bullets2[i].velocity.x = BULLETSPEED; // bullet speed 
 						bullets2[i].coord.x += bullets2[i].velocity.x;
-						//std::cout << "bullets 2 no. " << i << " launched \n";
-						//AEAudioPlay(shoot.audio, shoot.aGroup, 0.45, 1, 0);
 					}
 					else
 					{
@@ -762,8 +757,9 @@ void boss_update()
 						float hpToHeal = PLAYER2_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
 						float hpMissing = PLAYER2_MAX_HP - player2.HP; //  HP needed to reach max HP
 
-						if (hpToHeal > hpMissing) {
-							hpToHeal = hpMissing; // 
+						if (hpToHeal > hpMissing)
+						{
+							hpToHeal = hpMissing;
 						}
 
 						player2.HP += hpToHeal; // Heal the player
@@ -778,7 +774,8 @@ void boss_update()
 						float hpToHeal = PLAYER_MAX_HP * healAmount; // amount of HP to heal (50% of max HP)
 						float hpMissing = PLAYER_MAX_HP - player1.HP; //  HP needed to reach max HP
 
-						if (hpToHeal > hpMissing) {
+						if (hpToHeal > hpMissing) 
+						{
 							hpToHeal = hpMissing; // 
 						}
 
@@ -930,7 +927,6 @@ void boss_draw()
 
 	else 
 	{
-		//std::cout << "boss:Draw\n";
 		/*------------------------------------------------------------
 		DRAWING BACKGROUND
 		------------------------------------------------------------*/
@@ -939,11 +935,13 @@ void boss_draw()
 		AEGfxSetTransform(bgBoss.transform.m);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 		w += bgspeed * g_dt;
 		if (w >= 1)
 		{
 			w = 0;
 		}
+
 		AEGfxTextureSet(bgBoss.texture, w, 0.f);
 		AEGfxMeshDraw(bgBoss.mesh, AE_GFX_MDM_TRIANGLES);
 
@@ -959,7 +957,6 @@ void boss_draw()
 			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 			AEGfxSetTransparency(1.0f);
 			AEGfxTextureSet(player1.texture, 0, 0);
-			// Drawing the mesh (list of triangles)
 			AEGfxMeshDraw(player1.mesh, AE_GFX_MDM_TRIANGLES);
 
 			// Render health bar
@@ -1120,58 +1117,77 @@ void boss_draw()
 
 void boss_free()
 {
-	//counters
+	//reset counters
 	bossTimeElapsed = 0.0;
 	bulletTimeElapsed = 0.0;
 
+	/*------------------------------------------------------------
+	// free meshes
+	------------------------------------------------------------*/
+	AEGfxMeshFree(bgBoss.mesh);
+
+	AEGfxMeshFree(player1.mesh);
+	AEGfxMeshFree(player2.mesh);
+
+	AEGfxMeshFree(boss.health.mesh);
+	AEGfxMeshFree(p1health.mesh);
+	AEGfxMeshFree(p2health.mesh);
+
+	AEGfxMeshFree(pbossbullet);
+
+	AEGfxMeshFree(mobs.mesh);
+	AEGfxMeshFree(mobs.hitMesh);
+	AEGfxMeshFree(potion.mesh);
+
+	AEGfxMeshFree(boss.mesh);
+	AEGfxMeshFree(boss.hitMesh);
+
+	AEGfxMeshFree(pBullet1);
+	AEGfxMeshFree(pBullet2);
+
+	/*------------------------------------------------------------
+	// free pause
+	------------------------------------------------------------*/
 	pause_free();
+
+	/*------------------------------------------------------------
+	// free tutorial
+	------------------------------------------------------------*/
 	GameTutorial_Free();
 }
 
 void boss_unload()
 {
-	AEGfxMeshFree(bgBoss.mesh); // free BG Mesh
-	AEGfxTextureUnload(bgBoss.texture); // Unload Texture
-
-	//PLAYERS 
-	AEGfxMeshFree(player1.mesh);
+	/*------------------------------------------------------------
+	// unload textures
+	------------------------------------------------------------*/
+	AEGfxTextureUnload(bgBoss.texture);
+	
+	
 	AEGfxTextureUnload(player1.texture);
 	AEGfxTextureUnload(player2.texture);
-	AEGfxMeshFree(player2.mesh);
 
-	// HEALTH BARS
-	AEGfxMeshFree(boss.health.mesh);
-	AEGfxMeshFree(p1health.mesh);
-	AEGfxMeshFree(p2health.mesh);
-
-	//boss bullet
-	AEGfxMeshFree(pbossbullet);
 	AEGfxTextureUnload(TexBossBullet);
 
-	// MOBS 
 	AEGfxTextureUnload(mobs.texture);
-	AEGfxMeshFree(mobs.mesh);
 	AEGfxTextureUnload(mobs.hitTexture);
-	AEGfxMeshFree(mobs.hitMesh);
-
-	AEGfxMeshFree(potion.mesh);
 	AEGfxTextureUnload(potion.texture);
-	// BOSS
-	AEGfxMeshFree(boss.mesh);
-	AEGfxMeshFree(boss.hitMesh);
+	
 	AEGfxTextureUnload(boss.texture);
 	AEGfxTextureUnload(boss.hitTexture);
 
-	//PLAYERS BULLETS
-	AEGfxMeshFree(pBullet1);
-	AEGfxMeshFree(pBullet2);
 	AEGfxTextureUnload(TexBullet1);
 	AEGfxTextureUnload(TexBullet2);
 
-	//unload pause
+	/*------------------------------------------------------------
+	// pause unload
+	------------------------------------------------------------*/
 	pause_unload();
 
-	//unload game tutorial
+
+	/*------------------------------------------------------------
+	// tutorial unload
+	------------------------------------------------------------*/
 	GameTutorial_Unload();
 
 

@@ -266,7 +266,11 @@ void racing_update()
 			AEAudioPauseGroup(racing_bgm.aGroup);
 		}
 		else
+		{
 			AEAudioResumeGroup(racing_bgm.aGroup);
+			input_handle();
+		}
+			
 
 		/*------------------------------------------------------------
 		// CHANGE STATE CONDITIONS
@@ -310,7 +314,6 @@ void racing_update()
 		/*------------------------------------------------------------
 		// INPUT HANDLING
 		------------------------------------------------------------*/
-		input_handle();
 		AEInputShowCursor(false);
 
 		if (AEInputCheckTriggered(AEVK_A))
