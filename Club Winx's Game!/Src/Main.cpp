@@ -116,21 +116,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (AEInputCheckCurr(AEVK_3)) {
 				next_state = BOSS;
 			}
-			if (AEInputCheckCurr(AEVK_4))
-			{
-				next_state = WIN_BOTHPLAYERS;
-			}
-			if (AEInputCheckCurr(AEVK_5))
-			{
-				next_state = LOSE_BOTHPLAYERS;
-			}
-			if (AEInputCheckCurr(AEVK_6))
-			{
-				next_state = ENDGAME;
-			}
-			if (AEInputCheckCurr(AEVK_Q)) {
-				next_state = QUIT;
-			}
+			
 
 			AESysFrameEnd();
 

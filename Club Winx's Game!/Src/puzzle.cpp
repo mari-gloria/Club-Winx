@@ -118,7 +118,7 @@ Gate gate;
 CONSTANTS
 ------------------------------------------------------------*/
 const f64 lightRadius = 100.0; // minimum 70.0
-const f32 shadowAlpha = 0.97f; ////CHANGE TRANSPARENCY OF SHADOW HERE
+const f32 shadowAlpha = 1.0f; ////CHANGE TRANSPARENCY OF SHADOW HERE
 
 
 
@@ -342,7 +342,6 @@ void puzzle_update()
 		{
 			tut_viewed = true;
 		}
-
 		// Game Tutorial
 		if (tut_viewed == false)
 		{

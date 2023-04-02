@@ -28,9 +28,9 @@
 CONSTANTS
 ------------------------------------------------------------*/
 int const MAX_BULLETS{ 10 }; // number of max bullets on screen 
-const f32 BULLETSPEED = 15.0f; // speed of players bullet
+const f32 BULLETSPEED = 20.0f; // speed of players bullet
 const f32 PLAYERDMG = 5.5f; //Player's hit
-const f32 BOSS_MAX_HP = 700.f; //  boss hp
+const f32 BOSS_MAX_HP = 600.f; //  boss hp
 const f32 PLAYER_MAX_HP = 100.f; // players hp
 const f32 PLAYER2_MAX_HP = 100.f;
 const f32 BOSSATTACK_1_DMG = 8.5f;  // boss attack dmg
@@ -143,7 +143,6 @@ bosspew bossbullets1[MAXWAVE], bossbullets2[MAXWAVE];
 
 AEGfxVertexList*		pbossbullet{ nullptr };
 AEGfxTexture*			TexBossBullet{};
-const f32				gravity = 9.8f;
 f64						bossTimeElapsed = 0.0f;
 bool					bossSwitch;
 float					knockBackTimer = 0.0f;
@@ -257,7 +256,7 @@ f32 mobsHitTimer = 0.0f;
 bool mobsHit = false;
 bool mobs_moving = false;
 
-
+Audio ooz, oof;
 
 
 
@@ -266,7 +265,6 @@ FUNCTIONS
 ------------------------------------------------------------*/
 void boss_load()
 {
-	//std::cout << "boss:Load\n";
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
@@ -333,6 +331,12 @@ void boss_load()
 	
 	shoot.audio = AEAudioLoadSound("Assets/Audio/shoot.wav");
 	shoot.aGroup = AEAudioCreateGroup();
+
+	ooz.audio = AEAudioLoadSound("Assets/Audio/ooz.wav");
+	ooz.aGroup = AEAudioCreateGroup();
+
+	oof.audio = AEAudioLoadSound("Assets/Audio/oof.wav");
+	oof.aGroup = AEAudioCreateGroup();
 
 	//load pause
 	pause_load();
@@ -488,7 +492,6 @@ void boss_update()
 			mobs.vector = { -1000,-1000 };
 			mobs.HP = MOBS_MAX_HP; //so that the next mobs can spawn
 			mobs.vector = { MOBS_start_positonX,MOBS_start_positonY };
-			//mobs.alive = FALSE; //MOBS DIES	
 
 		}
 		if (mobsHit)
@@ -512,6 +515,7 @@ void boss_update()
 			{
 				if (bulletTimeElapsed >= 0.5 && bullets1[i].shot == FALSE && bullets2[i].shot == FALSE) // every 2 secs 
 				{
+					AEAudioPlay(shoot.audio, shoot.aGroup, 0.2f, 1.f, 0);
 					bullets1[i].shot = TRUE;
 					bullets2[i].shot = TRUE;
 					bulletTimeElapsed = 0.0;
@@ -682,6 +686,8 @@ void boss_update()
 						boss.HP -= PLAYERDMG; //decrease monster health
 						bullets1[i].shot = false;
 						isKnockedBack = true;
+
+						AEAudioPlay(oof.audio, oof.aGroup, 0.7f, 1.f, 0);
 					}
 
 
@@ -694,6 +700,8 @@ void boss_update()
 						boss.HP -= PLAYERDMG; //decrease monster health
 						bullets2[i].shot = false;
 						isKnockedBack = true;
+
+						AEAudioPlay(oof.audio, oof.aGroup, 0.7f, 1.f, 0);
 					}
 
 
@@ -701,21 +709,6 @@ void boss_update()
 				}
 			}
 				
-			//Shoot MOBS
-			if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].velocity, mobs.boundingBox, mobs.velocity)&& mobs_moving == true) //if player1 or player2 bullet collide with boss && boss is alive
-			{
-				mobs.HP -= PLAYERDMG;
-				bullets1[i].shot = false;
-				mobsHit = true;
-
-			}
-			if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].velocity, mobs.boundingBox, mobs.velocity) && mobs_moving == true) //if player1 or player2 bullet collide with boss && boss is alive
-			{
-				mobs.HP -= PLAYERDMG;
-				bullets2[i].shot = false;
-				mobsHit = true;
-
-			}
 
 		}
 		for (int i = 0; i < MAXWAVE; i++) // for bullet hit players
@@ -825,7 +818,26 @@ void boss_update()
 						player1.HP -= MOBSATTACK_DMG;
 
 					}
+					for (int i = 0; i < MAX_BULLETS; i++)
+					{
+						//Shoot MOBS
+						if (CollisionIntersection_RectRect(bullets1[i].boundingBox, bullets1[i].velocity, mobs.boundingBox, mobs.velocity) && mobs_moving == true) //if player1 or player2 bullet collide with boss && boss is alive
+						{
+							mobs.HP -= PLAYERDMG;
+							bullets1[i].shot = false;
+							mobsHit = true;
+							AEAudioPlay(ooz.audio, ooz.aGroup, 0.7f, 1.f, 0);
 
+						}
+						if (CollisionIntersection_RectRect(bullets2[i].boundingBox, bullets2[i].velocity, mobs.boundingBox, mobs.velocity) && mobs_moving == true) //if player1 or player2 bullet collide with boss && boss is alive
+						{
+							mobs.HP -= PLAYERDMG;
+							bullets2[i].shot = false;
+							mobsHit = true;
+							AEAudioPlay(ooz.audio, ooz.aGroup, 0.7f, 1.f, 0);
+
+						}
+					}
 				}
 
 			}
@@ -860,13 +872,20 @@ void boss_update()
 
 		// for bullet 
 		for (int i = 0; i < MAX_BULLETS; i++) {
-			if (bullets1[i].shot)
+
+			if (bullets1[i].shot || bullets2[i].shot)
 			{
-				MatrixCalc(bullets1[i].transform, bullets1[i].length, bullets1[i].height, 0.f, bullets1[i].coord);
-			}
-			if (bullets2[i].shot)
-			{
-				MatrixCalc(bullets2[i].transform, bullets2[i].length, bullets2[i].height, 0.f, bullets2[i].coord);
+				
+				if (bullets1[i].shot)
+				{
+					
+					MatrixCalc(bullets1[i].transform, bullets1[i].length, bullets1[i].height, 0.f, bullets1[i].coord);
+				}
+				if (bullets2[i].shot)
+				{
+					
+					MatrixCalc(bullets2[i].transform, bullets2[i].length, bullets2[i].height, 0.f, bullets2[i].coord);
+				}
 			}
 
 		}
@@ -927,6 +946,7 @@ void boss_draw()
 
 	else 
 	{
+		//std::cout << "boss:Draw\n";
 		/*------------------------------------------------------------
 		DRAWING BACKGROUND
 		------------------------------------------------------------*/
@@ -935,13 +955,11 @@ void boss_draw()
 		AEGfxSetTransform(bgBoss.transform.m);
 		AEGfxSetBlendMode(AE_GFX_BM_NONE);
 		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-
 		w += bgspeed * g_dt;
 		if (w >= 1)
 		{
 			w = 0;
 		}
-
 		AEGfxTextureSet(bgBoss.texture, w, 0.f);
 		AEGfxMeshDraw(bgBoss.mesh, AE_GFX_MDM_TRIANGLES);
 
@@ -1129,6 +1147,8 @@ void boss_free()
 	AEGfxMeshFree(player1.mesh);
 	AEGfxMeshFree(player2.mesh);
 
+
+	// HEALTH BARS
 	AEGfxMeshFree(boss.health.mesh);
 	AEGfxMeshFree(p1health.mesh);
 	AEGfxMeshFree(p2health.mesh);
@@ -1137,6 +1157,7 @@ void boss_free()
 
 	AEGfxMeshFree(mobs.mesh);
 	AEGfxMeshFree(mobs.hitMesh);
+
 	AEGfxMeshFree(potion.mesh);
 
 	AEGfxMeshFree(boss.mesh);
@@ -1166,16 +1187,25 @@ void boss_unload()
 	
 	AEGfxTextureUnload(player1.texture);
 	AEGfxTextureUnload(player2.texture);
+	
 
+
+	//boss bullet
 	AEGfxTextureUnload(TexBossBullet);
 
+	// MOBS 
 	AEGfxTextureUnload(mobs.texture);
 	AEGfxTextureUnload(mobs.hitTexture);
+
+	
 	AEGfxTextureUnload(potion.texture);
+	// BOSS
 	
 	AEGfxTextureUnload(boss.texture);
 	AEGfxTextureUnload(boss.hitTexture);
 
+	//PLAYERS BULLETS
+	
 	AEGfxTextureUnload(TexBullet1);
 	AEGfxTextureUnload(TexBullet2);
 
@@ -1196,7 +1226,9 @@ void boss_unload()
 	------------------------------------------------------------*/
 	AEAudioStopGroup(boss_bgm.aGroup);
 	AEAudioStopGroup(shoot.aGroup);
-
+	AEAudioStopGroup(ooz.aGroup);
+	AEAudioStopGroup(oof.aGroup);
+	AEAudioStopGroup(collect.aGroup);
 	
 
 }

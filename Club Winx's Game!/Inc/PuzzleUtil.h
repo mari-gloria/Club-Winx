@@ -23,8 +23,6 @@ enum MAPOBJ {
 #define GRID_COLS 36 
 #define GRID_ROWS 20 
 
-
-//static int** mapdata;
 extern int ** mapdata;
 
 void SnapToCell(float* Coordinate);
