@@ -3,8 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This header file declares the functions required for the win/lose screens.
+* 
 * Primary Author: Shayne Gloria (m.shayne@digipen.edu)
-* Secondary Authors:
 ==================================================================================*/
 
 // Functions for state change //

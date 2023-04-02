@@ -3,9 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This header file declares the functions required for the tutorial pages.
+* 
 * Primary Author: Shayne Gloria (m.shayne@digipen.edu)
-* Secondary Authors:
-*
 ==================================================================================*/
 
 void Tutorial_Load();

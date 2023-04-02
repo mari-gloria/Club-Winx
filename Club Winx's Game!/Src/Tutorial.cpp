@@ -3,60 +3,75 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
+* Primary Author: 
+*	Shayne Gloria (m.shayne@digipen.edu)
 * Secondary Authors:
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Main Tutorial
-*
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> clean and debug
 ==================================================================================*/
-// Include these Header files
+
+// ---------------------------------------------------------------------------
+//includes
 #include "General.h"
 
-// Variables
+// ---------------------------------------------------------------------------
 
-// Variables
+
+
+// ============================ structs ============================ //
 struct game_tut
 {
-	f32 length{ 425.0f };
-	f32 height{ 425.0f };
+	f32					length{ 425.0f };
+	f32					height{ 425.0f };
 
-	AEVec2 coord{};
-	AEGfxVertexList* mesh{ nullptr };
-	AEGfxTexture* texture{ nullptr };
-	AEMtx33	transform{};
+	AEVec2				coord{};
+	AEGfxVertexList*	mesh{ nullptr };
+	AEGfxTexture*		texture{ nullptr };
+	AEMtx33				transform{};
 };
-
-
-static AEMtx33 flipTransform1, flipTransform2;
 
 struct Keycap
 {
-	AEGfxVertexList* mesh{};
-	AEVec2 coords{};
-	AEMtx33 transform{};
-	f32 size{ 50.f };
-	bool clicked{ false };
-	f32 colourbase{};
-	f32 colourtxt{};
-	AEVec2 screencoords{};
+	AEGfxVertexList*	mesh{};
+	AEVec2				coords{};
+	AEMtx33				transform{};
+	f32					size{ 50.f };
+	bool				clicked{ false };
+	f32					colourbase{};
+	f32					colourtxt{};
+	AEVec2				screencoords{};
 };
 Keycap w,a,s,d,up,down,left,right; 
 
-//function declarations 
+//for flipped immage
+static AEMtx33 flipTransform1, flipTransform2;
+
+Textures back_button_tut;
+float buffer = 50.0f;
+static int mouse_x, mouse_y;
+
+
+
+// ============================ helper functions ============================ //v
 void KeycapInit(Keycap& w, f32 xcoord, f32 ycoord);
 void KeycapUpdate(Keycap& w);
 void KeycapDraw(Keycap& w);
 
-// MINI TUT
-game_tut maze, racing, boss;
-// General Tutorial
+
+
+
+
+// =========================================================================== //
+// ============================ GENERAL TUTORIAL ============================= //
+// =========================================================================== //
+
 void Tutorial_Load()
 {
-	
 	/*------------------------------------------------------------
 	// LOADING BACKGROUND
 	------------------------------------------------------------*/	
-	SquareMesh(&bgTut.bgMesh, 0xFFFF00FF);
-	bgTut.bgTex = AEGfxTextureLoad("Assets/MAIN_MENU_PLAIN_BG.png");
+	SquareMesh(&bgTut.mesh, 0xFFFF00FF);
+	bgTut.texture = AEGfxTextureLoad("Assets/MAIN_MENU_PLAIN_BG.png");
 	bgTut.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
 	bgTut.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
 
@@ -64,12 +79,12 @@ void Tutorial_Load()
 	//  Loading players
 	------------------------------------------------------------*/
 	// player 1 mesh
-	SquareMesh(&player1.pMesh, 0xFFB62891);
+	SquareMesh(&player1.mesh, 0xFFB62891);
 	// player 2 mesh
-	SquareMesh(&player2.pMesh, 0xFFFF00FF);
+	SquareMesh(&player2.mesh, 0xFFFF00FF);
 
-	player1.pTex = AEGfxTextureLoad("Assets/Player1.png");
-	player2.pTex = AEGfxTextureLoad("Assets/Player2.png");
+	player1.texture = AEGfxTextureLoad("Assets/PLAYER1.png");
+	player2.texture = AEGfxTextureLoad("Assets/PLAYER2.png");
 
 	/*------------------------------------------------------------
 	// Creating keycap 
@@ -84,16 +99,10 @@ void Tutorial_Load()
 	SquareMesh(&right.mesh, 0xFFFFFFFF);
 	
 	/*------------------------------------------------------------
-	// LOAD MINI TUTS
+	// LOAD BUTTON
 	------------------------------------------------------------*/
-	maze.texture = AEGfxTextureLoad("Assets/TUT_puzzle.png");
-	racing.texture = AEGfxTextureLoad("Assets/TUT_racing.png");
-	boss.texture = AEGfxTextureLoad("Assets/TUT_boss.png");
-	SquareMesh(&maze.mesh, 0);
-	SquareMesh(&racing.mesh, 0);
-	SquareMesh(&boss.mesh, 0);
-
-
+	SquareMesh(&back_button_tut.mesh, 0xFFFFFFFF);
+	back_button_tut.texture = AEGfxTextureLoad("Assets/Buttons/BACK_BUTTON.png");
 
 	return;
 }
@@ -104,8 +113,8 @@ void Tutorial_Init()
 	/*------------------------------------------------------------
 	// Player 
 	------------------------------------------------------------*/
-	player1.pCoord = { -200, 100.f };
-	player2.pCoord = { 200.f , 100.f };
+	player1.coord = { -200, -50.f };
+	player2.coord = { 200.f , -50.f };
 	player1.size = 50.0f;
 	player2.size = 50.0f;
 
@@ -115,7 +124,7 @@ void Tutorial_Init()
 	/*------------------------------------------------------------
 	// KEYCAP INIT
 	------------------------------------------------------------*/
-	KeycapInit(w, -400.f, AEGetWindowHeight() / 4.f);
+	KeycapInit(w, -400.f, 0.0f);
 	KeycapInit(a, -460.f, w.coords.y - a.size - 10.f );
 	KeycapInit(s,w.coords.x , a.coords.y);
 	KeycapInit(d, w.coords.x + d.size + 10.f, a.coords.y);
@@ -125,12 +134,12 @@ void Tutorial_Init()
 	KeycapInit(right, down.coords.x + right.size + 10.f, down.coords.y);
 
 	/*------------------------------------------------------------
-	// MINI TUTORIALS INIT
+	// BUTTON INIT
 	------------------------------------------------------------*/
-	maze.length = maze.height = racing.length = racing.height = boss.height = boss.length = 300.f;
-	maze.coord = { -AEGetWindowWidth() / 3.f, -AEGetWindowHeight() / 4.f };
-	boss.coord = { AEGetWindowWidth() / 3.f, -AEGetWindowHeight() / 4.f };
-	racing.coord = { 0, -AEGetWindowHeight() / 4.f };
+	back_button_tut.height = 50.0f;
+	back_button_tut.length = 200.0f;
+	back_button_tut.coord.x = 0.0f;
+	back_button_tut.coord.y = -250.0f;
 
 	return;
 }
@@ -144,10 +153,17 @@ void KeycapInit(Keycap& w, f32 xcoord, f32 ycoord)
 void Tutorial_Update()
 {
 	/*------------------------------------------------------------
-	// CHANGE STATES
+	// UPDATE MOUSE
 	------------------------------------------------------------*/
-	if (AEInputCheckTriggered(AEVK_LBUTTON) && curr_state == TUT) {
-		next_state = prev_state;
+	AEInputGetCursorPosition(&mouse_x, &mouse_y);
+
+
+	/*------------------------------------------------------------
+	// CHANGE STATE
+	------------------------------------------------------------*/
+	if (checkHovering(mouse_x, mouse_y, back_button_tut.length, back_button_tut.height, back_button_tut.coord.x, back_button_tut.coord.y) && AEInputCheckTriggered(AEVK_LBUTTON))
+	{
+		next_state = MENU;
 	}
 
 	/*------------------------------------------------------------
@@ -192,6 +208,7 @@ void Tutorial_Update()
 		right.clicked = true;
 	else
 		right.clicked = false;
+
 	KeycapUpdate(w);
 	KeycapUpdate(a);
 	KeycapUpdate(s);
@@ -206,11 +223,11 @@ void Tutorial_Update()
 	------------------------------------------------------------*/
 	input_handle();
 
-	player1.pCoord.x += player1.pVel.x * player1.pAcceleration * g_dt;
-	player1.pCoord.y += player1.pVel.y * player1.pAcceleration * g_dt;
+	player1.coord.x += player1.velocity.x * player1.acceleration * g_dt;
+	player1.coord.y += player1.velocity.y * player1.acceleration * g_dt;
 
-	player2.pCoord.x += player2.pVel.x * player2.pAcceleration * g_dt;
-	player2.pCoord.y += player2.pVel.y * player2.pAcceleration * g_dt;
+	player2.coord.x += player2.velocity.x * player2.acceleration * g_dt;
+	player2.coord.y += player2.velocity.y * player2.acceleration * g_dt;
 
 
 	//texture flipping 
@@ -237,8 +254,8 @@ void Tutorial_Update()
 	------------------------------------------------------------*/
 
 	// for players 
-	MatrixCalc(player1.transform, player1.size, player1.size, 0.0f, player1.pCoord);
-	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.pCoord);
+	MatrixCalc(player1.transform, player1.size, player1.size, 0.0f, player1.coord);
+	MatrixCalc(player2.transform, player2.size, player2.size, 0.f, player2.coord);
 
 	//for keycaps 
 	MatrixCalc(w.transform, w.size, w.size, 0.0f, w.coords);
@@ -250,13 +267,11 @@ void Tutorial_Update()
 	MatrixCalc(left.transform, left.size, left.size, 0.0f, left.coords);
 	MatrixCalc(right.transform, right.size, right.size, 0.0f, right.coords);
 
-	//for mini tutorials
-	MatrixCalc(maze.transform, maze.length, maze.height,0.0f, maze.coord);
-	MatrixCalc(racing.transform, racing.length, racing.height, 0.0f, racing.coord);
-	MatrixCalc(boss.transform, boss.length, boss.height, 0.0f, boss.coord);
-
 	//for background
-	MatrixCalc(bgTut.transform, bgTut.length, bgTut.height, 0.f, bgTut.bgCoord);
+	MatrixCalc(bgTut.transform, bgTut.length, bgTut.height, 0.f, bgTut.coord);
+
+	//button
+	MatrixCalc(back_button_tut.transform, back_button_tut.length, back_button_tut.height, 0.0f, back_button_tut.coord);
 
 	return;
 }
@@ -285,33 +300,9 @@ void Tutorial_Draw()
 	AEGfxSetTransform(bgTut.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxTextureSet(bgTut.bgTex, 0.f, 0.f);
-	AEGfxMeshDraw(bgTut.bgMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(bgTut.texture, 0.f, 0.f);
+	AEGfxMeshDraw(bgTut.mesh, AE_GFX_MDM_TRIANGLES);
 
-	/*------------------------------------------------------------
-	// DRAWING MINI TUT 
-	------------------------------------------------------------*/
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTransform(maze.transform.m);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(maze.texture, 0, 0);
-	AEGfxMeshDraw(maze.mesh, AE_GFX_MDM_TRIANGLES);
-
-	AEGfxSetTransform(boss.transform.m);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(boss.texture, 0, 0);
-	AEGfxMeshDraw(boss.mesh, AE_GFX_MDM_TRIANGLES);
-
-	AEGfxSetTransform(racing.transform.m);
-	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(racing.texture, 0, 0);
-	AEGfxMeshDraw(racing.mesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	// DRAWING PLAYERS
@@ -323,8 +314,8 @@ void Tutorial_Draw()
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(player1.pTex, 0, 0);
-	AEGfxMeshDraw(player1.pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(player1.texture, 0, 0);
+	AEGfxMeshDraw(player1.mesh, AE_GFX_MDM_TRIANGLES);
 
 	// drawing player 2
 	AEMtx33Concat(&player2.transform, &player2.transform, &flipTransform2);
@@ -332,8 +323,8 @@ void Tutorial_Draw()
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(player2.pTex, 0, 0);
-	AEGfxMeshDraw(player2.pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(player2.texture, 0, 0);
+	AEGfxMeshDraw(player2.mesh, AE_GFX_MDM_TRIANGLES);
 
 
 	/*------------------------------------------------------------
@@ -353,28 +344,44 @@ void Tutorial_Draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	char strBuffer[300];
 
+	sprintf_s(strBuffer, "You and your friend");
+	AEGfxPrint(font_pixel, strBuffer, -0.4f, 0.85f, 1.0f, 1.0f, 1.0f, 1.0f);
+	
+	sprintf_s(strBuffer, "have been kidnapped by aliens");
+	AEGfxPrint(font_pixel, strBuffer, -0.6f, 0.75f, 1.0f, 1.0f, 1.0f, 1.0f);
+
+	sprintf_s(strBuffer, "Learn how to escape and get home!");
+	AEGfxPrint(font_pixel, strBuffer, -0.66f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f);
+
 	sprintf_s(strBuffer, "W");
-	AEGfxPrint(text, strBuffer, w.screencoords.x, w.screencoords.y, 0.75f, w.colourtxt, w.colourtxt, w.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, w.screencoords.x, w.screencoords.y, 0.75f, w.colourtxt, w.colourtxt, w.colourtxt);
 	sprintf_s(strBuffer, "A");
-	AEGfxPrint(text, strBuffer, a.screencoords.x, a.screencoords.y, 0.75f, a.colourtxt, a.colourtxt, a.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, a.screencoords.x, a.screencoords.y, 0.75f, a.colourtxt, a.colourtxt, a.colourtxt);
 	sprintf_s(strBuffer, "S");
-	AEGfxPrint(text, strBuffer, s.screencoords.x, s.screencoords.y, 0.75f, s.colourtxt, s.colourtxt, s.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, s.screencoords.x, s.screencoords.y, 0.75f, s.colourtxt, s.colourtxt, s.colourtxt);
 	sprintf_s(strBuffer, "D");
-	AEGfxPrint(text, strBuffer, d.screencoords.x, d.screencoords.y, 0.75f, d.colourtxt, d.colourtxt, d.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, d.screencoords.x, d.screencoords.y, 0.75f, d.colourtxt, d.colourtxt, d.colourtxt);
 	sprintf_s(strBuffer, "/\\");
-	AEGfxPrint(text, strBuffer, up.screencoords.x, up.screencoords.y, 0.40f, up.colourtxt, up.colourtxt, up.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, up.screencoords.x, up.screencoords.y, 0.40f, up.colourtxt, up.colourtxt, up.colourtxt);
 	sprintf_s(strBuffer, "\\/");
-	AEGfxPrint(text, strBuffer, down.screencoords.x, down.screencoords.y, 0.40f, down.colourtxt, down.colourtxt, down.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, down.screencoords.x, down.screencoords.y, 0.40f, down.colourtxt, down.colourtxt, down.colourtxt);
 	sprintf_s(strBuffer, "<");
-	AEGfxPrint(text, strBuffer, left.screencoords.x, left.screencoords.y, 0.75f, left.colourtxt, left.colourtxt, left.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, left.screencoords.x, left.screencoords.y, 0.75f, left.colourtxt, left.colourtxt, left.colourtxt);
 	sprintf_s(strBuffer, ">");
-	AEGfxPrint(text, strBuffer, right.screencoords.x, right.screencoords.y, 0.75f, right.colourtxt, right.colourtxt, right.colourtxt);
+	AEGfxPrint(font_pixel, strBuffer, right.screencoords.x, right.screencoords.y, 0.75f, right.colourtxt, right.colourtxt, right.colourtxt);
 	
 	sprintf_s(strBuffer, "PLAYER 1");
-	AEGfxPrint(text, strBuffer, -0.5F, 0.80F, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, -0.5f, 0.2f, 0.75f, 1.0f, 1.0f, 1.0f);
 	sprintf_s(strBuffer, "PLAYER 2");
-	AEGfxPrint(text, strBuffer, 0.20 , 0.80F, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, 0.20f, 0.2f, 0.75f, 1.0f, 1.0f, 1.0f);
 
+	sprintf_s(strBuffer, "Press the ESC button if you need a break.");
+	AEGfxPrint(font_pixel, strBuffer, -0.65f, -0.45f, 0.75f, 1.0f, 1.0f, 1.0f);
+
+	/*------------------------------------------------------------
+	// DRAWING MINI TUT
+	------------------------------------------------------------*/
+	draw_texture(back_button_tut);
 
 	return;
 }
@@ -393,8 +400,8 @@ void Tutorial_Free()
 	/*------------------------------------------------------------
 	// Free Player Meshes
 	------------------------------------------------------------*/
-	AEGfxMeshFree(player1.pMesh);
-	AEGfxMeshFree(player2.pMesh);
+	AEGfxMeshFree(player1.mesh);
+	AEGfxMeshFree(player2.mesh);
 
 	/*------------------------------------------------------------
 	// Free Keycap Meshes
@@ -410,11 +417,9 @@ void Tutorial_Free()
 
 
 	/*------------------------------------------------------------
-	// Free MINI TUT
+	// Free button
 	------------------------------------------------------------*/
-	AEGfxMeshFree(maze.mesh);
-	AEGfxMeshFree(racing.mesh);
-	AEGfxMeshFree(boss.mesh);
+	AEGfxMeshFree(back_button_tut.mesh);
 
 	return;
 }
@@ -424,31 +429,34 @@ void Tutorial_Unload()
 	/*------------------------------------------------------------
 	// UNLOADING BACKGROUND
 	------------------------------------------------------------*/
-	AEGfxMeshFree(bgTut.bgMesh);
-	AEGfxTextureUnload(bgTut.bgTex);
+	AEGfxMeshFree(bgTut.mesh);
+	AEGfxTextureUnload(bgTut.texture);
 
 	/*------------------------------------------------------------
 	// Unload Player Meshes
 	------------------------------------------------------------*/
-	AEGfxTextureUnload(player1.pTex);
-	AEGfxTextureUnload(player2.pTex);
+	AEGfxTextureUnload(player1.texture);
+	AEGfxTextureUnload(player2.texture);
 
 	/*------------------------------------------------------------
-	// Unload Mini Tut
+	// Unload button
 	------------------------------------------------------------*/
-	AEGfxTextureUnload(maze.texture);
-	AEGfxTextureUnload(racing.texture);
-	AEGfxTextureUnload(boss.texture);
+	AEGfxTextureUnload(back_button_tut.texture);
 
 	return;
 }
-/**************************************************************
-// IN GAME TUTORIAL
-**************************************************************/
+
+
+
+
+
+// =========================================================================== //
+// ============================ IN GAME TUTORIAL ============================= //
+// =========================================================================== //
 
 game_tut TUT_game;
 
-static int mouse_x, mouse_y;
+
 bool tut_viewed = false;
 
 // Individual Game Tutorial
@@ -462,13 +470,13 @@ void GameTutorial_Load()
 	switch (curr_state)
 	{
 	case PUZZLE:
-		TUT_game.texture = AEGfxTextureLoad("Assets/TUT_puzzle.png");
+		TUT_game.texture = AEGfxTextureLoad("Assets/TUTORIAL_PUZZLE.png");
 		break;
 	case RACING:
-		TUT_game.texture = AEGfxTextureLoad("Assets/TUT_racing.png");
+		TUT_game.texture = AEGfxTextureLoad("Assets/TUTORIAL_RACING.png");
 		break;
 	case BOSS:
-		TUT_game.texture = AEGfxTextureLoad("Assets/TUT_boss.png");
+		TUT_game.texture = AEGfxTextureLoad("Assets/TUTORIAL_BOSS.png");
 		break;
 	}
 
@@ -529,9 +537,9 @@ void GameTutorial_Draw()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	if (curr_state == BOSS) {
-		AEGfxPrint(text, strBuffer, -0.315f, -0.675f, 0.75f, 0.0f, 0.0f, 0.0f);
+		AEGfxPrint(font_pixel, strBuffer, -0.315f, -0.675f, 0.75f, 0.0f, 0.0f, 0.0f);
 	}
-	else 	AEGfxPrint(text, strBuffer, -0.315f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
+	else 	AEGfxPrint(font_pixel, strBuffer, -0.315f, -0.5f, 0.75f, 0.0f, 0.0f, 0.0f);
 
 	return;
 }

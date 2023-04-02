@@ -3,10 +3,15 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Yeo Hui Shan (huishan.y@digipen.edu)
+* 
+* Brief: This source file defines the functions for main menu
+* 
+* Primary Author: 
+*	Yeo Hui Shan (huishan.y@digipen.edu)
+* 
 * Secondary Authors:
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> clean n debug
-*
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> credits screen
 ==================================================================================*/
 
 #include "General.h"
@@ -117,10 +122,9 @@ bool backmode_click = false;
 int toggle;
 
 //Credits text
-BG credits_text;
+Textures credits_text;
 float credits_height_scale = 1.5f;
-float scroll_time = 0.0f;
-float scroll_speed = 0.005f;
+float scroll_speed = 30.0f;
 
 /*------------------------------------------------------------
 LOADS ASSETS NEEDED FOR MAIN MENU
@@ -134,39 +138,39 @@ void MainMenu_Load()
 	Plain_BG = AEGfxTextureLoad("Assets/MAIN_MENU_SKY.png");
 	AE_ASSERT_MESG(Plain_BG, "Failed to create Plain_BG!!");
 
-	Start_Button = AEGfxTextureLoad("Assets/START_BUTTON.png");
+	Start_Button = AEGfxTextureLoad("Assets/Buttons/START_BUTTON.png");
 	AE_ASSERT_MESG(Start_Button, "Failed to create Start_Button!!");
 
-	Tutorial_Button = AEGfxTextureLoad("Assets/TUTORIAL_BUTTON.png");
+	Tutorial_Button = AEGfxTextureLoad("Assets/Buttons/TUTORIAL_BUTTON.png");
 	AE_ASSERT_MESG(Tutorial_Button, "Failed to create Tutorial_Button!!");
 
-	Credits_Button = AEGfxTextureLoad("Assets/CREDITS_BUTTON.png");
+	Credits_Button = AEGfxTextureLoad("Assets/Buttons/CREDITS_BUTTON.png");
 	AE_ASSERT_MESG(Credits_Button, "Failed to create Credits_Button!!");
 
-	Quit_Button = AEGfxTextureLoad("Assets/QUIT_BUTTON.png");
+	Quit_Button = AEGfxTextureLoad("Assets/Buttons/QUIT_BUTTON.png");
 	AE_ASSERT_MESG(Quit_Button, "Failed to create Quit_Button!!");
 
 	// Textures for Mode Selection Page
-	Story_Mode_Button = AEGfxTextureLoad("Assets/STORY_BUTTON.png");
+	Story_Mode_Button = AEGfxTextureLoad("Assets/Buttons/STORY_BUTTON.png");
 	AE_ASSERT_MESG(Story_Mode_Button, "Failed to create Story_Mode_Button!!");
 
-	Arcade_Mode_Button = AEGfxTextureLoad("Assets/ARCADE_BUTTON.png");
+	Arcade_Mode_Button = AEGfxTextureLoad("Assets/Buttons/ARCADE_BUTTON.png");
 	AE_ASSERT_MESG(Arcade_Mode_Button, "Failed to create Arcade_Mode_Button!!");
 
-	Back_Button = AEGfxTextureLoad("Assets/BACK_BUTTON.png");
+	Back_Button = AEGfxTextureLoad("Assets/Buttons/BACK_BUTTON.png");
 	AE_ASSERT_MESG(Back_Button, "Failed to create Back_Button!!");
 
 	// Textures for Level Selection Page
-	Racing_Button = AEGfxTextureLoad("Assets/RACING_BUTTON.png");
+	Racing_Button = AEGfxTextureLoad("Assets/Buttons/RACING_BUTTON.png");
 	AE_ASSERT_MESG(Racing_Button, "Failed to create Racing_Button!!");
 
-	Puzzle_Button = AEGfxTextureLoad("Assets/PUZZLE_BUTTON.png");
+	Puzzle_Button = AEGfxTextureLoad("Assets/Buttons/PUZZLE_BUTTON.png");
 	AE_ASSERT_MESG(Puzzle_Button, "Failed to create Puzzle_Button!!");
 
-	Boss_Button = AEGfxTextureLoad("Assets/BOSS_BUTTON.png");
+	Boss_Button = AEGfxTextureLoad("Assets/Buttons/BOSS_BUTTON.png");
 	AE_ASSERT_MESG(Boss_Button, "Failed to create Boss_Button!!");
 
-	Back_Mode_Button = AEGfxTextureLoad("Assets/BACK_MODE_BUTTON.png");
+	Back_Mode_Button = AEGfxTextureLoad("Assets/Buttons/BACK_MODE_BUTTON.png");
 	AE_ASSERT_MESG(Back_Mode_Button, "Failed to create Back_Mode_Button!!");
 	
 	/*------------------------------------------------------------
@@ -222,8 +226,8 @@ void MainMenu_Load()
 	AE_ASSERT_MESG(MS_Button_Mesh, "Failed to create MS_Button_Mesh!!");
 
 	//Credits text
-	SquareMesh(&credits_text.bgMesh, 0);
-	credits_text.bgTex = AEGfxTextureLoad("Assets/Credits_text.png");
+	SquareMesh(&credits_text.mesh, 0);
+	credits_text.texture = AEGfxTextureLoad("Assets/Credits_text.png");
 }
 
 /*------------------------------------------------------------
@@ -251,7 +255,7 @@ void MainMenu_Init()
 	backmode_pos_x = 165.0f, backmode_pos_y = -200.0f;
 
 	//Credits Text
-	credits_text.bgCoord = { 0.0f, -200.0f };
+	credits_text.coord = { 0.0f, -200.0f };
 	credits_text.height = (f32)winHEIGHT * credits_height_scale;
 	credits_text.length = (f32)winLENGTH;
 
@@ -425,17 +429,17 @@ void MainMenu_Update()
 	else if (toggle == CREDITS)
 	{
 		//update y pos acc to time
-		credits_text.bgCoord.y += 30.0f * scroll_speed;
+		credits_text.coord.y += scroll_speed * g_dt;
 
 		//go back to main menu
-		if ((credits_text.bgCoord.y - credits_text.height / 2.0f) >= AEGfxGetWinMaxY())
+		if ((credits_text.coord.y - credits_text.height / 2.0f) >= AEGfxGetWinMaxY())
 		{
 			toggle = MAINMENU;
-			credits_text.bgCoord = { 0.0f, -200.0f };
+			credits_text.coord = { 0.0f, -200.0f };
 		}
 
 		//matrix calc
-		MatrixCalc(credits_text.transform, credits_text.length, credits_text.height, 0.0f, credits_text.bgCoord);
+		MatrixCalc(credits_text.transform, credits_text.length, credits_text.height, 0.0f, credits_text.coord);
 	}
 
 	else if (toggle == QUITGAME)
@@ -535,12 +539,7 @@ void MainMenu_Draw()
 	if (toggle == CREDITS)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransform(credits_text.transform.m);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(credits_text.bgTex, 0, 0);
-		AEGfxMeshDraw(credits_text.bgMesh, AE_GFX_MDM_TRIANGLES);
+		draw_texture(credits_text);
 	}
 }
 
@@ -552,7 +551,8 @@ void MainMenu_Free()
 	AEGfxMeshFree(Main_Menu_Mesh);
 	AEGfxMeshFree(MM_Button_Mesh);
 	AEGfxMeshFree(MS_Button_Mesh);
-	AEGfxMeshFree(credits_text.bgMesh);
+
+	AEGfxMeshFree(credits_text.mesh);
 }
 
 /*------------------------------------------------------------
@@ -575,7 +575,7 @@ void MainMenu_Unload()
 	AEGfxTextureUnload(Boss_Button);
 	AEGfxTextureUnload(Back_Mode_Button);
 
-	AEGfxTextureUnload(credits_text.bgTex);
+	AEGfxTextureUnload(credits_text.texture);
 
 	/*------------------------------------------------------------
 	// Exit Audio

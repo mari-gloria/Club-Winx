@@ -3,15 +3,29 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: 
-* Secondary Authors:
-*	
+* 
+* Brief: This header file declares the functions to display racing winning texture (before win/lose screen)
+* 
+* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
 ==================================================================================*/
 
-// variables
 
-enum end_condtion { NONE = 0, PLAYERONE, PLAYERTWO, RE_ROUND};
+/*------------------------------------------------------------
+variables
+------------------------------------------------------------*/
+enum end_condtion 
+{ 
+	NONE = 0, 
+	PLAYERONE, 
+	PLAYERTWO, 
+	RE_ROUND
+};
 
-// Functions for Racing //
 
+
+
+
+/*------------------------------------------------------------
+functions
+------------------------------------------------------------*/
 void Racing_Win(int player);

@@ -3,10 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Breif: This header file declares the util functions for the puzzle game mode.
+* 
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
-* Secondary Authors:
-*	
-*
 ==================================================================================*/
 
 #include "General.h"

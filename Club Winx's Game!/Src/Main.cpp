@@ -3,32 +3,43 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
-* Secondary Authors:
+* 
+* Brief: This source file contains the main function of the program.
+* 
+* Primary Author:
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* 
+* Secondary Authors: 
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
-*
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
 // includes
-
 #include "general.h"
 
 // ---------------------------------------------------------------------------
 
-bool game_paused = false;
 
-/*------------------------------------------------------------
-DECLARE GLOBAL VARIABLES
-------------------------------------------------------------*/
+
+
+
+// ============================ variables ============================ //
 
 //setting screen width and height
 int const winLENGTH{1080}, winHEIGHT{600};
 
-extern s8 fontID = 0;
-extern s8 text = 1;
+//fonts
+extern s8 font_arial = 0;
+extern s8 font_pixel = 1;
 
-// main
+//game pause
+bool game_paused = false;
+
+
+
+
+
+// ============================ main function ============================ //
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -36,12 +47,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-
-	/*------------------------------------------------------------
-	VARIABLE DECLARATION
-	------------------------------------------------------------*/
-
-	//int game_running = 1;
 
 
 	/*------------------------------------------------------------
@@ -52,15 +57,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysInit(hInstance, nCmdShow, winLENGTH, winHEIGHT, 1, 60, true, NULL);
 
 	// Changing the window title
-	AESysSetWindowTitle("Up For Orbital!");
+	AESysSetWindowTitle("Up For Orbital (UFO)");
 
 
 	// reset the system modules
 	AESysReset();
 
-
-	text = AEGfxCreateFont("Assets/PressStart2P.ttf", 30);
-	fontID = AEGfxCreateFont("Assets/Arial Italic.ttf", 100);
+	//fonts
+	font_pixel = AEGfxCreateFont("Assets/Fonts/Pixel.ttf", 30);
+	font_arial = AEGfxCreateFont("Assets/Fonts/Arial Italic.ttf", 100);
 
 	GSM_init(SPLASH);
 
@@ -92,11 +97,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			fpUpdate();
 			fpDraw();
-
-
-			// check if forcing the application to quit
-			//if (AEInputCheckTriggered(AEVK_Q) || 0 == AESysDoesWindowExist())
-				//next_state = QUIT;
 
 
 			//pause game
@@ -139,7 +139,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			g_appTime += g_dt;
 		}
 
-
 		fpFree();
 
 		if (next_state != RESTART) {
@@ -156,8 +155,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	/*------------------------------------------------------------
 	FREE SYSTEM
 	------------------------------------------------------------*/
-	AEGfxDestroyFont(fontID);
-	AEGfxDestroyFont(text);
+	AEGfxDestroyFont(font_arial);
+	AEGfxDestroyFont(font_pixel);
 
 	AESysExit();
 }

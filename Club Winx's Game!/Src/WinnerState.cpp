@@ -1,63 +1,75 @@
-// ================================================================================================================ //
-// ======================================== FUNCTIONS FOR DIFFERENT WIN STATE ===================================== //
-// ================================================================================================================ //
+/*==================================================================================
+* All content - 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+*
+* Course: CSD1451
+* Group Name: Club Winx
+* 
+* Brief: This source file defines the functions for the win/lose screens after each game.
+* 
+* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
+==================================================================================*/
 
-// Include these Header files
+// ---------------------------------------------------------------------------
+//includes
 #include "General.h"
 
+// ---------------------------------------------------------------------------
+
+
+
+
+
+// ============================ variables ============================ //
+
 // Camera Movement Variables
-static f32			CamX{ 0.0f },
-CamY{ 0.0f };	// Camera's X & Y Positions
+static f32			CamX{ 0.0f }, CamY{ 0.0f };
 
 // Background movement
 static float v = 0, w = 0, bgspeed = 0.05f;
 
-// Text
+// Text positions
 static AEVec2 state = { -0.2f, 0.2f }, instruction = { -0.5f, -0.2f };
 static AEVec2 state_end = { -0.275f, 0.2f }, instruction_end = { -0.5f, -0.2f };
 
 
-// ============================ BOTH PLAYERS WIN ============================ //
+
+
+
+// =========================================================================== //
+// ============================ BOTH PLAYERS WIN ============================= //
+// =========================================================================== //
 
 void WIN_BOTHPLAYERS_load()
 {
+	//load BG
+	SquareMesh(&bgWin.mesh, 0xFFFF00FF);
+	bgWin.texture = AEGfxTextureLoad("Assets/WINLOSE_BG.png");
+	
 
-	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
-	/*------------------------------------------------------------
-	SETTING BACKGROUND
-	------------------------------------------------------------*/
-	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
-	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
-	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
-
-	/*------------------------------------------------------------
-	LOAD SOUND EFFECTS/AUDIO
-	------------------------------------------------------------*/
+	//load audio
 	win.audio = AEAudioLoadSound("Assets/Audio/win.wav");
 	win.aGroup = AEAudioCreateGroup();
 
 	return;
 }
 
+
 void WIN_BOTHPLAYERS_init()
 {
-	/*------------------------------------------------------------
-	// PLAY AUDIO
-	------------------------------------------------------------*/
+	//init BG
+	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
+	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+
+	//play audio
 	AEAudioPlay(win.audio, win.aGroup, 0.75f, 0.9f, 1);
 
 	return;
 }
 
+
 void WIN_BOTHPLAYERS_update()
 {
-	//AEAudioUpdate();
-
-	/*------------------------------------------------------------
-	// CHANGE STATE CONDITIONS
-	------------------------------------------------------------*/
-
+	//change state consitions
 	// if press space, go to the next game
 	if (AEInputCheckReleased(AEVK_SPACE)) {
 		if (arcadeMode)
@@ -70,88 +82,72 @@ void WIN_BOTHPLAYERS_update()
 
 	}
 
-	/*------------------------------------------------------------
-	// MATRIX CALCULATIONS
-	------------------------------------------------------------*/
-	MatrixCalc(bgWin.transform, bgWin.length, bgWin.height, 0.f, bgWin.bgCoord);
-
+	//matrix calculations
+	MatrixCalc(bgWin.transform, bgWin.length, bgWin.height, 0.f, bgWin.coord);
 
 	return;
 }
 
 void WIN_BOTHPLAYERS_draw()
 {
-
-	/*------------------------------------------------------------
-	DRAWING BACKGROUND
-	------------------------------------------------------------*/
+	//draw BG
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 	v += bgspeed * g_dt;
 	if (v >= 1)
 	{
 		v = 0;
 	}
 
-	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
-	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(bgWin.texture, v, 0.f);
+	AEGfxMeshDraw(bgWin.mesh, AE_GFX_MDM_TRIANGLES);
 
-	/*------------------------------------------------------------
-	DRAWING TEXT
-	------------------------------------------------------------*/
+	//draw text
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	char strBuffer[300];
 
-	// general tutorial 
 	sprintf_s(strBuffer, "You Win!");
-	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
 	sprintf_s(strBuffer, "Press space to continue");
-	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
-
-
+	AEGfxPrint(font_pixel, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	return;
 }
 
 void WIN_BOTHPLAYERS_free()
 {
-
+	//free mesh
+	AEGfxMeshFree(bgWin.mesh); 
 	return;
 }
 
 void WIN_BOTHPLAYERS_unload()
-{
+{	
+	//unload textures
+	AEGfxTextureUnload(bgWin.texture);
 
-	/*------------------------------------------------------------
-	// Unload Background
-	------------------------------------------------------------*/
-	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
-	AEGfxTextureUnload(bgWin.bgTex); // Unload Texture
-
-	/*------------------------------------------------------------
-	// Exit Audio
-	------------------------------------------------------------*/
+	//exit audio
 	AEAudioStopGroup(win.aGroup);
 
 	return;
 }
 
+
+// =========================================================================== //
 // ============================ BOTH PLAYERS LOSE ============================ //
+// =========================================================================== //
 
 void LOSE_BOTHPLAYERS_load()
 {
-
-	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
-	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
-	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
-	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+	SquareMesh(&bgWin.mesh, 0xFFFF00FF);
+	bgWin.texture = AEGfxTextureLoad("Assets/WINLOSE_BG.png");
+	
 
 	/*------------------------------------------------------------
 	LOAD SOUND EFFECTS/AUDIO
@@ -165,6 +161,12 @@ void LOSE_BOTHPLAYERS_load()
 void LOSE_BOTHPLAYERS_init()
 {
 	/*------------------------------------------------------------
+	INIT BACKGROUND
+	------------------------------------------------------------*/
+	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
+	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+
+	/*------------------------------------------------------------
 	// PLAY AUDIO
 	------------------------------------------------------------*/
 	AEAudioPlay(lose.audio, lose.aGroup, 0.75f, 0.9f, 1);
@@ -174,15 +176,10 @@ void LOSE_BOTHPLAYERS_init()
 
 void LOSE_BOTHPLAYERS_update()
 {
-	//AEAudioUpdate();
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
 	// if press back, go replay
-	//std::cout << "prev" << prev_state << std::endl;
-	//std::cout << "curr" << curr_state << std::endl;
-	//std::cout << "next" << next_state << std::endl;
-
 	if (AEInputCheckReleased(AEVK_SPACE)) {
 		next_state = prev_state;
 	}
@@ -190,31 +187,29 @@ void LOSE_BOTHPLAYERS_update()
 	/*------------------------------------------------------------
 	// MATRIX CALCULATIONS
 	------------------------------------------------------------*/
-	MatrixCalc(bgWin.transform, bgWin.length, bgWin.height, 0.f, bgWin.bgCoord);
-
+	MatrixCalc(bgWin.transform, bgWin.length, bgWin.height, 0.f, bgWin.coord);
 
 	return;
 }
 
 void LOSE_BOTHPLAYERS_draw()
 {
-
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 	v += bgspeed * g_dt;
 	if (v >= 1)
 	{
 		v = 0;
 	}
 
-	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
-	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(bgWin.texture, v, 0.f);
+	AEGfxMeshDraw(bgWin.mesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	DRAWING TEXT
@@ -224,15 +219,17 @@ void LOSE_BOTHPLAYERS_draw()
 
 	// general tutorial 
 	sprintf_s(strBuffer, "You Lose!");
-	AEGfxPrint(text, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, state.x, state.y, 1.25f, 0.5f, 0.5f, 1.0f);
 	sprintf_s(strBuffer, "Press space to continue");
-	AEGfxPrint(text, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, instruction.x, instruction.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	return;
 }
 
 void LOSE_BOTHPLAYERS_free()
 {
+	// Free Mesh
+	AEGfxMeshFree(bgWin.mesh);
 
 	return;
 }
@@ -240,13 +237,10 @@ void LOSE_BOTHPLAYERS_free()
 void LOSE_BOTHPLAYERS_unload()
 {
 
-	// Unload Background
-	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
-	AEGfxTextureUnload(bgWin.bgTex); // Unload Texture
+	// Unload Texture
+	AEGfxTextureUnload(bgWin.texture);
 
-	/*------------------------------------------------------------
 	// Exit Audio
-	------------------------------------------------------------*/
 	AEAudioStopGroup(lose.aGroup);
 
 
@@ -257,15 +251,11 @@ void LOSE_BOTHPLAYERS_unload()
 
 void ENDGAME_load()
 {
-
-	//AEGfxSetBackgroundColor(255.0f, 255.0f, 248.0f);
 	/*------------------------------------------------------------
 	SETTING BACKGROUND
 	------------------------------------------------------------*/
-	SquareMesh(&bgWin.bgMesh, 0xFFFF00FF);
-	bgWin.bgTex = AEGfxTextureLoad("Assets/win_lose_bg.png");
-	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
-	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+	SquareMesh(&bgWin.mesh, 0xFFFF00FF);
+	bgWin.texture = AEGfxTextureLoad("Assets/WINLOSE_BG.png");
 
 	/*------------------------------------------------------------
 	LOAD SOUND EFFECTS/AUDIO
@@ -279,6 +269,12 @@ void ENDGAME_load()
 void ENDGAME_init()
 {
 	/*------------------------------------------------------------
+	// INIT BACKGROUND
+	------------------------------------------------------------*/
+	bgWin.length = AEGfxGetWinMaxX() - AEGfxGetWinMinX();
+	bgWin.height = AEGfxGetWinMaxY() - AEGfxGetWinMinY();
+
+	/*------------------------------------------------------------
 	// PLAY AUDIO
 	------------------------------------------------------------*/
 	AEAudioPlay(win.audio, win.aGroup, 0.75f, 0.9f, 1);
@@ -288,7 +284,6 @@ void ENDGAME_init()
 
 void ENDGAME_update()
 {
-	//AEAudioUpdate();
 	/*------------------------------------------------------------
 	// CHANGE STATE CONDITIONS
 	------------------------------------------------------------*/
@@ -301,7 +296,7 @@ void ENDGAME_update()
 	/*------------------------------------------------------------
 	// MATRIX CALCULATIONS
 	------------------------------------------------------------*/
-	MatrixCalc(bgWin.transform, bgWin.length, bgWin.height, 0.f, bgWin.bgCoord);
+	MatrixCalc(bgWin.transform, bgWin.length, bgWin.height, 0.f, bgWin.coord);
 
 
 	return;
@@ -309,23 +304,22 @@ void ENDGAME_update()
 
 void ENDGAME_draw()
 {
-
 	/*------------------------------------------------------------
 	DRAWING BACKGROUND
 	------------------------------------------------------------*/
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//AEGfxSetTextureMode(AE_GFX_TM_AVERAGE);
 	AEGfxSetTransform(bgWin.transform.m);
 	AEGfxSetBlendMode(AE_GFX_BM_NONE);
 	AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 	v += bgspeed * g_dt;
 	if (v >= 1)
 	{
 		v = 0;
 	}
 
-	AEGfxTextureSet(bgWin.bgTex, v, 0.f);
-	AEGfxMeshDraw(bgWin.bgMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(bgWin.texture, v, 0.f);
+	AEGfxMeshDraw(bgWin.mesh, AE_GFX_MDM_TRIANGLES);
 
 	/*------------------------------------------------------------
 	DRAWING TEXT
@@ -335,9 +329,9 @@ void ENDGAME_draw()
 
 	// general tutorial 
 	sprintf_s(strBuffer, "You Escaped!");
-	AEGfxPrint(text, strBuffer, state_end.x, state_end.y, 1.25f, 0.5f, 0.5f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, state_end.x, state_end.y, 1.25f, 0.5f, 0.5f, 1.0f);
 	sprintf_s(strBuffer, "Press space to go to menu");
-	AEGfxPrint(text, strBuffer, instruction_end.x, instruction_end.y, 1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxPrint(font_pixel, strBuffer, instruction_end.x, instruction_end.y, 1.0f, 1.0f, 1.0f, 1.0f);
 
 
 	return;
@@ -345,20 +339,17 @@ void ENDGAME_draw()
 
 void ENDGAME_free()
 {
-
+	//free mesh
+	AEGfxMeshFree(bgWin.mesh);
 	return;
 }
 
 void ENDGAME_unload()
 {
+	// Unload texture	
+	AEGfxTextureUnload(bgWin.texture);
 
-	// Unload Background
-	AEGfxMeshFree(bgWin.bgMesh); // free BG Mesh
-	AEGfxTextureUnload(bgWin.bgTex); // Unload Texture
-
-	/*------------------------------------------------------------
 	// Exit Audio
-	------------------------------------------------------------*/
 	AEAudioStopGroup(win.aGroup);
 
 	return;

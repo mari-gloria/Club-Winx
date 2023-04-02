@@ -3,10 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This header file declares the functions requried for the boss game mode.
+* 
 * Primary Author: Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
-* Secondary Authors:
-*
-*
 ==================================================================================*/
 
 

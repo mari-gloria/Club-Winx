@@ -3,10 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This header file declares the functions required for the buttons in our program.
+* 
 * Primary Author: Yeo Hui Shan (huishan.y@digipen.edu)
-* Secondary Authors:
-*
-*
 ==================================================================================*/
 
 #ifndef BUTTONS_H

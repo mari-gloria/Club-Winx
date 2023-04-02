@@ -3,11 +3,11 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This source file defines the functions to display racing winning texture (before win/lose screen)
+* 
 * Primary Author: Shayne Gloria (m.shayne@digipen.edu)
-* Secondary Authors:
-*
 ==================================================================================*/
-
 
 // ---------------------------------------------------------------------------
 // includes
@@ -16,11 +16,12 @@
 
 // ---------------------------------------------------------------------------
 
-int Racing_WINNER{ 0 }, Racing_LOSER{ 0 };
 
-// ================================================================================================================ //
-// ======================================== FUNCTIONS RELATED FOR RACING ========================================== //
-// ================================================================================================================ //
+
+
+
+
+int Racing_WINNER{ 0 }, Racing_LOSER{ 0 };
 
 
 void Racing_Win(int player)
@@ -35,12 +36,10 @@ void Racing_Win(int player)
 			Racing_LOSER = PLAYERTWO;
 
 			// check if won
-			//std::cout << "Won Player 1" << std::endl;
 			// bool to yes show pic near player head
-			winRacing.bgCoord = { player1.pCoord.x + 60.0f, player1.pCoord.y + 60.0f };
+			winRacing.coord = { player1.coord.x + 60.0f, player1.coord.y + 60.0f };
 			// if press enter, goes to end of round
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				//next_state = WIN_PLAYERONE;
 					next_state = WIN_BOTHPLAYERS;
 			}
 			break;
@@ -50,15 +49,13 @@ void Racing_Win(int player)
 			Racing_LOSER = PLAYERONE;
 
 			// check if won
-			//std::cout << "Won Player 2" << std::endl; 
-			winRacing.bgCoord = { player2.pCoord.x + 60.0f, player2.pCoord.y + 60.0f };
+			winRacing.coord = { player2.coord.x + 60.0f, player2.coord.y + 60.0f };
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				//next_state = WIN_PLAYERTWO;
         next_state = WIN_BOTHPLAYERS;
 			}
 			break;
 		case 0:
-			winRacing.bgCoord = { -600, 600 };
+			winRacing.coord = { -600, 600 };
 			break;
 	}
 

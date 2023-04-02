@@ -3,10 +3,10 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This source file defines the functions for buttons.
+* 
 * Primary Author: Yeo Hui Shan (huishan.y@digipen.edu)
-* Secondary Authors:
-*
-*
 ==================================================================================*/
 
 #include "General.h"

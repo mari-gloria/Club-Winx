@@ -3,19 +3,26 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This source gile defines the util functions for the puzzle game mode.
+* 
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
-* Secondary Authors:
-*
-*
 ==================================================================================*/
 
+// ---------------------------------------------------------------------------
+// includes
 #include "PuzzleUtil.h"
 
-//GLOBAL CONSTANTS
+// ---------------------------------------------------------------------------
+
+
+
+
 
 int InitMapData(const char* FileName)
 {
 	std::ifstream ifs{ FileName, std::ios_base::in }; //open file for reading
+	
 	//if cnnot open
 	if (!ifs.is_open())
 	{
@@ -36,39 +43,40 @@ int InitMapData(const char* FileName)
 			int temp = 0;
 			ifs >> temp;
 			mapdata[i][j] = temp;
-			//std::cout << mapdata[i][j];
 		}
-		//std::cout << "\n";
 	}
 
 	ifs.close();
 	return 1;
 }
 
+
+
 void Map_Player_CollisionUpdate(Player * player)
 {
-	player->pFlag = Map_Object_Collision(player->pCoord.x, player->pCoord.y, player->size, player->size);
-	if ((player->pFlag & COLLISION_BOTTOM)) //if collide bottom 
+	player->flag = Map_Object_Collision(player->coord.x, player->coord.y, player->size, player->size);
+	if ((player->flag & COLLISION_BOTTOM)) //if collide bottom 
 	{
+		SnapToCell(&player->coord.y);
+		player->velocity.y = 0.0f;
+	}
 
-		SnapToCell(&player->pCoord.y);
-		player->pVel.y = 0.0f;
+	if ((player->flag & COLLISION_TOP)) //if collide top 
+	{
+		SnapToCell(&player->coord.y);
+		player->velocity.y = 0.0f;
+	}
 
-	}
-	if ((player->pFlag & COLLISION_TOP)) //if collide top 
+	if ((player->flag & COLLISION_LEFT)) //if collide LEFT 
 	{
-		SnapToCell(&player->pCoord.y);
-		player->pVel.y = 0.0f;
+		SnapToCell(&player->coord.x);
+		player->velocity.x = 0;
 	}
-	if ((player->pFlag & COLLISION_LEFT)) //if collide LEFT 
+
+	if ((player->flag & COLLISION_RIGHT)) //if collide RIGHT 
 	{
-		SnapToCell(&player->pCoord.x);
-		player->pVel.x = 0;
-	}
-	if ((player->pFlag & COLLISION_RIGHT)) //if collide RIGHT 
-	{
-		SnapToCell(&player->pCoord.x);
-		player->pVel.x = 0;
+		SnapToCell(&player->coord.x);
+		player->velocity.x = 0;
 	}
 }
 
@@ -83,6 +91,8 @@ void SnapToCell(float* Coordinate)
 	*Coordinate += 0.5f;  // snap to center
 }
 
+
+
 int GetCellValue(int X, int Y)
 {
 	if (X >= 0 && X < GRID_COLS && Y >= 0 && Y < GRID_ROWS) // if in bounds
@@ -93,6 +103,8 @@ int GetCellValue(int X, int Y)
 	return 0;
 	
 }
+
+
 
 int Map_Object_Collision(float PosX, float PosY, float scaleX, float scaleY)
 {

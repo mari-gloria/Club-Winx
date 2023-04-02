@@ -1,3 +1,14 @@
+/*==================================================================================
+* All content - 2023 DigiPen Institute of Technology Singapore, all rights reserved.
+*
+* Course: CSD1451
+* Group Name: Club Winx
+*
+* Brief: This source file defins the functions for splash screen.
+*
+* Primary Author: Amirah Isa (amirah.b@digipen.edu)
+==================================================================================*/
+
 // ---------------------------------------------------------------------------
 // includes
 
@@ -8,11 +19,16 @@
 
 
 
+
+// ============================ variables ============================ //
 AEGfxVertexList* pMesh1 = 0;
 AEGfxTexture* pTex1;
 f32 timer, counter;
 AEMtx33 scale;
 AEVec2 pos{ 0.0f, 0.0f };
+
+
+
 
 
 void Splash_Load()
@@ -30,17 +46,21 @@ void Splash_Load()
 	AE_ASSERT_MESG(pMesh1, "fail to create object!!");
 }
 
+
+
 void Splash_Initialize()
 {
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	AEGfxSetCamPosition(0.0f, 0.f);
 	AEGfxSetTransparency(1.0f);
 	AEMtx33Scale(&scale, (f32)AEGetWindowWidth(), (f32)AEGetWindowHeight());
-	pTex1 = AEGfxTextureLoad("Assets/splash.png");
+	pTex1 = AEGfxTextureLoad("Assets/SPLASH.png");
 	AE_ASSERT_MESG(pTex1, "fail to load photo!!");
 	timer = 4.0f;
 	counter = timer;
 }
+
+
 
 void Splash_Update()
 {
@@ -52,6 +72,8 @@ void Splash_Update()
 	}
 	counter -= g_dt;
 }
+
+
 
 void Splash_Draw()
 {
@@ -66,12 +88,16 @@ void Splash_Draw()
 	AEGfxMeshDraw(pMesh1, AE_GFX_MDM_TRIANGLES);
 }
 
+
+
 void Splash_Free()
 {
+	AEGfxMeshFree(pMesh1);
 }
+
+
 
 void Splash_Unload()
 {
-	AEGfxMeshFree(pMesh1);
 	AEGfxTextureUnload(pTex1);
 }

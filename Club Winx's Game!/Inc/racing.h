@@ -3,11 +3,12 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
+* 
+* Brief: This header file declares the functions for the racing game mode.
+* 
 * Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
-* Secondary Authors:
-*
-*
 ==================================================================================*/
+
 
 void racing_load();
 void racing_init();

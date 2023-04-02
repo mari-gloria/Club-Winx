@@ -3,7 +3,12 @@
 *
 * Course: CSD1451
 * Group Name: Club Winx
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* 
+* Brief: This source file defines the functions required for the game state manager.
+* 
+* Primary Author: 
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* 
 * Secondary Authors:
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
 *	Yeo Hui Shan (huishan.y@digipen.edu)
