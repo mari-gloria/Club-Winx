@@ -54,7 +54,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	------------------------------------------------------------*/
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, winLENGTH, winHEIGHT, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, winLENGTH, winHEIGHT, 0, 60, true, NULL);
 
 	// Changing the window title
 	AESysSetWindowTitle("Up For Orbital (UFO)");

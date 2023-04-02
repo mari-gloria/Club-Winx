@@ -414,6 +414,7 @@ void boss_update()
 	if (game_paused)
 	{
 		pause_update();
+		AEInputShowCursor(true);
 	}
 
 	else
