@@ -10,6 +10,7 @@
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Binary Map, Map transform, Light mechanism, Player-map collision) 
 * Secondary Authors:
 *	Yeo Hui Shan (huishan.y@digipen.edu)
+*   Amirah Binte Isa (amirah.b@digipen.edu) -> Traps, Keys rendering/collision
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
@@ -375,6 +376,7 @@ void puzzle_update()
 		PLAYER MOVEMENT
 		------------------------------------------------------------*/
 		input_handle();
+		AEInputShowCursor(false);
 
 		if (AEInputCheckTriggered(AEVK_A)) {
 			AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 

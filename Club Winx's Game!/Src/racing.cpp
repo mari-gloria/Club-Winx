@@ -311,6 +311,7 @@ void racing_update()
 		// INPUT HANDLING
 		------------------------------------------------------------*/
 		input_handle();
+		AEInputShowCursor(false);
 
 		if (AEInputCheckTriggered(AEVK_A))
 		{

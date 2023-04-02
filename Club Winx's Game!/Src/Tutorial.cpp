@@ -152,6 +152,7 @@ void KeycapInit(Keycap& w, f32 xcoord, f32 ycoord)
 
 void Tutorial_Update()
 {
+	AEInputShowCursor(true);
 	/*------------------------------------------------------------
 	// UPDATE MOUSE
 	------------------------------------------------------------*/

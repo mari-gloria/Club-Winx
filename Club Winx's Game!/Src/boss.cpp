@@ -10,7 +10,7 @@
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> player bullets, boss bullets, boss movements, collision
 * 
 * Secondary Authors:
-*   Amirah Isa (amirah.b@digipen.edu) -> boss and health rendering
+*   Amirah Isa (amirah.b@digipen.edu) -> boss, mobs, potion and health system rendering/collision, SFX when potion being collected
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> win/lose conditon
 ==================================================================================*/
 
@@ -452,6 +452,7 @@ void boss_update()
 		PLAYER UPDATE
 		------------------------------------------------------------*/
 		input_handle();
+		AEInputShowCursor(false);
 		//AEAudioUpdate();
 
 		if (player1.HP < 0)

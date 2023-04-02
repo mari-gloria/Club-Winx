@@ -7,6 +7,7 @@
 * Brief: This header file declares the functions requried for the boss game mode.
 * 
 * Primary Author: Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
+* Secondary Author: Amirah Isa (amirah.b@digipen.edu) -> potion_position, mobs_position
 ==================================================================================*/
 
 
