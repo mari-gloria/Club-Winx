@@ -57,6 +57,9 @@ void Racing_Win(int player)
         next_state = WIN_BOTHPLAYERS;
 			}
 			break;
+		case 0:
+			winRacing.bgCoord = { -600, 600 };
+			break;
 	}
 
 	return;

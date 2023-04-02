@@ -29,13 +29,19 @@ PLAYER 1                                  PLAYER 2
 ┃  A  ┃ ┃  S  ┃ ┃  D  ┃                    ┃  ←  ┃ ┃  ↓  ┃ ┃  →  ┃       
 ┗━━━━━┛ ┗━━━━━┛ ┗━━━━━┛                    ┗━━━━━┛ ┗━━━━━┛ ┗━━━━━┛           
 
+	
+	You and your friend has been kidnapped by aliens ! 
+	Escape the dungeon, Climb the tower, Defeat the boss! 
+
 =================================================================================================
 
 Created at DigiPen Institute Technology Singapore
 
+Instructors - Cheng Ding Xiang    Gerald Wong
+
 President - Claude Comair 
 
-Executives - Jason Chu   Samir Abao Samra  Michele Comair   Angela Kugler   Erik Mohrmann  
+Executives - Jason Chu   Samir Abao Samra   Michele Comair   Angela Kugler   Erik Mohrmann  
              Christopher Comair   Michael Gats   Raymond Yan   Prasanna Ghali   John Bauer   
              Melvin Gonsalvez   Charles Duba   Johnny Deek   Ben Ellinger 
 

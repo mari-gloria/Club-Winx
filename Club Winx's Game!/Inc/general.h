@@ -273,19 +273,6 @@ struct Puzzle { // initialise in each game mode before use
 };
 extern Puzzle puzzle;
 
-//Puzzle binary map
-struct GameObj {
-	unsigned int type; //type of object for puzzle
-	AEGfxVertexList* pMeshwall{ nullptr };
-	AEGfxVertexList* pMeshwall2{ nullptr };
-
-};
-
-struct GameObjInst {
-	GameObj* pObject;
-	unsigned int flag;
-};
-
 
 /*--------------------------------------------------------------------------
 Updates bounding box 
@@ -297,8 +284,6 @@ void BoundingBoxUpdate(AABB& boundingbox, AEVec2 const& coords, f32 const length
 Calculates matrix (under update)
 ---------------------------------------------------------------------------*/
 void MatrixCalc(AEMtx33& transform, const f32 length, const f32 height, const f32 direction, const AEVec2& coords);
-
-
 
 
 

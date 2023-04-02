@@ -182,6 +182,7 @@ void racing_init()
 	winRacing.length = 190.0f;
 	winRacing.height = 100.0f;
 	if_win = 0;
+	winRacing.bgCoord = { -600, 600 };
 
 	/*------------------------------------------------------------
 	// INIT WAVES
@@ -189,7 +190,7 @@ void racing_init()
 	bgWaves.height = bgRacing.height / 5.0f;
 	bgWaves.length = bgRacing.length;
 	bgWaves.bgCoord.y = -AEGetWindowHeight() + 10.f;
-
+	section_done = false;
 	/*------------------------------------------------------------
 	// INIT GROUND
 	------------------------------------------------------------*/
@@ -257,6 +258,9 @@ void racing_update()
 			break;
 		case 2:
 			Racing_Win(2);
+			break;
+		case 0:
+			Racing_Win(0);
 			break;
 		}
 
@@ -680,12 +684,15 @@ void racing_draw()
 		/*------------------------------------------------------------
 		// DRAWING Winner Texture
 		------------------------------------------------------------*/
-		AEGfxSetTransform(winRacing.transform.m);
-		AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(winRacing.bgTex, 0, 0);
-		AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
+		if (if_win != 0)
+		{
+			AEGfxSetTransform(winRacing.transform.m);
+			AEGfxSetTintColor(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1.0f);
+			AEGfxTextureSet(winRacing.bgTex, 0, 0);
+			AEGfxMeshDraw(winRacing.bgMesh, AE_GFX_MDM_TRIANGLES);
+		}
 
 		/*------------------------------------------------------------
 		// DRAWING Waves BG
