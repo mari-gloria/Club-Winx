@@ -4,7 +4,7 @@
 * Course: CSD1451
 * Group Name: Club Winx
 * 
-* Brief: This source file defines the fucntions required for the boss game mode.
+* Brief: This source file defines the functions required for the boss game mode.
 * 
 * Primary Author: 
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> player bullets, boss bullets, boss movements, collision
@@ -12,6 +12,7 @@
 * Secondary Authors:
 *   Amirah Isa (amirah.b@digipen.edu) -> boss, mobs, potion and health system rendering/collision, SFX when potion being collected
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> win/lose conditon
+*	Yeo Hui Shan (huishan.y@digipen.edu) -> Audio (BGM + shoot)
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

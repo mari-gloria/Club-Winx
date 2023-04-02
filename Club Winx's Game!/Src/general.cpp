@@ -543,13 +543,6 @@ void input_handle()
 		else
 			player2.velocity.x = 0;
 
-		/*
-		if (AEInputCheckCurr(AEVK_W) || AEInputCheckCurr(AEVK_S) || AEInputCheckCurr(AEVK_A) || AEInputCheckCurr(AEVK_D) ||
-			AEInputCheckCurr(AEVK_UP) || AEInputCheckCurr(AEVK_DOWN) || AEInputCheckCurr(AEVK_LEFT) || AEInputCheckCurr(AEVK_RIGHT))
-		{
-			AEAudioPlay(walk.audio, walk.aGroup, 1, 1, 0);
-		}*/
-
 		/*------------------------------------------------------------
 		END OF PUZZLE
 		------------------------------------------------------------*/

@@ -10,7 +10,7 @@
 *	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Binary Map, Map transform, Light mechanism, Player-map collision) 
 * 
 * Secondary Authors:
-*	Yeo Hui Shan (huishan.y@digipen.edu)
+*	Yeo Hui Shan (huishan.y@digipen.edu) -> Timer, Win/Lose condition, Rendering & collision of gate, Drawing textures, Audio
 *   Amirah Binte Isa (amirah.b@digipen.edu) -> Traps, Keys rendering/collision
 ==================================================================================*/
 

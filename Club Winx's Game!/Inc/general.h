@@ -12,7 +12,7 @@
 * Secondary Authors: 
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
 *	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, collision functions, draw_textires, rand_int
-*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision 
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Collision, Timer
 *   Amirah Isa (amirah.b@digipen.edu) -> Health, Boss
 ==================================================================================*/
 

@@ -23,12 +23,12 @@ bool arcadeMode = false;
 #define WINDOW_H 600
 
 // Sizes of Buttons on Main Menu
-#define MAIN_MENU_BUTTON_W 200 //300
-#define MAIN_MENU_BUTTON_H 50 //75
+#define MAIN_MENU_BUTTON_W 200
+#define MAIN_MENU_BUTTON_H 50
 
 // Sizes of Buttons on Mode Selection Page & Level Selection Page
-#define MODE_SELECTION_BUTTON_W 200 //300
-#define MODE_SELECTION_BUTTON_H 70 //100
+#define MODE_SELECTION_BUTTON_W 200
+#define MODE_SELECTION_BUTTON_H 70
 
 // Offset for Main Menu Buttons
 #define BUTTON_OFFSET 0.333333f
@@ -425,7 +425,6 @@ void MainMenu_Update()
 			racing_click = false, puzzle_click = false, boss_click = false, backmode_click = false;
 		}
 	}
-
 	else if (toggle == CREDITS)
 	{
 		//update y pos acc to time
@@ -441,7 +440,6 @@ void MainMenu_Update()
 		//matrix calc
 		MatrixCalc(credits_text.transform, credits_text.length, credits_text.height, 0.0f, credits_text.coord);
 	}
-
 	else if (toggle == QUITGAME)
 	{
 		next_state = QUIT;
@@ -509,7 +507,7 @@ void MainMenu_Draw()
 		drawButtons(quit_pos_x, quit_pos_y, Quit_Button, MM_Button_Mesh);
 	}
 
-	if (toggle == MODESELECTIONPAGE)
+	else if (toggle == MODESELECTIONPAGE)
 	{
 		// Story Mode
 		drawButtons(story_pos_x, story_pos_y, Story_Mode_Button, MS_Button_Mesh);
@@ -521,7 +519,7 @@ void MainMenu_Draw()
 		drawButtons(back_pos_x, back_pos_y, Back_Button, MS_Button_Mesh);
 	}
 
-	if (toggle == LEVELSELECTIONPAGE)
+	else if (toggle == LEVELSELECTIONPAGE)
 	{
 		// Racing
 		drawButtons(racing_pos_x, racing_pos_y, Racing_Button, MS_Button_Mesh);
@@ -536,7 +534,7 @@ void MainMenu_Draw()
 		drawButtons(backmode_pos_x, backmode_pos_y, Back_Mode_Button, MS_Button_Mesh);
 	}
 
-	if (toggle == CREDITS)
+	else if (toggle == CREDITS)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		draw_texture(credits_text);
@@ -551,7 +549,6 @@ void MainMenu_Free()
 	AEGfxMeshFree(Main_Menu_Mesh);
 	AEGfxMeshFree(MM_Button_Mesh);
 	AEGfxMeshFree(MS_Button_Mesh);
-
 	AEGfxMeshFree(credits_text.mesh);
 }
 

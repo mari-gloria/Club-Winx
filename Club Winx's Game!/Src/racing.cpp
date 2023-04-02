@@ -12,6 +12,7 @@
 * Secondary Authors:
 *	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload), win/lose condition
 *   Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Collision checks (player-platform, player-item), boost logic, update players
+*	Yeo Hui Shan (huishan.y@digipen.edu) -> Timer, Audio (BGM)
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
