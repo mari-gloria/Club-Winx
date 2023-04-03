@@ -7,12 +7,12 @@
 * Brief: This source file defines the functions required for the racing game mode.
 * 
 *Primary Author: 
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) ->move backgrounds, set camera limit, flipping of characters, arcade 
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) ->move backgrounds, set camera limit, flipping of characters, arcade 10%
 * 
 * Secondary Authors:
-*	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload), win/lose condition
-*   Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Collision checks (player-platform, player-item), boost logic, update players
-*	Yeo Hui Shan (huishan.y@digipen.edu) -> Timer, Audio (BGM)
+*	Shayne Gloria (m.shayne@digipen.edu) -> Platforms & Split Screen (Load, Init, Draw, Unload), win/lose condition 30%
+*   Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Collision checks (player-platform, player-item), boost logic, update players 50%
+*	Yeo Hui Shan (huishan.y@digipen.edu) -> Timer, Audio (BGM) 10%
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

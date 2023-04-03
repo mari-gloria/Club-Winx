@@ -6,7 +6,7 @@
 * 
 * Brief: This source gile defines the util functions for the puzzle game mode.
 * 
-* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu)
+* Primary Author: Mariah Tahirah (mariahtahirah.b@digipen.edu) 100%
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

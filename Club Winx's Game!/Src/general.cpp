@@ -7,12 +7,11 @@
 * Brief: This source file defines the util functions used in the progrm.
 * 
 * Primary Author: 
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> MatrixCalc(), SquareMesh(), BoudningBox(), boss input handle
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> MatrixCalc(), SquareMesh(), BoudningBox(), boss input handle 30%
 * 
 * Secondary Authors:
-*	Shayne Gloria (m.shayne@digipen.edu) -> Platform of Structures, Split Screen
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, jump logic, collision intersection, collision flag, draw_texture(), rand_int()
-*   Yeo Hui Shan (huishan.y@digipen.edu) -> Timer
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> Input handling, jump logic, collision intersection, collision flag, draw_texture(), rand_int(), 60%
+*   Yeo Hui Shan (huishan.y@digipen.edu) -> Timer 10%
 ==================================================================================*/
 
 //---------------------------------------------------------------------------

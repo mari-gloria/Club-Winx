@@ -6,7 +6,7 @@
 * 
 * Brief: This source file defines the functions for the win/lose screens after each game.
 * 
-* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
+* Primary Author: Shayne Gloria (m.shayne@digipen.edu) 100% 
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

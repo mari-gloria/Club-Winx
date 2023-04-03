@@ -6,7 +6,7 @@
 * 
 * Brief: This source file defines the functions for buttons.
 * 
-* Primary Author: Yeo Hui Shan (huishan.y@digipen.edu)
+* Primary Author: Yeo Hui Shan (huishan.y@digipen.edu) 100%
 ==================================================================================*/
 
 #include "General.h"

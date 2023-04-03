@@ -7,11 +7,11 @@
 * Brief: This source file defines the functions for main menu
 * 
 * Primary Author: 
-*	Yeo Hui Shan (huishan.y@digipen.edu)
+*	Yeo Hui Shan (huishan.y@digipen.edu) 70%
 * 
 * Secondary Authors:
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> clean n debug
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> credits screen
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> clean n debug 5%
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> credits screen 25% 
 ==================================================================================*/
 
 #include "General.h"

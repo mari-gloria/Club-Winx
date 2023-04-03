@@ -7,12 +7,12 @@
 * Brief: This source file defines the functions required for the boss game mode.
 * 
 * Primary Author: 
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> player bullets, boss bullets, boss movements, collision
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> player bullets, boss bullets, boss movements, collision 60%
 * 
 * Secondary Authors:
-*   Amirah Isa (amirah.b@digipen.edu) -> boss, mobs, potion and health system rendering/collision, SFX when potion being collected
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> win/lose conditon
-*	Yeo Hui Shan (huishan.y@digipen.edu) -> Audio (BGM + shoot)
+*   Amirah Isa (amirah.b@digipen.edu) -> boss, mobs, potion and health system rendering/collision, SFX when potion being collected 30%
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> win/lose conditon 5 %
+*	Yeo Hui Shan (huishan.y@digipen.edu) -> Audio (BGM + shoot) 5 % 
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

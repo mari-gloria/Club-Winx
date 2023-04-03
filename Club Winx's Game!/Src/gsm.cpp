@@ -7,11 +7,11 @@
 * Brief: This source file defines the functions required for the game state manager.
 * 
 * Primary Author: 
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu)
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) 33%
 * 
 * Secondary Authors:
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
-*	Yeo Hui Shan (huishan.y@digipen.edu)
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) 33%
+*	Yeo Hui Shan (huishan.y@digipen.edu) 33% 
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

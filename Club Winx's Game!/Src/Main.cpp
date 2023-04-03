@@ -7,10 +7,10 @@
 * Brief: This source file contains the main function of the program.
 * 
 * Primary Author:
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu)
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) 20%
 * 
 * Secondary Authors: 
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) 80% 
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

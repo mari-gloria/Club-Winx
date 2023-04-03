@@ -6,7 +6,7 @@
 *
 * Brief: This source file defins the functions for splash screen.
 *
-* Primary Author: Amirah Isa (amirah.b@digipen.edu)
+* Primary Author: Amirah Isa (amirah.b@digipen.edu) 100%
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

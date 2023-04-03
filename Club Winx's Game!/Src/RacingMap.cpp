@@ -7,10 +7,10 @@
 * Brief: This header file declares the functions for the racing game mode layout.
 * 
 * Primary Author: 
-*	Shayne Gloria (m.shayne@digipen.edu) -> platforms, split screen
+*	Shayne Gloria (m.shayne@digipen.edu) -> platforms, split screen 50%
 * 
 * Secondary Authors:
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> platform randomization, racing boosts
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> platform randomization, racing boosts 50%
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

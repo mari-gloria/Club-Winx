@@ -6,7 +6,7 @@
 * 
 * Brief: This source file defines the functions to display racing winning texture (before win/lose screen)
 * 
-* Primary Author: Shayne Gloria (m.shayne@digipen.edu)
+* Primary Author: Shayne Gloria (m.shayne@digipen.edu) 100%
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

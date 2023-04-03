@@ -4,10 +4,10 @@
 * Course: CSD1451
 * Group Name: Club Winx
 * Primary Author: 
-*	Shayne Gloria (m.shayne@digipen.edu) ->in game tutorial
+*	Shayne Gloria (m.shayne@digipen.edu) ->in game tutorial 45%
 * Secondary Authors:
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Main Tutorial
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> editted design
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Main Tutorial 45%
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) -> editted design 10%
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------

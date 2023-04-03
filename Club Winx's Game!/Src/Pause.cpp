@@ -7,10 +7,10 @@
 * Brief: This header file defines the functions required for the pause state.
 * 
 * Primary Author : 
-*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu)
+*	Kristy Lee Yu Xuan (kristyyuxuan.lee@digipen.edu) 95%
 * 
 * Secondary Authors :
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> debug
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> debug 5 %
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
