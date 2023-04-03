@@ -76,6 +76,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		AESysReset();
 
+		AEInputShowCursor(true);
 
 		if (curr_state != RESTART) {
 			GSM_update();
@@ -102,6 +103,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			//pause game
 			if (AEInputCheckReleased(AEVK_ESCAPE) && (curr_state == PUZZLE || curr_state == RACING || curr_state == BOSS)) {
 				game_paused = (game_paused == true) ? false : true;
+			}
+
+			/*------------------------------------------------------------
+			CURSOR
+			------------------------------------------------------------*/
+			if (game_paused == true && (curr_state == PUZZLE || curr_state == RACING || curr_state == BOSS))
+			{
+				AEInputShowCursor(true);
 			}
 
 			/*-----------------

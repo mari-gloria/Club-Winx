@@ -155,9 +155,15 @@ void racing_init()
 	/*------------------------------------------------------------
 	// INIT PLAYERS
 	------------------------------------------------------------*/
-	player1.ground = AEGfxGetWinMinY() + player1.size / 2.f;
+	player1.onSurface = true;
+	player2.onSurface = true;
+
+	player1.velocity = { 0.0f, 0.0f };
+	player2.velocity = { 0.0f, 0.0f };
+
+	player1.ground = 0.0f;
 	player1.currGround = player1.ground;
-	player2.ground = AEGfxGetWinMinY() + player2.size / 2.f;
+	player2.ground = 0.0f;
 	player2.currGround = player2.ground;
 
 	player1.coord = {AEGfxGetWinMinX() / 2, player1.ground}; // spawn at left half of screen
@@ -248,7 +254,6 @@ void racing_update()
 	if (game_paused)
 	{
 		pause_update();
-		AEInputShowCursor(true);
 	}
 
 	else
@@ -315,7 +320,6 @@ void racing_update()
 		/*------------------------------------------------------------
 		// INPUT HANDLING
 		------------------------------------------------------------*/
-		AEInputShowCursor(false);
 
 		if (AEInputCheckTriggered(AEVK_A))
 		{
@@ -639,6 +643,11 @@ void racing_update()
 		// UPDATE - Background Y
 		//------------------------------------------------------------*/
 		bgRacing.coord.y = CamY;
+
+		/*------------------------------------------------------------
+		CURSOR
+		------------------------------------------------------------*/
+		AEInputShowCursor(false);
 	}
 }
 

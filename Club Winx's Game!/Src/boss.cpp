@@ -415,7 +415,6 @@ void boss_update()
 	if (game_paused)
 	{
 		pause_update();
-		AEInputShowCursor(true);
 	}
 
 	else
@@ -459,7 +458,6 @@ void boss_update()
 		/*------------------------------------------------------------
 		PLAYER UPDATE
 		------------------------------------------------------------*/
-		AEInputShowCursor(false);
 
 		if (player1.HP < 0)
 		{
@@ -936,6 +934,11 @@ void boss_update()
 
 		//Mobs
 		MatrixCalc(mobs.transform, mobs.size, mobs.size, 0.f, mobs.vector);
+
+		/*------------------------------------------------------------
+		CURSOR
+		------------------------------------------------------------*/
+		AEInputShowCursor(false);
 	}
 }
 float w = 0;

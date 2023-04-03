@@ -332,7 +332,6 @@ void puzzle_update()
 	if (game_paused)
 	{
 		pause_update();
-		AEInputShowCursor(true);
 	}
 
 	else
@@ -381,7 +380,6 @@ void puzzle_update()
 		/*------------------------------------------------------------
 		PLAYER MOVEMENT
 		------------------------------------------------------------*/
-		AEInputShowCursor(false);
 
 		if (AEInputCheckTriggered(AEVK_A)) {
 			AEMtx33Scale(&flipTransform1, -1.0f, 1.0f); // player 1 flip 
@@ -550,6 +548,12 @@ void puzzle_update()
 		{
 			gateIsOpen = false;
 		}
+
+
+		/*------------------------------------------------------------
+		CURSOR
+		------------------------------------------------------------*/
+		AEInputShowCursor(false);
 	}
 }
 

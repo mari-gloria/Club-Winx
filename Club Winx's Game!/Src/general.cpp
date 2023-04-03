@@ -275,7 +275,7 @@ void input_handle()
 			player1.velocity.y = GRAVITY;
 		}
 
-		else
+		else if (player1.onSurface)
 		{
 			player1.velocity.y = 0;
 		}
@@ -333,7 +333,7 @@ void input_handle()
 			player2.velocity.y = GRAVITY;
 		}
 
-		else
+		else if (player2.onSurface)
 		{
 			player2.velocity.y = 0;
 		}

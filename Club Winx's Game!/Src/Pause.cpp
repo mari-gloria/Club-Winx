@@ -66,14 +66,6 @@ void pause_init()
 
 void pause_update()
 {
-	AEInputShowCursor(true);
-
-	if (AEInputCheckTriggered(AEVK_ESCAPE))
-	{
-		//next_state = MENU;
-		game_paused = false;
-	}
-
 	//update mouse coord
 	AEInputGetCursorPosition(&mouse_x, &mouse_y);
 	AEGfxSetCamPosition(0, 0);
