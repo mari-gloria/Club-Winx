@@ -16,7 +16,7 @@
 // ---------------------------------------------------------------------------
 // includes
 
-#include "General.h"
+#include "RacingMap.h"
 // ---------------------------------------------------------------------------
 
 
@@ -26,6 +26,11 @@
 /*--------------------------------------------------------------------------
 variables
 ---------------------------------------------------------------------------*/
+//racing mode
+RacingBoosts racing_boostsA[MAX_NUM_ITEMS], racing_boostsB[MAX_NUM_ITEMS];
+Platform	platformA[MAX_NUM_PLATFORMS], platformB[MAX_NUM_PLATFORMS];
+Line		splitscreen, startingline;
+
 int rand_nums_listA[MAX_NUM_ITEMS]; //list of random platform numbers for player 1
 int rand_nums_listB[MAX_NUM_ITEMS]; //list of random platform numbers for player 2
 

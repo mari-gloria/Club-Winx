@@ -36,10 +36,7 @@ Audio		jump, collect, win, lose, mainmenu_bgm, puzzle_bgm, racing_bgm, boss_bgm,
 Timer		puzzleTime, racingTime;
 Player		player1, player2;
 
-//racing mode
-RacingBoosts racing_boostsA[MAX_NUM_ITEMS], racing_boostsB[MAX_NUM_ITEMS];
-Platform	platformA[MAX_NUM_PLATFORMS], platformB[MAX_NUM_PLATFORMS];
-Line		splitscreen, startingline;
+
 
 
 
