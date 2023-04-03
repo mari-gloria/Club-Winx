@@ -7,11 +7,11 @@
 * Brief: This source file defines the functions for the puzzle game mode.
 * 
 * Primary Author: 
-*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Binary Map, Map transform, Light mechanism, Player-map collision) 30%
+*	Mariah Tahirah (mariahtahirah.b@digipen.edu) -> Binary Map, Map transform, Light mechanism, Player-map collision) 33%
 * 
 * Secondary Authors:
-*	Yeo Hui Shan (huishan.y@digipen.edu) -> Timer, Win/Lose condition, Rendering & collision of gate, Drawing textures, Audio 40%
-*   Amirah Binte Isa (amirah.b@digipen.edu) -> Traps, Keys rendering/collision 30% 
+*	Yeo Hui Shan (huishan.y@digipen.edu) -> Timer, Win/Lose condition, Rendering & collision of gate, Drawing textures, Audio 33%
+*   Amirah Binte Isa (amirah.b@digipen.edu) -> Level design, Rendering of keys & traps, Collision between player and key/traps 33% 
 ==================================================================================*/
 
 // ---------------------------------------------------------------------------
