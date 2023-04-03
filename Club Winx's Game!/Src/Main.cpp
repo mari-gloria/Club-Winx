@@ -144,5 +144,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AEGfxDestroyFont(font_arial);
 	AEGfxDestroyFont(font_pixel);
 
+	/*------------------------------------------------------------
+	FREE AUDIO
+	------------------------------------------------------------*/
+	AEAudioExit();
+
 	AESysExit();
 }
